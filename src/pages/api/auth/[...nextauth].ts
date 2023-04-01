@@ -10,6 +10,7 @@ import { z } from "zod";
 import NextAuth from "next-auth/next";
 
 const authOptions: NextAuthOptions = {
+  secret: process.env.AUTH_SECRET,
   providers: [
     CredentialsProvider({
       name: "credentials",
