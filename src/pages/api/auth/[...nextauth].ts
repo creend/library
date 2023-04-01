@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -18,10 +20,11 @@ const authOptions: NextAuthOptions = {
 
       authorize: async (credentials) => {
         const loginSchema = z.object({
-          username: z.string().email(),
-          password: z.string().min(4).max(12),
+          username: z.string().min(2),
+          password: z.string().min(4).max(100),
         });
         const creds = await loginSchema.parseAsync(credentials);
+
         const user = await prisma.user.findUnique({
           where: { username: creds.username },
         });
@@ -33,15 +36,27 @@ const authOptions: NextAuthOptions = {
           return null;
         }
         const { passwordHash, idDocumentNumber, ...userData } = user;
-        console.log(user);
+
         return {
-          user: userData,
+          ...userData,
         } as any;
       },
     }),
   ],
   session: {
     strategy: "jwt",
+  },
+  callbacks: {
+    session({ session, token }) {
+      session.user = token.user as any;
+      return session;
+    },
+    jwt({ token, user }) {
+      if (user) {
+        token.user = user;
+      }
+      return token;
+    },
   },
   pages: {
     signIn: "/zaloguj",

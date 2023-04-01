@@ -8,17 +8,26 @@ const LoginPage = () => {
   const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const res = await signIn("credentials", {
-      username: usernameInput,
-      password: passwordInput,
+      username: usernameInput.current?.value,
+      password: passwordInput.current?.value,
       redirect: false,
     });
-    console.log(res);
   };
 
   return (
     <form onSubmit={(e) => void handleFormSubmit(e)}>
-      <input type="text" placeholder="Nazwa uzytkownika" ref={usernameInput} />
-      <input type="password" placeholder="Haslo" ref={passwordInput} />
+      <input
+        type="text"
+        name="username"
+        placeholder="Nazwa uzytkownika"
+        ref={usernameInput}
+      />
+      <input
+        type="password"
+        name="password"
+        placeholder="Haslo"
+        ref={passwordInput}
+      />
       <button type="submit">Zaloguj</button>
     </form>
   );
