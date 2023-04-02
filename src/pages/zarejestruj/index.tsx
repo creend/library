@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 import * as Yup from "yup";
 import { toast } from "react-hot-toast";
+import Link from "next/link";
 
 const RegisterSchema = Yup.object().shape({
   username: Yup.string()
@@ -78,7 +79,13 @@ const RegisterPage = () => {
           mutate(values);
         }}
       >
-        <Form className="mx-auto mt-11 w-3/4 max-w-3xl" autoComplete="off">
+        <Form
+          className="relative mx-auto mt-11 w-3/4 max-w-xl rounded-2xl bg-gray-900 p-10"
+          autoComplete="off"
+        >
+          <h1 className="mb-10 text-2xl font-semibold text-slate-200">
+            Rejestracja
+          </h1>
           <Input
             input={{ name: "username", id: "username" }}
             label="Nazwa użytkownika"
@@ -132,8 +139,13 @@ const RegisterPage = () => {
             type="submit"
             className="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4  focus:ring-blue-800 sm:w-auto"
           >
-            Submit
+            Zarejestruj
           </button>
+          <Link href="/zaloguj">
+            <p className="absolute bottom-5 right-5 font-medium text-slate-200">
+              Masz już konto? Zaloguj się!
+            </p>
+          </Link>
         </Form>
       </Formik>
     </>
