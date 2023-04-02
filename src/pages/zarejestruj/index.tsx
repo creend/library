@@ -56,6 +56,7 @@ const RegisterPage = () => {
   const [error, setError] = useState("");
   const { mutate, isLoading } = api.auth.signUp.useMutation({
     onSuccess: () => {
+      toast.success("Zarejestrowano !");
       push("/zaloguj");
     },
     onError: (e) => {

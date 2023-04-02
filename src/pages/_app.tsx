@@ -18,7 +18,7 @@ const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
   return (
     <SessionProvider session={pageProps.session}>
       <main className={inter.className}>
-        <Toaster position="bottom-center" />
+        <Toaster position="top-center" />
         <Component {...pageProps} />
       </main>
     </SessionProvider>

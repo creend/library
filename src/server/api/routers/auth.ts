@@ -62,6 +62,7 @@ export const authRouter = createTRPCRouter({
           firstName,
           idDocumentNumber,
           lastName,
+          role: { connect: { name: "normal" } },
         },
       });
 

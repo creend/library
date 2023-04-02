@@ -3,6 +3,7 @@ import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 import * as Yup from "yup";
 import Input from "~/components/input";
 import Toast from "~/components/toast";
@@ -35,6 +36,7 @@ const LoginPage = () => {
             redirect: false,
           });
           if (res?.ok) {
+            toast.success("Zalogowano!");
             push("/");
           } else {
             setError("Błędne dane logowania");
