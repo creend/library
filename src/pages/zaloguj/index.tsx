@@ -6,6 +6,7 @@ import { useState } from "react";
 import { toast } from "react-hot-toast";
 import * as Yup from "yup";
 import Input from "~/components/input";
+import Spinner from "~/components/spinner";
 import Toast from "~/components/toast";
 
 const LoginSchema = Yup.object().shape({
@@ -23,6 +24,7 @@ const LoginPage = () => {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { push } = useRouter();
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <>
@@ -31,10 +33,12 @@ const LoginPage = () => {
         initialValues={{ username: "", password: "" }}
         validationSchema={LoginSchema}
         onSubmit={async (values) => {
+          setIsLoading(true);
           const res = await signIn("credentials", {
             ...values,
             redirect: false,
           });
+          setIsLoading(false);
           if (res?.ok) {
             toast.success("Zalogowano!");
             push("/");
@@ -47,9 +51,12 @@ const LoginPage = () => {
         }}
       >
         <Form
-          className="relative mx-auto mt-11 w-3/4 max-w-xl rounded-2xl bg-gray-900 p-10"
+          className={`relative mx-auto mt-11 w-3/4 max-w-xl rounded-2xl p-10 ${
+            isLoading ? "bg-gray-800 hover:bg-gray-700" : "bg-gray-900"
+          }}`}
           autoComplete="off"
         >
+          {isLoading && <Spinner />}
           <h3 className="mb-10 text-2xl font-semibold text-slate-200">
             Logowanie
           </h3>

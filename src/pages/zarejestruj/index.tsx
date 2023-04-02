@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { Formik, Form } from "formik";
 import Input from "~/components/input";
 import { api } from "~/utils/api";
@@ -8,6 +9,7 @@ import { toast } from "react-hot-toast";
 import Link from "next/link";
 import { useState } from "react";
 import Toast from "~/components/toast";
+import Spinner from "~/components/spinner";
 
 const RegisterSchema = Yup.object().shape({
   username: Yup.string()
@@ -51,7 +53,6 @@ const initialValues = {
 };
 
 const RegisterPage = () => {
-  // eslint-disable-next-line @typescript-eslint/unbound-method
   const { push } = useRouter();
   const [error, setError] = useState("");
   const { mutate, isLoading } = api.auth.signUp.useMutation({
@@ -86,9 +87,12 @@ const RegisterPage = () => {
         }}
       >
         <Form
-          className="relative mx-auto mt-11 w-3/4 max-w-xl rounded-2xl bg-gray-900 p-10"
+          className={`relative mx-auto mt-11 w-3/4 max-w-xl rounded-2xl  p-10 
+          ${isLoading ? "bg-gray-800 hover:bg-gray-700" : "bg-gray-900"}`}
           autoComplete="off"
         >
+          {isLoading && <Spinner />}
+
           <h3 className="mb-10 text-2xl font-semibold text-slate-200">
             Rejestracja
           </h3>
@@ -143,6 +147,7 @@ const RegisterPage = () => {
           </div>
           <button
             type="submit"
+            disabled={isLoading}
             className="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4  focus:ring-blue-800 sm:w-auto"
           >
             Zarejestruj
