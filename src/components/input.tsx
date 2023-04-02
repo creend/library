@@ -1,12 +1,11 @@
 import { ErrorMessage, Field } from "formik";
 
-const Input = ({
-  input,
-  label,
-}: {
+interface Props {
   input: React.InputHTMLAttributes<HTMLInputElement>;
   label: string;
-}) => {
+}
+
+const Input = ({ input, label }: Props) => {
   return (
     <div className="group relative z-0 mb-6 w-full">
       <Field
@@ -24,6 +23,23 @@ const Input = ({
         className="mt-2 text-sm text-red-500"
         component="p"
         name={input.name ?? ""}
+      />
+    </div>
+  );
+};
+
+export const RoundedInput = ({ input, label }: Props) => {
+  return (
+    <div className="mb-6">
+      <label
+        htmlFor={input.id}
+        className="mb-2 block text-sm font-medium text-white"
+      >
+        {label}
+      </label>
+      <Field
+        {...input}
+        className="block w-full rounded-lg border  border-gray-600 bg-gray-700 p-2.5 text-sm  text-white placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500"
       />
     </div>
   );
