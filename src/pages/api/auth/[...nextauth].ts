@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
@@ -28,6 +29,7 @@ const authOptions: NextAuthOptions = {
 
         const user = await prisma.user.findUnique({
           where: { username: creds.username },
+          include: { role: { select: { name: true } } },
         });
         if (!user) {
           return null;
@@ -40,6 +42,7 @@ const authOptions: NextAuthOptions = {
 
         return {
           ...userData,
+          role: user.role.name,
         } as any;
       },
     }),
