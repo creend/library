@@ -83,9 +83,9 @@ const RegisterPage = () => {
           className="relative mx-auto mt-11 w-3/4 max-w-xl rounded-2xl bg-gray-900 p-10"
           autoComplete="off"
         >
-          <h1 className="mb-10 text-2xl font-semibold text-slate-200">
+          <h3 className="mb-10 text-2xl font-semibold text-slate-200">
             Rejestracja
-          </h1>
+          </h3>
           <Input
             input={{ name: "username", id: "username" }}
             label="Nazwa użytkownika"
