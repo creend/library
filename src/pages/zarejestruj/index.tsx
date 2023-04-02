@@ -48,6 +48,7 @@ const initialValues = {
 };
 
 const RegisterPage = () => {
+  // eslint-disable-next-line @typescript-eslint/unbound-method
   const { push } = useRouter();
 
   const { mutate, isLoading, error } = api.auth.signUp.useMutation({
