@@ -1,6 +1,7 @@
 import { Form, Formik } from "formik";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import * as Yup from "yup";
 import Input from "~/components/input";
 import Toast from "~/components/toast";
@@ -17,10 +18,11 @@ const LoginSchema = Yup.object().shape({
 });
 
 const LoginPage = () => {
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const { push } = useRouter();
+
   return (
     <>
-      {" "}
-      <Toast message="es" status="success" />
       <Formik
         initialValues={{ username: "", password: "" }}
         validationSchema={LoginSchema}
@@ -29,6 +31,7 @@ const LoginPage = () => {
             ...values,
             redirect: false,
           });
+          push("/");
         }}
       >
         <Form

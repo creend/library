@@ -40,11 +40,7 @@ const Toast = ({ message, status }: Props) => {
           viewBox="0 0 20 20"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <path
-            fill-rule="evenodd"
-            d={icons[status]}
-            clip-rule="evenodd"
-          ></path>
+          <path fillRule="evenodd" d={icons[status]} clipRule="evenodd"></path>
         </svg>
         <span className="sr-only">{status} icon</span>
       </div>
