@@ -1,7 +1,10 @@
 import { Formik, Form } from "formik";
 import Input from "~/components/input";
 import { api } from "~/utils/api";
+import { useRouter } from "next/navigation";
+
 import * as Yup from "yup";
+import { toast } from "react-hot-toast";
 
 const RegisterSchema = Yup.object().shape({
   username: Yup.string()
@@ -45,17 +48,24 @@ const initialValues = {
 };
 
 const RegisterPage = () => {
-  const { mutate, isLoading } = api.auth.signUp.useMutation({
+  const { push } = useRouter();
+
+  const { mutate, isLoading, error } = api.auth.signUp.useMutation({
     onSuccess: () => {
-      console.log("HURRRAA");
+      toast.success("Zarejestrowano !");
+      push("/zaloguj");
     },
     onError: (e) => {
-      const errorMessage = e.data?.zodError?.fieldErrors.content;
-      if (errorMessage && errorMessage[0]) {
-        console.log(errorMessage[0]);
+      let errorMessage = "Błąd w rejestracji";
+      if (e?.message) {
+        errorMessage = e.message;
       } else {
-        console.log("Failed to post! Please try again later.");
+        const errorMessages = e.data?.zodError?.fieldErrors.content;
+        if (errorMessages && errorMessages[0]) {
+          errorMessage = errorMessages[0];
+        }
       }
+      toast.error(errorMessage);
     },
   });
   return (
@@ -64,11 +74,10 @@ const RegisterPage = () => {
         initialValues={initialValues}
         validationSchema={RegisterSchema}
         onSubmit={(values) => {
-          console.log(values);
-          // mutate(values);
+          mutate(values);
         }}
       >
-        <Form className="mx-auto mt-11 w-3/4 max-w-3xl">
+        <Form className="mx-auto mt-11 w-3/4 max-w-3xl" autoComplete="off">
           <Input
             input={{ name: "username", id: "username" }}
             label="Nazwa użytkownika"
@@ -113,6 +122,7 @@ const RegisterPage = () => {
               input={{
                 name: "address",
                 id: "address",
+                role: "presentation",
               }}
               label="Adres"
             />

@@ -4,6 +4,7 @@ import { type AppProps, type AppType } from "next/app";
 
 import { api } from "~/utils/api";
 import { Inter } from "next/font/google";
+import { Toaster } from "react-hot-toast";
 
 import "~/styles/globals.css";
 import { SessionProvider } from "next-auth/react";
@@ -17,6 +18,7 @@ const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
   return (
     <SessionProvider session={pageProps.session}>
       <main className={inter.className}>
+        <Toaster position="bottom-center" />
         <Component {...pageProps} />
       </main>
     </SessionProvider>
