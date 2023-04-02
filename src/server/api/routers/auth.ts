@@ -4,18 +4,33 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
+export const registerSchema = z.object({
+  username: z
+    .string()
+    .min(2, "Nazwa użytkownika musi posiadać minimum 2 znaki")
+    .max(50, "Nazwa użytkownika może posiadać maksymalnie 50 znaków"),
+  password: z
+    .string()
+    .min(2, "Hasło musi posiadać minimum 2 znaki")
+    .max(50, "Hasło może posiadać maksymalnie 50 znaków"),
+  firstName: z
+    .string()
+    .min(2, "Imie musi posiadać minimum 2 znaki")
+    .max(50, "Imie może posiadać maksymalnie 50 znaków"),
+  lastName: z
+    .string()
+    .min(2, "Nazwisko musi posiadać minimum 2 znaki")
+    .max(50, "Nazwisko może posiadać maksymalnie 50 znaków"),
+  idDocumentNumber: z
+    .string()
+    .min(2, "Numer dokumentu tożsamości musi posiadać minimum 2 znaki")
+    .max(50, "Numer dokumentu tożsamości może posiadać maksymalnie 50 znaków"),
+  address: z.string().min(4, "Adres musi posiadać minimum 2 znaki"),
+});
+
 export const authRouter = createTRPCRouter({
   signUp: publicProcedure
-    .input(
-      z.object({
-        username: z.string().min(2).max(50),
-        password: z.string().min(4).max(50),
-        firstName: z.string().min(2),
-        lastName: z.string().min(2),
-        idDocumentNumber: z.string().min(2),
-        address: z.string().min(4),
-      })
-    )
+    .input(registerSchema)
     .mutation(async ({ input, ctx }) => {
       const {
         username,

@@ -1,4 +1,4 @@
-import { Field } from "formik";
+import { ErrorMessage, Field } from "formik";
 
 const Input = ({
   input,
@@ -20,6 +20,11 @@ const Input = ({
       >
         {label}
       </label>
+      <ErrorMessage
+        className="mt-2 text-sm text-red-500"
+        component="p"
+        name={input.name ?? ""}
+      />
     </div>
   );
 };

@@ -1,17 +1,50 @@
-import { Formik, Field, Form } from "formik";
+import { Formik, Form } from "formik";
 import Input from "~/components/input";
 import { api } from "~/utils/api";
+import * as Yup from "yup";
+
+const RegisterSchema = Yup.object().shape({
+  username: Yup.string()
+    .min(2, "Nazwa użytkownika musi posiadać minimum 2 znaki")
+    .max(50, "Nazwa użytkownika może posiadać maksymalnie 50 znaków")
+    .required("Nazwa użytkownika jest wymagana"),
+  password: Yup.string()
+    .min(2, "Hasło musi posiadać minimum 2 znaki")
+    .max(50, "Hasło może posiadać maksymalnie 50 znaków")
+    .required("Hasło jest wymagane"),
+  retypedPassword: Yup.string()
+    .min(2, "Hasło musi posiadać minimum 2 znaki")
+    .max(50, "Hasło może posiadać maksymalnie 50 znaków")
+    .required("Powtórzone hasło jest wymagane")
+    .oneOf([Yup.ref("password")], "Hasła muszą być takie same"),
+  firstName: Yup.string()
+    .min(2, "Imie musi posiadać minimum 2 znaki")
+    .max(50, "Imie może posiadać maksymalnie 50 znaków")
+    .required("Imie jest wymagane"),
+  lastName: Yup.string()
+    .min(2, "Nazwisko musi posiadać minimum 2 znaki")
+    .max(50, "Nazwisko może posiadać maksymalnie 50 znaków")
+    .required("Nazwisko jest wymagane"),
+  idDocumentNumber: Yup.string()
+    .min(2, "Numer dokumentu tożsamości musi posiadać minimum 2 znaki")
+    .max(50, "Numer dokumentu tożsamości może posiadać maksymalnie 50 znaków")
+    .required("Numer dokumentu tożsamości jest wymagany"),
+  address: Yup.string()
+    .min(4, "Adres musi posiadać minimum 2 znaki")
+    .required("Adres jest wymagany"),
+});
+
+const initialValues = {
+  username: "",
+  password: "",
+  retypedPassword: "",
+  firstName: "",
+  lastName: "",
+  idDocumentNumber: "",
+  address: "",
+};
 
 const RegisterPage = () => {
-  const initialValues = {
-    username: "",
-    password: "",
-    retypedPassword: "",
-    firstName: "",
-    lastName: "",
-    idDocumentNumber: "",
-    address: "",
-  };
   const { mutate, isLoading } = api.auth.signUp.useMutation({
     onSuccess: () => {
       console.log("HURRRAA");
@@ -29,6 +62,7 @@ const RegisterPage = () => {
     <>
       <Formik
         initialValues={initialValues}
+        validationSchema={RegisterSchema}
         onSubmit={(values) => {
           console.log(values);
           // mutate(values);
