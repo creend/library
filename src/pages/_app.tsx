@@ -3,14 +3,22 @@
 import { type AppProps, type AppType } from "next/app";
 
 import { api } from "~/utils/api";
+import { Inter } from "next/font/google";
 
 import "~/styles/globals.css";
 import { SessionProvider } from "next-auth/react";
 
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
 const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
   return (
     <SessionProvider session={pageProps.session}>
-      <Component {...pageProps} />
+      <main className={inter.className}>
+        <Component {...pageProps} />
+      </main>
     </SessionProvider>
   );
 };
