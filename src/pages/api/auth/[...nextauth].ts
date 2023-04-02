@@ -22,7 +22,7 @@ const authOptions: NextAuthOptions = {
       authorize: async (credentials) => {
         const loginSchema = z.object({
           username: z.string().min(2),
-          password: z.string().min(4).max(100),
+          password: z.string().min(2).max(100),
         });
         const creds = await loginSchema.parseAsync(credentials);
 

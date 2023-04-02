@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import * as Yup from "yup";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
+import { useState } from "react";
+import Toast from "~/components/toast";
 
 const RegisterSchema = Yup.object().shape({
   username: Yup.string()
@@ -51,10 +53,9 @@ const initialValues = {
 const RegisterPage = () => {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { push } = useRouter();
-
-  const { mutate, isLoading, error } = api.auth.signUp.useMutation({
+  const [error, setError] = useState("");
+  const { mutate, isLoading } = api.auth.signUp.useMutation({
     onSuccess: () => {
-      toast.success("Zarejestrowano !");
       push("/zaloguj");
     },
     onError: (e) => {
@@ -67,11 +68,15 @@ const RegisterPage = () => {
           errorMessage = errorMessages[0];
         }
       }
-      toast.error(errorMessage);
+      setError(errorMessage);
+      setTimeout(() => {
+        setError("");
+      }, 3000);
     },
   });
   return (
     <>
+      {error && <Toast message={error} status="error" />}
       <Formik
         initialValues={initialValues}
         validationSchema={RegisterSchema}

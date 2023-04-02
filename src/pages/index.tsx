@@ -24,13 +24,7 @@ const Home: NextPage = () => {
           Wyloguj
         </button>
       ) : (
-        <button
-          onClick={() => {
-            void signIn();
-          }}
-        >
-          Login
-        </button>
+        <Link href="/zaloguj">Login</Link>
       )}
     </>
   );
