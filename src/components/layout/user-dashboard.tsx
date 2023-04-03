@@ -1,5 +1,5 @@
 import { FaBook, FaSignOutAlt, FaSignInAlt, FaUserCog } from "react-icons/fa";
-import NavItem, { DropDownNavItem } from "../nav-item";
+import DashboardItem, { DropDownDashboardItem } from "./dashboard-item";
 import { signOut, useSession } from "next-auth/react";
 
 const UserDashboard = () => {
@@ -9,7 +9,7 @@ const UserDashboard = () => {
   return (
     <>
       {isLoggedIn ? (
-        <DropDownNavItem
+        <DropDownDashboardItem
           icon={FaBook}
           dropDownItems={[
             { href: "/ksiazki", text: "Lista książek" },
@@ -21,30 +21,30 @@ const UserDashboard = () => {
           ]}
         >
           Książki
-        </DropDownNavItem>
+        </DropDownDashboardItem>
       ) : (
-        <NavItem icon={FaBook} href="/ksiazki">
+        <DashboardItem icon={FaBook} href="/ksiazki">
           Lista książek
-        </NavItem>
+        </DashboardItem>
       )}
 
       {isLoggedIn && (
-        <NavItem icon={FaUserCog} href="/moje-dane">
+        <DashboardItem icon={FaUserCog} href="/moje-dane">
           Moje dane
-        </NavItem>
+        </DashboardItem>
       )}
 
       {isLoggedIn ? (
-        <NavItem
+        <DashboardItem
           icon={FaSignOutAlt}
           onClick={() => signOut({ callbackUrl: "/zaloguj" })}
         >
           Wyloguj
-        </NavItem>
+        </DashboardItem>
       ) : (
-        <NavItem icon={FaSignInAlt} href="/zaloguj">
+        <DashboardItem icon={FaSignInAlt} href="/zaloguj">
           Zaloguj
-        </NavItem>
+        </DashboardItem>
       )}
     </>
   );

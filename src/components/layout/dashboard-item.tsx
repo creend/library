@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
 
-const NavItem = ({
+const DashboardItem = ({
   href,
   icon: Icon,
   children,
@@ -39,15 +39,13 @@ const NavItem = ({
   );
 };
 
-export default NavItem;
-
 interface DropDownNavItemProps {
   icon: React.FC<any>;
   dropDownItems: { text: string; href: string }[];
   children: ReactNode;
 }
 
-export const DropDownNavItem = ({
+export const DropDownDashboardItem = ({
   icon: Icon,
   dropDownItems,
   children,
@@ -100,3 +98,5 @@ export const DropDownNavItem = ({
     </li>
   );
 };
+
+export default DashboardItem;

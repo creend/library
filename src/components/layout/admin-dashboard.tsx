@@ -1,12 +1,12 @@
 import { FaBook, FaUserAlt, FaSignOutAlt } from "react-icons/fa";
 import { MdAdminPanelSettings } from "react-icons/md";
-import NavItem, { DropDownNavItem } from "../nav-item";
+import DashboardItem, { DropDownDashboardItem } from "./dashboard-item";
 import { signOut } from "next-auth/react";
 
 const AdminDashboard = () => {
   return (
     <>
-      <DropDownNavItem
+      <DropDownDashboardItem
         icon={FaBook}
         dropDownItems={[
           { href: "/ksiazki", text: "Lista książek" },
@@ -14,8 +14,8 @@ const AdminDashboard = () => {
         ]}
       >
         Książki
-      </DropDownNavItem>
-      <DropDownNavItem
+      </DropDownDashboardItem>
+      <DropDownDashboardItem
         icon={FaUserAlt}
         dropDownItems={[
           { href: "/czytelnicy", text: "Lista czytelników" },
@@ -23,17 +23,17 @@ const AdminDashboard = () => {
         ]}
       >
         Czytelnicy
-      </DropDownNavItem>
-      <NavItem icon={MdAdminPanelSettings} href="/moje-dane">
+      </DropDownDashboardItem>
+      <DashboardItem icon={MdAdminPanelSettings} href="/moje-dane">
         Moje dane
-      </NavItem>
+      </DashboardItem>
 
-      <NavItem
+      <DashboardItem
         icon={FaSignOutAlt}
         onClick={() => signOut({ callbackUrl: "/zaloguj" })}
       >
         Wyloguj
-      </NavItem>
+      </DashboardItem>
     </>
   );
 };
