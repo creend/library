@@ -1,10 +1,9 @@
 import { type ReactNode } from "react";
 import { FaBook, FaUserAlt, FaSignOutAlt } from "react-icons/fa";
 import NavItem, { DropDownNavItem } from "./nav-item";
-import { useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 
 const AdminLayout = ({ children }: { children: ReactNode }) => {
-  const session = useSession();
   return (
     <>
       <aside
@@ -33,7 +32,9 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
               Czytelnicy
             </DropDownNavItem>
 
-            <NavItem icon={FaSignOutAlt}>Wyloguj</NavItem>
+            <NavItem icon={FaSignOutAlt} onClick={() => signOut()}>
+              Wyloguj
+            </NavItem>
           </ul>
         </div>
       </aside>
