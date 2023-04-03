@@ -2,7 +2,7 @@ import { TRPCError } from "@trpc/server";
 import { hash } from "argon2";
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { adminProcedure, createTRPCRouter } from "~/server/api/trpc";
 
 export const registerSchema = z.object({
   username: z
@@ -27,9 +27,9 @@ export const registerSchema = z.object({
     .max(50, "Numer dokumentu tożsamości może posiadać maksymalnie 50 znaków"),
   address: z.string().min(4, "Adres musi posiadać minimum 2 znaki"),
 });
-//@TODO private procedure
+
 export const authRouter = createTRPCRouter({
-  signUp: publicProcedure
+  signUp: adminProcedure
     .input(registerSchema)
     .mutation(async ({ input, ctx }) => {
       const {
