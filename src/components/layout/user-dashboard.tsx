@@ -1,6 +1,6 @@
-import { FaBook, FaSignOutAlt, FaSignInAlt, FaUserCog } from "react-icons/fa";
+import { FaBook, FaUserCog } from "react-icons/fa";
 import DashboardItem, { DropDownDashboardItem } from "./dashboard-item";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 const UserDashboard = () => {
   const session = useSession();
@@ -31,19 +31,6 @@ const UserDashboard = () => {
       {isLoggedIn && (
         <DashboardItem icon={FaUserCog} href="/moje-dane">
           Moje dane
-        </DashboardItem>
-      )}
-
-      {isLoggedIn ? (
-        <DashboardItem
-          icon={FaSignOutAlt}
-          onClick={() => signOut({ callbackUrl: "/zaloguj" })}
-        >
-          Wyloguj
-        </DashboardItem>
-      ) : (
-        <DashboardItem icon={FaSignInAlt} href="/zaloguj">
-          Zaloguj
         </DashboardItem>
       )}
     </>

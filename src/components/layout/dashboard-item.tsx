@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
+import { type IconBaseProps } from "react-icons/lib";
 
 const DashboardItem = ({
   href,
@@ -7,9 +8,9 @@ const DashboardItem = ({
   children,
   onClick,
 }: {
-  onClick?: () => any;
+  onClick?: () => void;
   href?: string;
-  icon: React.FC<any>;
+  icon: React.FC<IconBaseProps>;
   children: ReactNode;
 }) => {
   return (
@@ -17,7 +18,6 @@ const DashboardItem = ({
       {href ? (
         <Link href={href}>
           <div className="flex items-center rounded-lg p-2  text-white hover:bg-gray-700">
-            {" "}
             {
               <Icon className="h-6 w-6  text-gray-400 transition duration-75 group-hover:text-white" />
             }

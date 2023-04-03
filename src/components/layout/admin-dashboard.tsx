@@ -1,7 +1,6 @@
-import { FaBook, FaUserAlt, FaSignOutAlt } from "react-icons/fa";
+import { FaBook, FaUserAlt } from "react-icons/fa";
 import { MdAdminPanelSettings } from "react-icons/md";
 import DashboardItem, { DropDownDashboardItem } from "./dashboard-item";
-import { signOut } from "next-auth/react";
 
 const AdminDashboard = () => {
   return (
@@ -26,13 +25,6 @@ const AdminDashboard = () => {
       </DropDownDashboardItem>
       <DashboardItem icon={MdAdminPanelSettings} href="/moje-dane">
         Moje dane
-      </DashboardItem>
-
-      <DashboardItem
-        icon={FaSignOutAlt}
-        onClick={() => signOut({ callbackUrl: "/zaloguj" })}
-      >
-        Wyloguj
       </DashboardItem>
     </>
   );

@@ -1,12 +1,16 @@
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import AdminDashboard from "./admin-dashboard";
 import UserDashboard from "./user-dashboard";
 import { type ReactNode } from "react";
+import DashboardItem from "./dashboard-item";
+import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
+import { toast } from "react-hot-toast";
 
 const Layout = ({ children }: { children: ReactNode }) => {
   const session = useSession();
   const Dashboard =
     session.data?.user.role === "admin" ? AdminDashboard : UserDashboard;
+  const isLoggedIn = session.status === "authenticated";
   return (
     <>
       <aside
@@ -17,6 +21,21 @@ const Layout = ({ children }: { children: ReactNode }) => {
         <div className="h-full overflow-y-auto bg-gray-800 px-3 py-4">
           <ul className="space-y-2 font-medium">
             <Dashboard />
+            {isLoggedIn ? (
+              <DashboardItem
+                icon={FaSignOutAlt}
+                onClick={async () => {
+                  await signOut({ callbackUrl: "/zaloguj" });
+                  toast.success("Wylogowano !");
+                }}
+              >
+                Wyloguj
+              </DashboardItem>
+            ) : (
+              <DashboardItem icon={FaSignInAlt} href="/zaloguj">
+                Zaloguj
+              </DashboardItem>
+            )}
           </ul>
         </div>
       </aside>
