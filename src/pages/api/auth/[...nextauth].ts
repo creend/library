@@ -38,6 +38,7 @@ const authOptions: NextAuthOptions = {
         if (!isValidPassword) {
           return null;
         }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { passwordHash, idDocumentNumber, ...userData } = user;
 
         return {

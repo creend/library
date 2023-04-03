@@ -7,7 +7,7 @@ import { Inter } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 
 import "~/styles/globals.css";
-import { SessionProvider, useSession } from "next-auth/react";
+import { SessionProvider } from "next-auth/react";
 import Layout from "~/components/layout/layout";
 
 const inter = Inter({

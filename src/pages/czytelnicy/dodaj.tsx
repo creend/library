@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 
 import * as Yup from "yup";
 import { toast } from "react-hot-toast";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import Toast from "~/components/toast";
 import Spinner from "~/components/spinner";

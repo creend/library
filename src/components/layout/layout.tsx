@@ -24,8 +24,8 @@ const Layout = ({ children }: { children: ReactNode }) => {
             {isLoggedIn ? (
               <DashboardItem
                 icon={FaSignOutAlt}
-                onClick={async () => {
-                  await signOut({ callbackUrl: "/zaloguj" });
+                onClick={() => {
+                  void signOut({ callbackUrl: "/zaloguj" });
                   toast.success("Wylogowano !");
                 }}
               >
