@@ -27,7 +27,7 @@ export const registerSchema = z.object({
     .max(50, "Numer dokumentu tożsamości może posiadać maksymalnie 50 znaków"),
   address: z.string().min(4, "Adres musi posiadać minimum 2 znaki"),
 });
-
+//@TODO private procedure
 export const authRouter = createTRPCRouter({
   signUp: publicProcedure
     .input(registerSchema)

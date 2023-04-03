@@ -40,7 +40,7 @@ const DashboardItem = ({
 };
 
 interface DropDownNavItemProps {
-  icon: React.FC<any>;
+  icon: React.FC<IconBaseProps>;
   dropDownItems: { text: string; href: string }[];
   children: ReactNode;
 }
