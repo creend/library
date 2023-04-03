@@ -32,7 +32,10 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
               Czytelnicy
             </DropDownNavItem>
 
-            <NavItem icon={FaSignOutAlt} onClick={() => signOut()}>
+            <NavItem
+              icon={FaSignOutAlt}
+              onClick={() => signOut({ callbackUrl: "/zaloguj" })}
+            >
               Wyloguj
             </NavItem>
           </ul>

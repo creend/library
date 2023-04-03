@@ -40,7 +40,10 @@ const UserLayout = ({ children }: { children: ReactNode }) => {
             )}
 
             {isLoggedIn ? (
-              <NavItem icon={FaSignOutAlt} onClick={() => signOut()}>
+              <NavItem
+                icon={FaSignOutAlt}
+                onClick={() => signOut({ callbackUrl: "/zaloguj" })}
+              >
                 Wyloguj
               </NavItem>
             ) : (

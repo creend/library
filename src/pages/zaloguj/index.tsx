@@ -1,7 +1,6 @@
 import { Form, Formik } from "formik";
 import { signIn } from "next-auth/react";
 import Head from "next/head";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
@@ -81,11 +80,6 @@ const LoginPage = () => {
           >
             Zaloguj
           </button>
-          <Link href="/zarejestruj">
-            <p className="absolute bottom-5 right-5 font-medium text-slate-200">
-              Nie masz konta? Zarejestruj się!
-            </p>
-          </Link>
         </Form>
       </Formik>
     </>
