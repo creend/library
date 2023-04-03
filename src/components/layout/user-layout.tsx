@@ -1,5 +1,5 @@
 import { type ReactNode } from "react";
-import { FaBook, FaUserAlt, FaSignOutAlt, FaSignInAlt } from "react-icons/fa";
+import { FaBook, FaSignOutAlt, FaSignInAlt, FaUserCog } from "react-icons/fa";
 import NavItem, { DropDownNavItem } from "../nav-item";
 import { signOut, useSession } from "next-auth/react";
 
@@ -20,21 +20,24 @@ const UserLayout = ({ children }: { children: ReactNode }) => {
               <DropDownNavItem
                 icon={FaBook}
                 dropDownItems={[
-                  { href: "#", text: "Lista książek" },
-                  { href: "#", text: "Zarezerwowane książki" },
-                  { href: "#", text: "Wypożyczone książki" },
+                  { href: "/ksiazki", text: "Lista książek" },
+                  {
+                    href: "/ksiazki/zarezerwowane",
+                    text: "Zarezerwowane książki",
+                  },
+                  { href: "/ksiazki/wypozyczone", text: "Wypożyczone książki" },
                 ]}
               >
                 Książki
               </DropDownNavItem>
             ) : (
-              <NavItem icon={FaBook} href="#">
+              <NavItem icon={FaBook} href="/ksiazki">
                 Lista książek
               </NavItem>
             )}
 
             {isLoggedIn && (
-              <NavItem icon={FaUserAlt} href="#">
+              <NavItem icon={FaUserCog} href="/moje-dane">
                 Moje dane
               </NavItem>
             )}

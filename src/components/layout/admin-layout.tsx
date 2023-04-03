@@ -1,5 +1,6 @@
 import { type ReactNode } from "react";
 import { FaBook, FaUserAlt, FaSignOutAlt } from "react-icons/fa";
+import { MdAdminPanelSettings } from "react-icons/md";
 import NavItem, { DropDownNavItem } from "../nav-item";
 import { signOut } from "next-auth/react";
 
@@ -16,8 +17,8 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
             <DropDownNavItem
               icon={FaBook}
               dropDownItems={[
-                { href: "#", text: "Lista książek" },
-                { href: "#", text: "Dodaj książke" },
+                { href: "/ksiazki", text: "Lista książek" },
+                { href: "/ksiazki/dodaj", text: "Dodaj książke" },
               ]}
             >
               Książki
@@ -25,12 +26,15 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
             <DropDownNavItem
               icon={FaUserAlt}
               dropDownItems={[
-                { href: "#", text: "Lista czytelników" },
+                { href: "/czytelnicy", text: "Lista czytelników" },
                 { href: "/czytelnicy/dodaj", text: "Dodaj czytelnika" },
               ]}
             >
               Czytelnicy
             </DropDownNavItem>
+            <NavItem icon={MdAdminPanelSettings} href="/moje-dane">
+              Moje dane
+            </NavItem>
 
             <NavItem
               icon={FaSignOutAlt}
