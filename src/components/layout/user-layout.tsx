@@ -1,11 +1,12 @@
 import { type ReactNode } from "react";
 import { FaBook, FaUserAlt, FaSignOutAlt, FaSignInAlt } from "react-icons/fa";
-import NavItem, { DropDownNavItem } from "./nav-item";
-import { signOut, signIn, useSession } from "next-auth/react";
+import NavItem, { DropDownNavItem } from "../nav-item";
+import { signOut, useSession } from "next-auth/react";
 
 const UserLayout = ({ children }: { children: ReactNode }) => {
   const session = useSession();
   const isLoggedIn = session.status === "authenticated";
+
   return (
     <>
       <aside
@@ -15,19 +16,29 @@ const UserLayout = ({ children }: { children: ReactNode }) => {
       >
         <div className="h-full overflow-y-auto bg-gray-800 px-3 py-4">
           <ul className="space-y-2 font-medium">
-            <DropDownNavItem
-              icon={FaBook}
-              dropDownItems={[
-                { href: "#", text: "Lista książek" },
-                { href: "#", text: "Zarezerwowane książki" },
-                { href: "#", text: "Wypożyczone książki" },
-              ]}
-            >
-              Książki
-            </DropDownNavItem>
-            <NavItem icon={FaUserAlt} href="#">
-              Moje dane
-            </NavItem>
+            {isLoggedIn ? (
+              <DropDownNavItem
+                icon={FaBook}
+                dropDownItems={[
+                  { href: "#", text: "Lista książek" },
+                  { href: "#", text: "Zarezerwowane książki" },
+                  { href: "#", text: "Wypożyczone książki" },
+                ]}
+              >
+                Książki
+              </DropDownNavItem>
+            ) : (
+              <NavItem icon={FaBook} href="#">
+                Lista książek
+              </NavItem>
+            )}
+
+            {isLoggedIn && (
+              <NavItem icon={FaUserAlt} href="#">
+                Moje dane
+              </NavItem>
+            )}
+
             {isLoggedIn ? (
               <NavItem icon={FaSignOutAlt} onClick={() => signOut()}>
                 Wyloguj

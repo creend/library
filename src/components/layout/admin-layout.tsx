@@ -1,6 +1,6 @@
 import { type ReactNode } from "react";
 import { FaBook, FaUserAlt, FaSignOutAlt } from "react-icons/fa";
-import NavItem, { DropDownNavItem } from "./nav-item";
+import NavItem, { DropDownNavItem } from "../nav-item";
 import { signOut } from "next-auth/react";
 
 const AdminLayout = ({ children }: { children: ReactNode }) => {
