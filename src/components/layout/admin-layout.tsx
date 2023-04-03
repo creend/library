@@ -26,7 +26,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
               icon={FaUserAlt}
               dropDownItems={[
                 { href: "#", text: "Lista czytelników" },
-                { href: "/zarejestruj", text: "Dodaj czytelnika" },
+                { href: "/czytelnicy/dodaj", text: "Dodaj czytelnika" },
               ]}
             >
               Czytelnicy

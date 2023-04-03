@@ -1,5 +1,6 @@
 import { Form, Formik } from "formik";
 import { signIn } from "next-auth/react";
+import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -28,6 +29,10 @@ const LoginPage = () => {
 
   return (
     <>
+      <Head>
+        <title>Logowanie</title>
+        <meta name="description" content="Podstrona do logowania" />
+      </Head>
       {error && <Toast message={error} status="error" />}
       <Formik
         initialValues={{ username: "", password: "" }}

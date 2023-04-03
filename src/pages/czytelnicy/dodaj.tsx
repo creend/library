@@ -10,6 +10,7 @@ import Link from "next/link";
 import { useState } from "react";
 import Toast from "~/components/toast";
 import Spinner from "~/components/spinner";
+import Head from "next/head";
 
 const RegisterSchema = Yup.object().shape({
   username: Yup.string()
@@ -78,6 +79,10 @@ const RegisterPage = () => {
   });
   return (
     <>
+      <Head>
+        <title>Czytelnicy | Dodawanie</title>
+        <meta name="description" content="Podstrona do dodawania czytelnikow" />
+      </Head>
       {error && <Toast message={error} status="error" />}
       <Formik
         initialValues={initialValues}
@@ -94,7 +99,7 @@ const RegisterPage = () => {
           {isLoading && <Spinner />}
 
           <h3 className="mb-10 text-2xl font-semibold text-slate-200">
-            Rejestracja
+            Dodawanie czytelnika
           </h3>
           <Input
             input={{ name: "username", id: "username" }}
@@ -150,13 +155,8 @@ const RegisterPage = () => {
             disabled={isLoading}
             className="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4  focus:ring-blue-800 sm:w-auto"
           >
-            Zarejestruj
+            Dodaj
           </button>
-          <Link href="/zaloguj">
-            <p className="absolute bottom-5 right-5 font-medium text-slate-200">
-              Masz już konto? Zaloguj się!
-            </p>
-          </Link>
         </Form>
       </Formik>
     </>
