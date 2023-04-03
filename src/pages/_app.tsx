@@ -7,8 +7,9 @@ import { Inter } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 
 import "~/styles/globals.css";
-import { SessionProvider } from "next-auth/react";
+import { SessionProvider, useSession } from "next-auth/react";
 import AdminLayout from "~/components/admin-layout";
+import UserLayout from "~/components/user-layout";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -16,14 +17,16 @@ const inter = Inter({
 });
 
 const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
+  const Layout =
+    pageProps?.session?.data?.user?.role === "admin" ? AdminLayout : UserLayout;
   return (
     <SessionProvider session={pageProps.session}>
-      <AdminLayout>
+      <Layout>
         <main className={inter.className}>
           <Toaster position="top-center" />
           <Component {...pageProps} />
         </main>
-      </AdminLayout>
+      </Layout>
     </SessionProvider>
   );
 };
