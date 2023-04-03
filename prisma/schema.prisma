@@ -20,6 +20,8 @@ model User {
     updatedAt        DateTime @updatedAt
     role             Role     @relation(fields: [roleId], references: [id])
     roleId           Int
+    reservedBooks    Book[]   @relation("reserved")
+    borrowedBooks    Book[]   @relation("borrowed")
 
     @@index([roleId])
 }
@@ -28,4 +30,15 @@ model Role {
     id   Int    @id @default(autoincrement())
     name String @unique
     User User[]
+}
+
+model Book {
+    id              Int    @id @default(autoincrement())
+    author          String
+    title           String
+    publisher       String
+    yearOfRelease   Int
+    availableCopies Int
+    reservedBy      User[] @relation("reserved")
+    borrowedBy      User[] @relation("borrowed")
 }
