@@ -20,6 +20,8 @@ model User {
     updatedAt        DateTime @updatedAt
     role             Role     @relation(fields: [roleId], references: [id])
     roleId           Int
+
+    @@index([roleId])
 }
 
 model Role {
