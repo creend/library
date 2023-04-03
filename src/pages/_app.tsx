@@ -8,6 +8,7 @@ import { Toaster } from "react-hot-toast";
 
 import "~/styles/globals.css";
 import { SessionProvider } from "next-auth/react";
+import AdminLayout from "~/components/admin-layout";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -17,10 +18,12 @@ const inter = Inter({
 const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
   return (
     <SessionProvider session={pageProps.session}>
-      <main className={inter.className}>
-        <Toaster position="top-center" />
-        <Component {...pageProps} />
-      </main>
+      <AdminLayout>
+        <main className={inter.className}>
+          <Toaster position="top-center" />
+          <Component {...pageProps} />
+        </main>
+      </AdminLayout>
     </SessionProvider>
   );
 };
