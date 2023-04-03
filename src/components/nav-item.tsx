@@ -15,15 +15,15 @@ const NavItem = ({
   return (
     <li>
       {href ? (
-        <a
-          href={href}
-          className="flex items-center rounded-lg p-2  text-white hover:bg-gray-700"
-        >
-          {
-            <Icon className="h-6 w-6  text-gray-400 transition duration-75 group-hover:text-white" />
-          }
-          <span className="ml-3">{children}</span>
-        </a>
+        <Link href={href}>
+          <div className="flex items-center rounded-lg p-2  text-white hover:bg-gray-700">
+            {" "}
+            {
+              <Icon className="h-6 w-6  text-gray-400 transition duration-75 group-hover:text-white" />
+            }
+            <span className="ml-3">{children}</span>
+          </div>
+        </Link>
       ) : (
         <button
           onClick={onClick}
