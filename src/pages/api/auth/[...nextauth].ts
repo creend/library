@@ -10,7 +10,7 @@ import { prisma } from "~/server/db";
 import { z } from "zod";
 import NextAuth from "next-auth/next";
 
-const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   secret: process.env.AUTH_SECRET,
   providers: [
     CredentialsProvider({
