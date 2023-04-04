@@ -9,7 +9,7 @@ const AddBookSchema = Yup.object().shape({
     .min(2, "Tytuł musi posiadać minimum 2 znaki")
     .max(50, "Tytuł może posiadać maksymalnie 50 znaków")
     .required("Tytuł jest wymagany"),
-  retypedPassword: Yup.string()
+  publisher: Yup.string()
     .min(2, "Wydawnictwo musi posiadać minimum 2 znaki")
     .max(50, "Wydawnictwo może posiadać maksymalnie 50 znaków")
     .required("Wydawnictwo jest wymagane"),
@@ -19,6 +19,14 @@ const AddBookSchema = Yup.object().shape({
     .required("Rok wydania jest wymagany"),
   availableCopies: Yup.number().required("Ilość egzemplarzy jest wymagana"),
 });
+
+const initialValues = {
+  author: "",
+  title: "",
+  publisher: "",
+  yearOfRelease: 2023,
+  availableCopies: 0,
+};
 
 const AddBookPage = () => {
   return (
