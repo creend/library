@@ -67,7 +67,7 @@ const AddUserPage = () => {
     }
   }, [hasPermissions, push]);
 
-  const { mutate, isLoading } = api.auth.signUp.useMutation({
+  const { mutate, isLoading } = api.readers.addReader.useMutation({
     onSuccess: () => {
       toast.success("Zarejestrowano !");
       push("/zaloguj");
