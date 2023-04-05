@@ -34,7 +34,9 @@ export const addReaderSchema = z.object({
 
 export const readersRouter = createTRPCRouter({
   getReaders: publicProcedure.query(async ({ ctx }) => {
-    const readers = await ctx.prisma.user.findMany({});
+    const readers = await ctx.prisma.user.findMany({
+      where: { username: { not: "admin" } },
+    });
     return readers;
   }),
   addReader: adminProcedure
