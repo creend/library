@@ -1,8 +1,10 @@
-import { TRPCError } from "@trpc/server";
-import { hash } from "argon2";
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import {
+  adminProcedure,
+  createTRPCRouter,
+  publicProcedure,
+} from "~/server/api/trpc";
 
 export const booksRouter = createTRPCRouter({
   getBooks: publicProcedure.query(async ({ input, ctx }) => {
@@ -16,6 +18,20 @@ export const booksRouter = createTRPCRouter({
         where: { id: input.id },
         include: { borrowedBy: true, reservedBy: true },
       });
+      return book;
+    }),
+  addBook: adminProcedure
+    .input(
+      z.object({
+        author: z.string().min(2).max(50),
+        title: z.string().min(2).max(50),
+        publisher: z.string().min(2).max(50),
+        yearOfRelease: z.number().min(1900).max(2023),
+        availableCopies: z.number().min(0),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const book = await ctx.prisma.book.create({ data: input });
       return book;
     }),
 });
