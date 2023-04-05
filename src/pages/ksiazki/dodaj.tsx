@@ -3,6 +3,7 @@ import Head from "next/head";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import * as Yup from "yup";
+import Button from "~/components/button";
 import Input from "~/components/input";
 import Spinner from "~/components/spinner";
 import { api } from "~/utils/api";
@@ -110,13 +111,9 @@ const AddBookPage = () => {
               label="Dostępne egzemplarze"
             />
           </div>
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4  focus:ring-blue-800 sm:w-auto"
-          >
+          <Button type="submit" disabled={isLoading}>
             Dodaj
-          </button>
+          </Button>
         </Form>
       </Formik>
     </>

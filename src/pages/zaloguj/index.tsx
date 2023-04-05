@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import * as Yup from "yup";
+import Button from "~/components/button";
 import Input from "~/components/input";
 import Spinner from "~/components/spinner";
 import Toast from "~/components/toast";
@@ -74,12 +75,7 @@ const LoginPage = () => {
             label="Hasło"
             variant="rounded"
           />
-          <button
-            type="submit"
-            className="w-full rounded-lg  bg-blue-600 px-5 py-2.5 text-center text-sm font-medium  text-white hover:bg-blue-700  focus:outline-none focus:ring-4 focus:ring-blue-800 sm:w-auto"
-          >
-            Zaloguj
-          </button>
+          <Button type="submit">Zaloguj</Button>
         </Form>
       </Formik>
     </>

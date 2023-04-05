@@ -11,6 +11,7 @@ import Toast from "~/components/toast";
 import Spinner from "~/components/spinner";
 import Head from "next/head";
 import { useSession } from "next-auth/react";
+import Button from "~/components/button";
 
 const RegisterSchema = Yup.object().shape({
   username: Yup.string()
@@ -161,13 +162,9 @@ const AddUserPage = () => {
                 label="Adres"
               />
             </div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4  focus:ring-blue-800 sm:w-auto"
-            >
+            <Button type="submit" disabled={isLoading}>
               Dodaj
-            </button>
+            </Button>
           </Form>
         </Formik>
       )}
