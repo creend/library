@@ -1,3 +1,4 @@
+import { type User } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { hash } from "argon2";
 import { z } from "zod";
@@ -32,12 +33,17 @@ export const addReaderSchema = z.object({
   address: z.string().min(4, "Adres musi posiadać minimum 2 znaki"),
 });
 
+function filterUser(reader: User) {
+  const { passwordHash, ...user } = reader;
+  return { ...user };
+}
+
 export const readersRouter = createTRPCRouter({
   getReaders: publicProcedure.query(async ({ ctx }) => {
     const readers = await ctx.prisma.user.findMany({
       where: { username: { not: "admin" } },
     });
-    return readers;
+    return readers.map(filterUser);
   }),
   addReader: adminProcedure
     .input(addReaderSchema)
@@ -64,17 +70,19 @@ export const readersRouter = createTRPCRouter({
 
       const hashedPassword = await hash(password);
 
-      const user = await ctx.prisma.user.create({
-        data: {
-          username,
-          passwordHash: hashedPassword,
-          address,
-          firstName,
-          idDocumentNumber,
-          lastName,
-          role: { connect: { name: "normal" } },
-        },
-      });
+      const user = filterUser(
+        await ctx.prisma.user.create({
+          data: {
+            username,
+            passwordHash: hashedPassword,
+            address,
+            firstName,
+            idDocumentNumber,
+            lastName,
+            role: { connect: { name: "normal" } },
+          },
+        })
+      );
 
       return {
         status: 201,
