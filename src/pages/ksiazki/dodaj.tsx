@@ -1,7 +1,10 @@
 import { Form, Formik } from "formik";
+import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 import * as Yup from "yup";
 import Input from "~/components/input";
 import Spinner from "~/components/spinner";
+import { api } from "~/utils/api";
 
 const AddBookSchema = Yup.object().shape({
   author: Yup.string()
@@ -20,7 +23,9 @@ const AddBookSchema = Yup.object().shape({
     .min(1900, "Rok wydania musi być większy niż 1900")
     .max(2023, "Rok wydania nie może być większy niż 2023")
     .required("Rok wydania jest wymagany"),
-  availableCopies: Yup.number().required("Ilość egzemplarzy jest wymagana"),
+  availableCopies: Yup.number()
+    .min(0, "Ilość książek musi być większa od zera")
+    .required("Ilość egzemplarzy jest wymagana"),
 });
 
 const initialValues = {
@@ -32,13 +37,33 @@ const initialValues = {
 };
 
 const AddBookPage = () => {
-  const isLoading = false;
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const { push } = useRouter();
+
+  const { mutate, isLoading } = api.books.addBook.useMutation({
+    onSuccess: () => {
+      toast.success("Dodano książke !");
+      push("/ksiazki");
+    },
+    onError: (e) => {
+      let errorMessage = "Błąd w dodawaniu książki";
+      if (e?.message) {
+        errorMessage = e.message;
+      } else {
+        const errorMessages = e.data?.zodError?.fieldErrors.content;
+        if (errorMessages && errorMessages[0]) {
+          errorMessage = errorMessages[0];
+        }
+      }
+      toast.error(errorMessage);
+    },
+  });
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={AddBookSchema}
       onSubmit={(values) => {
-        console.log(values);
+        mutate(values);
       }}
     >
       <Form
@@ -74,6 +99,7 @@ const AddBookPage = () => {
               name: "availableCopies",
               id: "availableCopies",
               type: "number",
+              min: 0,
             }}
             label="Dostępne egzemplarze"
           />
