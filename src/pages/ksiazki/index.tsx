@@ -6,6 +6,7 @@ import superjson from "superjson";
 import { api } from "~/utils/api";
 import Link from "next/link";
 import Spinner from "~/components/spinner";
+import Head from "next/head";
 
 const Book = ({
   author,
@@ -43,6 +44,10 @@ const BooksPage = () => {
 
   return (
     <>
+      <Head>
+        <title>Książki</title>
+        <meta name="description" content="Podstrona do dodawania książek" />
+      </Head>
       {books?.length && (
         <div className="relative mx-auto mt-11 w-3/4 max-w-5xl overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-left text-sm text-gray-400">

@@ -1,4 +1,5 @@
 import { Form, Formik } from "formik";
+import Head from "next/head";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import * as Yup from "yup";
@@ -59,60 +60,66 @@ const AddBookPage = () => {
     },
   });
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={AddBookSchema}
-      onSubmit={(values) => {
-        mutate(values);
-      }}
-    >
-      <Form
-        className={`relative mx-auto mt-11 w-3/4 max-w-xl rounded-2xl  p-10 
-          ${isLoading ? "bg-gray-800 hover:bg-gray-700" : "bg-gray-900"}`}
-        autoComplete="off"
+    <>
+      <Head>
+        <title>Książki | Dodawanie</title>
+        <meta name="description" content="Podstrona do dodawania książek" />
+      </Head>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={AddBookSchema}
+        onSubmit={(values) => {
+          mutate(values);
+        }}
       >
-        {isLoading && <Spinner />}
-
-        <h3 className="mb-10 text-2xl font-semibold text-slate-200">
-          Dodawanie książki
-        </h3>
-        <Input input={{ name: "author", id: "author" }} label="Autor" />
-        <Input input={{ name: "title", id: "title" }} label="Tytuł" />
-        <Input
-          input={{
-            name: "publisher",
-            id: "publisher",
-          }}
-          label="Wydawnictwo"
-        />
-        <div className="grid md:grid-cols-2 md:gap-6">
-          <Input
-            input={{
-              name: "yearOfRelease",
-              id: "yearOfRelease",
-              type: "number",
-            }}
-            label="Rok wydania"
-          />
-          <Input
-            input={{
-              name: "availableCopies",
-              id: "availableCopies",
-              type: "number",
-              min: 0,
-            }}
-            label="Dostępne egzemplarze"
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4  focus:ring-blue-800 sm:w-auto"
+        <Form
+          className={`relative mx-auto mt-11 w-3/4 max-w-xl rounded-2xl  p-10 
+          ${isLoading ? "bg-gray-800 hover:bg-gray-700" : "bg-gray-900"}`}
+          autoComplete="off"
         >
-          Dodaj
-        </button>
-      </Form>
-    </Formik>
+          {isLoading && <Spinner />}
+
+          <h3 className="mb-10 text-2xl font-semibold text-slate-200">
+            Dodawanie książki
+          </h3>
+          <Input input={{ name: "author", id: "author" }} label="Autor" />
+          <Input input={{ name: "title", id: "title" }} label="Tytuł" />
+          <Input
+            input={{
+              name: "publisher",
+              id: "publisher",
+            }}
+            label="Wydawnictwo"
+          />
+          <div className="grid md:grid-cols-2 md:gap-6">
+            <Input
+              input={{
+                name: "yearOfRelease",
+                id: "yearOfRelease",
+                type: "number",
+              }}
+              label="Rok wydania"
+            />
+            <Input
+              input={{
+                name: "availableCopies",
+                id: "availableCopies",
+                type: "number",
+                min: 0,
+              }}
+              label="Dostępne egzemplarze"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4  focus:ring-blue-800 sm:w-auto"
+          >
+            Dodaj
+          </button>
+        </Form>
+      </Formik>
+    </>
   );
 };
 
