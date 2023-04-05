@@ -1,8 +1,8 @@
 import { Form, Formik } from "formik";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import * as Yup from "yup";
 import Button from "~/components/button";
@@ -22,10 +22,20 @@ const LoginSchema = Yup.object().shape({
 });
 
 const LoginPage = () => {
+  const [error, setError] = useState("");
+
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { push } = useRouter();
-  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { status } = useSession();
+  const isLoggedIn = status === "authenticated";
+  const isSessionLoading = status === "loading";
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      push("/");
+    }
+  }, [push, isLoggedIn]);
 
   return (
     <>
@@ -34,6 +44,7 @@ const LoginPage = () => {
         <meta name="description" content="Podstrona do logowania" />
       </Head>
       {error && <Toast message={error} status="error" />}
+
       <Formik
         initialValues={{ username: "", password: "" }}
         validationSchema={LoginSchema}

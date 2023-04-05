@@ -1,9 +1,10 @@
-import { createProxySSGHelpers } from "@trpc/react-query/ssg";
+/* eslint-disable @typescript-eslint/unbound-method */
+import { useSession } from "next-auth/react";
 import Head from "next/head";
-import superjson from "superjson";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import Spinner from "~/components/spinner";
 import Table from "~/components/table";
-import { appRouter } from "~/server/api/root";
-import { prisma } from "~/server/db";
 import { api } from "~/utils/api";
 
 const Reader = ({
@@ -37,8 +38,22 @@ const Reader = ({
 };
 
 const ReadersPage = () => {
-  const { data: readers } = api.readers.getReaders.useQuery();
-  console.log(readers);
+  const { data: readers, isLoading } = api.readers.getReaders.useQuery();
+
+  const { data: sessionData, status } = useSession();
+  const role = sessionData?.user.role;
+  const hasPermissions = role === "admin";
+
+  const { push } = useRouter();
+
+  useEffect(() => {
+    if (status !== "loading") {
+      if (!hasPermissions) {
+        push("/");
+      }
+    }
+  }, [hasPermissions, push, status]);
+
   return (
     <>
       <Head>
@@ -48,8 +63,9 @@ const ReadersPage = () => {
       <h1 className="mx-auto mt-11 w-3/4 max-w-5xl text-2xl font-semibold text-slate-200">
         Lista czytelników
       </h1>
-      {readers?.length && (
+      {hasPermissions && (
         <div className="relative mx-auto mt-11 w-3/4 max-w-5xl overflow-x-auto shadow-md sm:rounded-lg">
+          {isLoading && <Spinner />}
           <Table
             colNames={[
               "Nazwa użytkownika",
@@ -58,28 +74,13 @@ const ReadersPage = () => {
               "Adres",
             ]}
           >
-            {readers.map((reader) => (
-              <Reader key={reader.id} {...reader} />
-            ))}
+            {readers?.length &&
+              readers.map((reader) => <Reader key={reader.id} {...reader} />)}
           </Table>
         </div>
       )}
     </>
   );
 };
-
-export async function getStaticProps() {
-  const ssg = createProxySSGHelpers({
-    router: appRouter,
-    ctx: { prisma, session: null },
-    transformer: superjson,
-  });
-  await ssg.readers.getReaders.prefetch();
-  return {
-    props: {
-      trpcState: ssg.dehydrate(),
-    },
-  };
-}
 
 export default ReadersPage;

@@ -55,17 +55,20 @@ const initialValues = {
 };
 
 const AddUserPage = () => {
-  const session = useSession();
-  const hasPermissions = session.data?.user.role === "admin";
+  const { data: sessionData, status } = useSession();
+  const role = sessionData?.user.role;
+  const hasPermissions = role === "admin";
 
   const { push } = useRouter();
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!hasPermissions) {
-      push("/");
+    if (status !== "loading") {
+      if (!hasPermissions) {
+        push("/");
+      }
     }
-  }, [hasPermissions, push]);
+  }, [hasPermissions, push, status]);
 
   const { mutate, isLoading } = api.readers.addReader.useMutation({
     onSuccess: () => {

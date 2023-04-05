@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { Form, Formik } from "formik";
+import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 import * as Yup from "yup";
 import Button from "~/components/button";
@@ -39,8 +42,19 @@ const initialValues = {
 };
 
 const AddBookPage = () => {
-  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const { data: sessionData, status } = useSession();
+  const role = sessionData?.user.role;
+  const hasPermissions = role === "admin";
+
   const { push } = useRouter();
+
+  useEffect(() => {
+    if (status !== "loading") {
+      if (!hasPermissions) {
+        push("/");
+      }
+    }
+  }, [hasPermissions, push, status]);
 
   const { mutate, isLoading } = api.books.addBook.useMutation({
     onSuccess: () => {
@@ -66,56 +80,58 @@ const AddBookPage = () => {
         <title>Książki | Dodawanie</title>
         <meta name="description" content="Podstrona do dodawania książek" />
       </Head>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={AddBookSchema}
-        onSubmit={(values) => {
-          mutate(values);
-        }}
-      >
-        <Form
-          className={`relative mx-auto mt-11 w-3/4 max-w-xl rounded-2xl  p-10 
-          ${isLoading ? "bg-gray-800 hover:bg-gray-700" : "bg-gray-900"}`}
-          autoComplete="off"
+      {hasPermissions && (
+        <Formik
+          initialValues={initialValues}
+          validationSchema={AddBookSchema}
+          onSubmit={(values) => {
+            mutate(values);
+          }}
         >
-          {isLoading && <Spinner />}
+          <Form
+            className={`relative mx-auto mt-11 w-3/4 max-w-xl rounded-2xl  p-10 
+          ${isLoading ? "bg-gray-800 hover:bg-gray-700" : "bg-gray-900"}`}
+            autoComplete="off"
+          >
+            {isLoading && <Spinner />}
 
-          <h3 className="mb-10 text-2xl font-semibold text-slate-200">
-            Dodawanie książki
-          </h3>
-          <Input input={{ name: "author", id: "author" }} label="Autor" />
-          <Input input={{ name: "title", id: "title" }} label="Tytuł" />
-          <Input
-            input={{
-              name: "publisher",
-              id: "publisher",
-            }}
-            label="Wydawnictwo"
-          />
-          <div className="grid md:grid-cols-2 md:gap-6">
+            <h3 className="mb-10 text-2xl font-semibold text-slate-200">
+              Dodawanie książki
+            </h3>
+            <Input input={{ name: "author", id: "author" }} label="Autor" />
+            <Input input={{ name: "title", id: "title" }} label="Tytuł" />
             <Input
               input={{
-                name: "yearOfRelease",
-                id: "yearOfRelease",
-                type: "number",
+                name: "publisher",
+                id: "publisher",
               }}
-              label="Rok wydania"
+              label="Wydawnictwo"
             />
-            <Input
-              input={{
-                name: "availableCopies",
-                id: "availableCopies",
-                type: "number",
-                min: 0,
-              }}
-              label="Dostępne egzemplarze"
-            />
-          </div>
-          <Button type="submit" disabled={isLoading}>
-            Dodaj
-          </Button>
-        </Form>
-      </Formik>
+            <div className="grid md:grid-cols-2 md:gap-6">
+              <Input
+                input={{
+                  name: "yearOfRelease",
+                  id: "yearOfRelease",
+                  type: "number",
+                }}
+                label="Rok wydania"
+              />
+              <Input
+                input={{
+                  name: "availableCopies",
+                  id: "availableCopies",
+                  type: "number",
+                  min: 0,
+                }}
+                label="Dostępne egzemplarze"
+              />
+            </div>
+            <Button type="submit" disabled={isLoading}>
+              Dodaj
+            </Button>
+          </Form>
+        </Formik>
+      )}
     </>
   );
 };
