@@ -1,12 +1,10 @@
-import { type NextPage, type GetStaticPropsContext } from "next";
 import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { prisma } from "~/server/db";
 import { appRouter } from "~/server/api/root";
 import superjson from "superjson";
 import { api } from "~/utils/api";
-import Link from "next/link";
-import Spinner from "~/components/spinner";
 import Head from "next/head";
+import Table from "~/components/table";
 
 const Book = ({
   author,
@@ -14,7 +12,6 @@ const Book = ({
   publisher,
   title,
   yearOfRelease,
-  id,
 }: {
   id: number;
   title: string;
@@ -40,7 +37,7 @@ const Book = ({
 };
 
 const BooksPage = () => {
-  const { data: books, isLoading } = api.books.getBooks.useQuery();
+  const { data: books } = api.books.getBooks.useQuery();
 
   return (
     <>
@@ -53,39 +50,26 @@ const BooksPage = () => {
       </h1>
       {books?.length && (
         <div className="relative mx-auto mt-11 w-3/4 max-w-5xl overflow-x-auto shadow-md sm:rounded-lg">
-          <table className="w-full text-left text-sm text-gray-400">
-            <thead className=" bg-gray-700 text-xs  uppercase text-gray-400">
-              <tr>
-                <th scope="col" className="px-6 py-3">
-                  Tytuł
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Autor
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Wydawnictwo
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Rok wydania
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Dostępne egzemplarze
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {books.map((book) => (
-                <Book key={book.id} {...book} />
-              ))}
-            </tbody>
-          </table>
+          <Table
+            colNames={[
+              "Tytuł",
+              "Autor",
+              "Wydawnictwo",
+              "Rok wydania",
+              "Dostępne egzemplarze",
+            ]}
+          >
+            {books.map((book) => (
+              <Book key={book.id} {...book} />
+            ))}
+          </Table>
         </div>
       )}
     </>
   );
 };
 
-export async function getStaticProps(context: GetStaticPropsContext) {
+export async function getStaticProps() {
   const ssg = createProxySSGHelpers({
     router: appRouter,
     ctx: { prisma, session: null },

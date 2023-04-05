@@ -6,7 +6,7 @@ import { prisma } from "~/server/db";
 import { api } from "~/utils/api";
 
 const ReadersPage = () => {
-  const { data: readers, isLoading } = api.readers.getReaders.useQuery();
+  const { data: readers } = api.readers.getReaders.useQuery();
   console.log(readers);
   return (
     <>
