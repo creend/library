@@ -3,11 +3,17 @@ import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { api } from "~/utils/api";
 
 const MyDataPage = () => {
   const { push } = useRouter();
   const { data: sessionData, status } = useSession();
   const hasPermissions = status !== "unauthenticated";
+  const { data, isLoading } = api.readers.getReaderByUsername.useQuery({
+    username: sessionData?.user.username || "",
+  });
+
+  console.log(data);
 
   useEffect(() => {
     if (!hasPermissions) {

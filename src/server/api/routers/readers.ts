@@ -45,6 +45,19 @@ export const readersRouter = createTRPCRouter({
     });
     return readers.map(filterUser);
   }),
+  getReaderByUsername: publicProcedure
+    .input(z.object({ username: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { username } = input;
+      const reader = await ctx.prisma.user.findUnique({ where: { username } });
+      if (!reader) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Użytkownik o podanej nazwie nie istnieje",
+        });
+      }
+      return filterUser(reader);
+    }),
   addReader: adminProcedure
     .input(addReaderSchema)
     .mutation(async ({ input, ctx }) => {
