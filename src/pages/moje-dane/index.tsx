@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { api } from "~/utils/api";
 import { getServerAuthSession } from "../api/auth/[...nextauth]";
 import { type GetServerSideProps } from "next";
+import Spinner from "~/components/spinner";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -18,11 +19,9 @@ const MyDataPage = () => {
   const { push } = useRouter();
   const { data: sessionData, status } = useSession();
   const hasPermissions = status !== "unauthenticated";
-  const { data, isLoading } = api.readers.getReaderByUsername.useQuery({
+  const { data: reader, isLoading } = api.readers.getReaderByUsername.useQuery({
     username: sessionData?.user.username || "",
   });
-
-  console.log(data);
 
   useEffect(() => {
     if (!hasPermissions) {
@@ -39,14 +38,19 @@ const MyDataPage = () => {
 
       <div className="relative mx-auto mt-11 w-3/4 max-w-5xl ">
         <h1 className="my-11 text-5xl font-bold text-slate-200">Moje dane</h1>
-        <div className="w-full rounded-lg border border-gray-200 bg-white shadow dark:border-gray-700 dark:bg-gray-800">
+        <div
+          className={`relative w-full rounded-lg border border-gray-700 bg-gray-900 shadow ${
+            isLoading ? "bg-gray-800 hover:bg-gray-700" : "bg-gray-900"
+          }`}
+        >
+          {isLoading && <Spinner />}
           <div className="sm:hidden">
             <label htmlFor="tabs" className="sr-only">
               Select tab
             </label>
             <select
               id="tabs"
-              className="block w-full rounded-t-lg border-0 border-b border-gray-200 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+              className="block w-full rounded-t-lg border-0 border-b  border-gray-600 bg-gray-700   p-2.5 text-sm text-white placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500 focus:ring-blue-500"
             >
               <option>Statistics</option>
               <option>Services</option>
@@ -54,7 +58,7 @@ const MyDataPage = () => {
             </select>
           </div>
           <ul
-            className="hidden divide-x divide-gray-200 rounded-lg text-center text-sm font-medium text-gray-500 dark:divide-gray-600 dark:text-gray-400 sm:flex"
+            className="hidden divide-x  divide-gray-600 rounded-lg text-center text-sm  font-medium text-gray-400 sm:flex"
             id="fullWidthTab"
             data-tabs-toggle="#fullWidthTabContent"
             role="tablist"
@@ -67,7 +71,7 @@ const MyDataPage = () => {
                 role="tab"
                 aria-controls="stats"
                 aria-selected="true"
-                className="inline-block w-full rounded-tl-lg bg-gray-50 p-4 hover:bg-gray-100 focus:outline-none dark:bg-gray-700 dark:hover:bg-gray-600"
+                className="inline-block w-full rounded-tl-lg  bg-gray-700 p-4 hover:bg-gray-600 focus:outline-none"
               >
                 Twoje dane
               </button>
@@ -80,7 +84,7 @@ const MyDataPage = () => {
                 role="tab"
                 aria-controls="about"
                 aria-selected="false"
-                className="inline-block w-full bg-gray-50 p-4 hover:bg-gray-100 focus:outline-none dark:bg-gray-700 dark:hover:bg-gray-600"
+                className="inline-block w-full bg-gray-700 p-4 hover:bg-gray-600 focus:outline-none"
               >
                 Zmień dane
               </button>
@@ -93,44 +97,52 @@ const MyDataPage = () => {
                 role="tab"
                 aria-controls="faq"
                 aria-selected="false"
-                className="inline-block w-full rounded-tr-lg bg-gray-50 p-4 hover:bg-gray-100 focus:outline-none dark:bg-gray-700 dark:hover:bg-gray-600"
+                className="inline-block w-full rounded-tr-lg bg-gray-700  p-4 hover:bg-gray-600 focus:outline-none"
               >
                 Zmień hasło
               </button>
             </li>
           </ul>
-          <div
-            id="fullWidthTabContent"
-            className="border-t border-gray-200 dark:border-gray-600"
-          >
-            <div
-              className=" rounded-lg bg-white p-4 dark:bg-gray-800 md:p-8"
-              id="stats"
-              role="tabpanel"
-              aria-labelledby="stats-tab"
-            >
-              <dl className="mx-auto flex flex-wrap justify-around gap-8 p-4 text-gray-900 dark:text-white sm:grid-cols-3 sm:p-8 xl:grid-cols-6">
-                <div className="flex flex-col items-center justify-center">
-                  <dt className="mb-2 text-3xl font-extrabold">Imie</dt>
-                  <dd className="text-gray-500 dark:text-gray-400">Mikołaj</dd>
+          {reader && (
+            <>
+              <div
+                id="fullWidthTabContent"
+                className="border-t  border-gray-600"
+              >
+                <div
+                  className=" rounded-lg  bg-gray-800 md:p-8"
+                  id="stats"
+                  role="tabpanel"
+                  aria-labelledby="stats-tab"
+                >
+                  <dl className="mx-auto flex flex-wrap justify-around gap-8 p-4 text-white sm:grid-cols-3 sm:p-8 xl:grid-cols-6">
+                    <div className="flex flex-col items-center justify-center">
+                      <dt className="mb-2 text-3xl font-extrabold">Imie</dt>
+                      <dd className="text-gray-400">{reader.firstName}</dd>
+                    </div>
+                    <div className="flex flex-col items-center justify-center">
+                      <dt className="mb-2 text-3xl font-extrabold">Nazwisko</dt>
+                      <dd className="text-gray-400">{reader.lastName}</dd>
+                    </div>
+                    <div className="flex flex-col items-center justify-center">
+                      <dt className="mb-2 text-3xl font-extrabold">
+                        {reader.idDocumentNumber}
+                      </dt>
+                      <dd className="text-gray-400">
+                        Numer dokumentu tożsamości
+                      </dd>
+                    </div>
+                    <div className="flex flex-col items-center justify-center">
+                      <dt className="mb-2 text-3xl font-extrabold">
+                        {reader.address}
+                      </dt>
+                      <dd className="text-gray-400">Adres</dd>
+                    </div>
+                  </dl>
                 </div>
-                <div className="flex flex-col items-center justify-center">
-                  <dt className="mb-2 text-3xl font-extrabold">Nazwisko</dt>
-                  <dd className="text-gray-500 dark:text-gray-400">Kowal</dd>
-                </div>
-                <div className="flex flex-col items-center justify-center">
-                  <dt className="mb-2 text-3xl font-extrabold">ABC 123</dt>
-                  <dd className="text-gray-500 dark:text-gray-400">
-                    Numer dokumentu tożsamości
-                  </dd>
-                </div>
-                <div className="flex flex-col items-center justify-center">
-                  <dt className="mb-2 text-3xl font-extrabold">Siedlce 100</dt>
-                  <dd className="text-gray-500 dark:text-gray-400">Adres</dd>
-                </div>
-              </dl>
-            </div>
-          </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </>
