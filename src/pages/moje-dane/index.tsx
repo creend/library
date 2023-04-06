@@ -4,6 +4,15 @@ import Head from "next/head";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { api } from "~/utils/api";
+import { getServerAuthSession } from "../api/auth/[...nextauth]";
+import { type GetServerSideProps } from "next";
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = await getServerAuthSession(ctx);
+  return {
+    props: { session },
+  };
+};
 
 const MyDataPage = () => {
   const { push } = useRouter();

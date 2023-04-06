@@ -8,7 +8,8 @@ import { verify } from "argon2";
 
 import { prisma } from "~/server/db";
 import { z } from "zod";
-import NextAuth from "next-auth/next";
+import NextAuth, { getServerSession } from "next-auth/next";
+import { GetServerSidePropsContext } from "next";
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.AUTH_SECRET,
@@ -66,6 +67,13 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/zaloguj",
   },
+};
+
+export const getServerAuthSession = (ctx: {
+  req: GetServerSidePropsContext["req"];
+  res: GetServerSidePropsContext["res"];
+}) => {
+  return getServerSession(ctx.req, ctx.res, authOptions);
 };
 
 export default NextAuth(authOptions);
