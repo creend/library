@@ -29,7 +29,6 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { status } = useSession();
   const isLoggedIn = status === "authenticated";
-  const isSessionLoading = status === "loading";
 
   useEffect(() => {
     if (isLoggedIn) {

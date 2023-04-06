@@ -45,7 +45,7 @@ const BooksPage = () => {
         <title>Książki</title>
         <meta name="description" content="Podstrona do dodawania książek" />
       </Head>
-      <h1 className="mx-auto mt-11 w-3/4 max-w-5xl text-2xl font-semibold text-slate-200">
+      <h1 className="mx-auto mt-11 w-3/4 max-w-5xl text-5xl font-bold text-slate-200">
         Lista książek
       </h1>
       {books?.length && (
