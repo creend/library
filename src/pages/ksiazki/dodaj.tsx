@@ -10,6 +10,8 @@ import Button from "~/components/button";
 import Input from "~/components/input";
 import Spinner from "~/components/spinner";
 import { api } from "~/utils/api";
+import { getServerAuthSession } from "../api/auth/[...nextauth]";
+import { type GetServerSideProps } from "next";
 
 const AddBookSchema = Yup.object().shape({
   author: Yup.string()
@@ -41,20 +43,25 @@ const initialValues = {
   availableCopies: 0,
 };
 
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = await getServerAuthSession(ctx);
+  return {
+    props: { session },
+  };
+};
+
 const AddBookPage = () => {
-  const { data: sessionData, status } = useSession();
+  const { data: sessionData } = useSession();
   const role = sessionData?.user.role;
   const hasPermissions = role === "admin";
 
   const { push } = useRouter();
 
   useEffect(() => {
-    if (status !== "loading") {
-      if (!hasPermissions) {
-        push("/");
-      }
+    if (!hasPermissions) {
+      push("/");
     }
-  }, [hasPermissions, push, status]);
+  }, [hasPermissions, push]);
 
   const { mutate, isLoading } = api.books.addBook.useMutation({
     onSuccess: () => {
@@ -74,6 +81,8 @@ const AddBookPage = () => {
       toast.error(errorMessage);
     },
   });
+  if (!hasPermissions) return null;
+
   return (
     <>
       <Head>

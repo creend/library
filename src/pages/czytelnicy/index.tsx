@@ -6,6 +6,8 @@ import { useEffect } from "react";
 import Spinner from "~/components/spinner";
 import Table from "~/components/table";
 import { api } from "~/utils/api";
+import { getServerAuthSession } from "../api/auth/[...nextauth]";
+import { type GetServerSideProps } from "next";
 
 const Reader = ({
   address,
@@ -37,22 +39,29 @@ const Reader = ({
   );
 };
 
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = await getServerAuthSession(ctx);
+  return {
+    props: { session },
+  };
+};
+
 const ReadersPage = () => {
   const { data: readers, isLoading } = api.readers.getReaders.useQuery();
 
-  const { data: sessionData, status } = useSession();
+  const { data: sessionData } = useSession();
   const role = sessionData?.user.role;
   const hasPermissions = role === "admin";
 
   const { push } = useRouter();
 
   useEffect(() => {
-    if (status !== "loading") {
-      if (!hasPermissions) {
-        push("/");
-      }
+    if (!hasPermissions) {
+      push("/");
     }
-  }, [hasPermissions, push, status]);
+  }, [hasPermissions, push]);
+
+  if (!hasPermissions) return null;
 
   return (
     <>

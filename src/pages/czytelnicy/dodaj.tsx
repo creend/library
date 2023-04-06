@@ -12,6 +12,8 @@ import Spinner from "~/components/spinner";
 import Head from "next/head";
 import { useSession } from "next-auth/react";
 import Button from "~/components/button";
+import { type GetServerSideProps } from "next";
+import { getServerAuthSession } from "../api/auth/[...nextauth]";
 
 const RegisterSchema = Yup.object().shape({
   username: Yup.string()
@@ -54,8 +56,15 @@ const initialValues = {
   address: "",
 };
 
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = await getServerAuthSession(ctx);
+  return {
+    props: { session },
+  };
+};
+
 const AddUserPage = () => {
-  const { data: sessionData, status } = useSession();
+  const { data: sessionData } = useSession();
   const role = sessionData?.user.role;
   const hasPermissions = role === "admin";
 
@@ -63,12 +72,10 @@ const AddUserPage = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (status !== "loading") {
-      if (!hasPermissions) {
-        push("/");
-      }
+    if (!hasPermissions) {
+      push("/");
     }
-  }, [hasPermissions, push, status]);
+  }, [hasPermissions, push]);
 
   const { mutate, isLoading } = api.readers.addReader.useMutation({
     onSuccess: () => {
@@ -91,6 +98,7 @@ const AddUserPage = () => {
       }, 3000);
     },
   });
+  if (!hasPermissions) return null;
   return (
     <>
       <Head>
@@ -98,79 +106,77 @@ const AddUserPage = () => {
         <meta name="description" content="Podstrona do dodawania czytelnikow" />
       </Head>
       {error && <Toast message={error} status="error" />}
-      {hasPermissions && (
-        <Formik
-          initialValues={initialValues}
-          validationSchema={RegisterSchema}
-          onSubmit={(values) => {
-            mutate(values);
-          }}
-        >
-          <Form
-            className={`relative mx-auto mt-11 w-3/4 max-w-xl rounded-2xl  p-10 
+      <Formik
+        initialValues={initialValues}
+        validationSchema={RegisterSchema}
+        onSubmit={(values) => {
+          mutate(values);
+        }}
+      >
+        <Form
+          className={`relative mx-auto mt-11 w-3/4 max-w-xl rounded-2xl  p-10 
           ${isLoading ? "bg-gray-800 hover:bg-gray-700" : "bg-gray-900"}`}
-            autoComplete="off"
-          >
-            {isLoading && <Spinner />}
+          autoComplete="off"
+        >
+          {isLoading && <Spinner />}
 
-            <h3 className="mb-10 text-2xl font-semibold text-slate-200">
-              Dodawanie czytelnika
-            </h3>
+          <h3 className="mb-10 text-2xl font-semibold text-slate-200">
+            Dodawanie czytelnika
+          </h3>
+          <Input
+            input={{ name: "username", id: "username" }}
+            label="Nazwa użytkownika"
+          />
+          <Input
+            input={{ name: "password", id: "password", type: "password" }}
+            label="Hasło"
+          />
+          <Input
+            input={{
+              name: "retypedPassword",
+              id: "retypedPassword",
+              type: "password",
+            }}
+            label="Powtórz hasło"
+          />
+          <div className="grid md:grid-cols-2 md:gap-6">
             <Input
-              input={{ name: "username", id: "username" }}
-              label="Nazwa użytkownika"
-            />
-            <Input
-              input={{ name: "password", id: "password", type: "password" }}
-              label="Hasło"
+              input={{
+                name: "firstName",
+                id: "firstName",
+              }}
+              label="Imie"
             />
             <Input
               input={{
-                name: "retypedPassword",
-                id: "retypedPassword",
-                type: "password",
+                name: "lastName",
+                id: "lastName",
               }}
-              label="Powtórz hasło"
+              label="Nazwisko"
             />
-            <div className="grid md:grid-cols-2 md:gap-6">
-              <Input
-                input={{
-                  name: "firstName",
-                  id: "firstName",
-                }}
-                label="Imie"
-              />
-              <Input
-                input={{
-                  name: "lastName",
-                  id: "lastName",
-                }}
-                label="Nazwisko"
-              />
-            </div>
-            <div className="grid md:grid-cols-2 md:gap-6">
-              <Input
-                input={{
-                  name: "idDocumentNumber",
-                  id: "idDocumentNumber",
-                }}
-                label="Numer dokumentu tożsamości"
-              />
-              <Input
-                input={{
-                  name: "address",
-                  id: "address",
-                  role: "presentation",
-                }}
-                label="Adres"
-              />
-            </div>
-            <Button type="submit" disabled={isLoading}>
-              Dodaj
-            </Button>
-          </Form>
-        </Formik>
-      )}
+          </div>
+          <div className="grid md:grid-cols-2 md:gap-6">
+            <Input
+              input={{
+                name: "idDocumentNumber",
+                id: "idDocumentNumber",
+              }}
+              label="Numer dokumentu tożsamości"
+            />
+            <Input
+              input={{
+                name: "address",
+                id: "address",
+                role: "presentation",
+              }}
+              label="Adres"
+            />
+          </div>
+          <Button type="submit" disabled={isLoading}>
+            Dodaj
+          </Button>
+        </Form>
+      </Formik>
     </>
   );
 };
