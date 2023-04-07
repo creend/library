@@ -8,6 +8,7 @@ import { getServerAuthSession } from "../api/auth/[...nextauth]";
 import { type GetServerSideProps } from "next";
 import Spinner from "~/components/spinner";
 import Title from "~/components/title";
+import ChangePasswordForm from "~/components/forms/change-password";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -95,7 +96,7 @@ const MyDataPage = () => {
                 aria-selected="true"
                 className={`${
                   currentTab === "myData" ? "text-blue-500" : ""
-                } inline-block w-full rounded-tr-lg bg-gray-700  p-4 hover:bg-gray-600 focus:outline-none`}
+                } inline-block w-full rounded-tl bg-gray-700  p-4 hover:bg-gray-600 focus:outline-none`}
               >
                 Moje dane
               </button>
@@ -111,7 +112,7 @@ const MyDataPage = () => {
                 aria-selected="false"
                 className={`${
                   currentTab === "changeData" ? "text-blue-500" : ""
-                } inline-block w-full rounded-tr-lg bg-gray-700  p-4 hover:bg-gray-600 focus:outline-none`}
+                } inline-block w-full bg-gray-700  p-4 hover:bg-gray-600 focus:outline-none`}
               >
                 Zmień dane
               </button>
@@ -140,7 +141,7 @@ const MyDataPage = () => {
                 className="border-t  border-gray-600"
               >
                 <div
-                  className={`rounded-lg bg-gray-800 md:p-8 ${
+                  className={`rounded-lg bg-gray-900 md:p-8 ${
                     currentTab === "myData" ? "block" : "hidden"
                   }`}
                   id="stats"
@@ -184,11 +185,11 @@ const MyDataPage = () => {
                 <div
                   role="tabpanel"
                   aria-labelledby="change-password-tab"
-                  className={`${
+                  className={`rounded-lg bg-gray-900  ${
                     currentTab === "changePassword" ? "block" : "hidden"
                   }`}
                 >
-                  <p>zmiana hasla</p>
+                  <ChangePasswordForm />
                 </div>
               </div>
             </>
