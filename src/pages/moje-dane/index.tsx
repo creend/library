@@ -2,7 +2,7 @@
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import { getServerAuthSession } from "../api/auth/[...nextauth]";
 import { type GetServerSideProps } from "next";
@@ -23,6 +23,10 @@ const MyDataPage = () => {
   const { data: reader, isLoading } = api.readers.getReaderByUsername.useQuery({
     username: sessionData?.user.username || "",
   });
+
+  const [currentTab, setCurrentTab] = useState<
+    "myData" | "changeData" | "changePassword"
+  >("myData");
 
   useEffect(() => {
     if (!hasPermissions) {
@@ -55,9 +59,13 @@ const MyDataPage = () => {
               id="tabs"
               className="block w-full rounded-t-lg border-0 border-b  border-gray-600 bg-gray-700   p-2.5 text-sm text-white placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500 focus:ring-blue-500"
             >
-              <option>Statistics</option>
-              <option>Services</option>
-              <option>FAQ</option>
+              <option onClick={() => setCurrentTab("myData")}>Moje dane</option>
+              <option onClick={() => setCurrentTab("changeData")}>
+                Zmień dane
+              </option>
+              <option onClick={() => setCurrentTab("changePassword")}>
+                Zmień hasło
+              </option>
             </select>
           </div>
           <ul
@@ -73,10 +81,13 @@ const MyDataPage = () => {
                 type="button"
                 role="tab"
                 aria-controls="stats"
+                onClick={() => setCurrentTab("myData")}
                 aria-selected="true"
-                className="inline-block w-full rounded-tl-lg  bg-gray-700 p-4 hover:bg-gray-600 focus:outline-none"
+                className={`${
+                  currentTab === "myData" ? "text-blue-500" : ""
+                } inline-block w-full rounded-tr-lg bg-gray-700  p-4 hover:bg-gray-600 focus:outline-none`}
               >
-                Twoje dane
+                Moje dane
               </button>
             </li>
             <li className="w-full">
@@ -85,9 +96,12 @@ const MyDataPage = () => {
                 data-tabs-target="#about"
                 type="button"
                 role="tab"
+                onClick={() => setCurrentTab("changeData")}
                 aria-controls="about"
                 aria-selected="false"
-                className="inline-block w-full bg-gray-700 p-4 hover:bg-gray-600 focus:outline-none"
+                className={`${
+                  currentTab === "changeData" ? "text-blue-500" : ""
+                } inline-block w-full rounded-tr-lg bg-gray-700  p-4 hover:bg-gray-600 focus:outline-none`}
               >
                 Zmień dane
               </button>
@@ -99,8 +113,11 @@ const MyDataPage = () => {
                 type="button"
                 role="tab"
                 aria-controls="faq"
+                onClick={() => setCurrentTab("changePassword")}
                 aria-selected="false"
-                className="inline-block w-full rounded-tr-lg bg-gray-700  p-4 hover:bg-gray-600 focus:outline-none"
+                className={`${
+                  currentTab === "changePassword" ? "text-blue-500" : ""
+                } inline-block w-full rounded-tr-lg bg-gray-700  p-4 hover:bg-gray-600 focus:outline-none`}
               >
                 Zmień hasło
               </button>
@@ -113,10 +130,12 @@ const MyDataPage = () => {
                 className="border-t  border-gray-600"
               >
                 <div
-                  className=" rounded-lg  bg-gray-800 md:p-8"
+                  className={`rounded-lg bg-gray-800 md:p-8 ${
+                    currentTab === "myData" ? "block" : "hidden"
+                  }`}
                   id="stats"
                   role="tabpanel"
-                  aria-labelledby="stats-tab"
+                  aria-labelledby="data-tab"
                 >
                   <dl className="mx-auto flex flex-wrap justify-around gap-8 p-4 text-white sm:grid-cols-3 sm:p-8 xl:grid-cols-6">
                     <div className="flex flex-col items-center justify-center">
@@ -142,6 +161,24 @@ const MyDataPage = () => {
                       <dd className="text-gray-400">Adres</dd>
                     </div>
                   </dl>
+                </div>
+                <div
+                  role="tabpanel"
+                  aria-labelledby="change-data-tab"
+                  className={`${
+                    currentTab === "changeData" ? "block" : "hidden"
+                  }`}
+                >
+                  <p>zmiana danych</p>
+                </div>
+                <div
+                  role="tabpanel"
+                  aria-labelledby="change-password-tab"
+                  className={`${
+                    currentTab === "changePassword" ? "block" : "hidden"
+                  }`}
+                >
+                  <p>zmiana hasla</p>
                 </div>
               </div>
             </>
