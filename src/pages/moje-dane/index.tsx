@@ -17,6 +17,20 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
 };
 
+const UserProperty = ({ label, value }: { label: string; value: string }) => {
+  return (
+    <tr className="border-b  border-gray-700 ">
+      <th
+        scope="row"
+        className="whitespace-nowrap px-6 py-4 font-semibold text-white"
+      >
+        {label}
+      </th>
+      <td className="py-4 pr-6">{value}</td>
+    </tr>
+  );
+};
+
 const MyDataPage = () => {
   const { push } = useRouter();
 
@@ -171,59 +185,40 @@ const MyDataPage = () => {
                 className="border-t  border-gray-600"
               >
                 <div
-                  className={`rounded-lg bg-gray-900 md:p-8 ${
+                  className={`rounded-lg bg-gray-900 ${
                     currentTab === "myData" ? "block" : "hidden"
                   }`}
                   id="stats"
                   role="tabpanel"
                   aria-labelledby="data-tab"
                 >
-                  <dl className="mx-auto flex flex-wrap justify-between gap-8 p-4 text-white sm:grid-cols-3 sm:p-8 xl:grid-cols-6">
-                    <div className="flex flex-col items-center justify-center">
-                      <dt className="mb-2 text-3xl font-extrabold">
-                        {reader.username}
-                      </dt>
-                      <dd className="text-gray-400">
-                        Nazwa użytkownika (login)
-                      </dd>
-                    </div>
-                    {userRole !== "admin" && (
-                      <>
-                        <div className="flex flex-col items-center justify-center">
-                          <dt className="mb-2 text-3xl font-extrabold">
-                            {reader.firstName}
-                          </dt>
-                          <dd className="text-gray-400">Imie</dd>
-                        </div>
-                        <div className="flex flex-col items-center justify-center">
-                          <dt className="mb-2 text-3xl font-extrabold">
-                            {reader.lastName}
-                          </dt>
-                          <dd className="text-gray-400">Nazwisko</dd>
-                        </div>
-                        <div className="flex flex-col items-center justify-center">
-                          <dt className="mb-2 text-3xl font-extrabold">
-                            {reader.idDocumentNumber}
-                          </dt>
-                          <dd className="text-gray-400">
-                            Numer dokumentu tożsamości
-                          </dd>
-                        </div>
-                        <div className="flex flex-col items-center justify-center">
-                          <dt className="mb-2 text-3xl font-extrabold">
-                            {reader.address}
-                          </dt>
-                          <dd className="text-gray-400">Adres</dd>
-                        </div>
-                      </>
-                    )}
-                    <div className="flex flex-col items-center justify-center">
-                      <dt className="mb-2 text-3xl font-extrabold">
-                        {userRole === "admin" ? "Admin" : "Czytelnik"}
-                      </dt>
-                      <dd className="text-gray-400">Rola</dd>
-                    </div>
-                  </dl>
+                  <table className="w-full text-left text-sm text-gray-400">
+                    <tbody>
+                      <UserProperty
+                        label="Nazwa użytkownika (login)"
+                        value={reader.username}
+                      />
+                      {userRole !== "admin" && (
+                        <>
+                          <UserProperty label="Imie" value={reader.firstName} />
+                          <UserProperty
+                            label="Nazwisko"
+                            value={reader.lastName}
+                          />
+                          <UserProperty
+                            label="Numer dokumentu tożsamości"
+                            value={reader.idDocumentNumber}
+                          />
+                          <UserProperty label="Adres" value={reader.address} />
+                        </>
+                      )}
+
+                      <UserProperty
+                        label="Rola"
+                        value={userRole === "admin" ? "Admin" : "Czytelnik"}
+                      />
+                    </tbody>
+                  </table>
                 </div>
                 <div
                   role="tabpanel"
