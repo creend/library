@@ -22,13 +22,14 @@ const MyDataPage = () => {
 
   const { data: sessionData, status } = useSession();
   const hasPermissions = status !== "unauthenticated";
-  
+
+  const userRole = sessionData?.user.role;
   const { data: reader, isLoading } = api.readers.getReaderByUsername.useQuery({
     username: sessionData?.user.username || "",
   });
 
   const [currentTab, setCurrentTab] = useState<
-    "myData" | "changeData" | "changePassword"
+    "myData" | "changeData" | "changePassword" | "changeLogin"
   >("myData");
 
   let headerText = "Moje dane";
@@ -36,6 +37,8 @@ const MyDataPage = () => {
     headerText = "Zmiana danych";
   } else if (currentTab === "changePassword") {
     headerText = "Zmiana hasła";
+  } else if (currentTab === "changeLogin") {
+    headerText = "Zmiana loginu";
   }
 
   useEffect(() => {
@@ -72,11 +75,18 @@ const MyDataPage = () => {
               className="block w-full rounded-t-lg border-0 border-b  border-gray-600 bg-gray-700   p-2.5 text-sm text-white placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500 focus:ring-blue-500"
             >
               <option onClick={() => setCurrentTab("myData")}>Moje dane</option>
-              <option onClick={() => setCurrentTab("changeData")}>
-                Zmień dane
-              </option>
+              {userRole !== "admin" && (
+                <option onClick={() => setCurrentTab("changeData")}>
+                  Zmień dane
+                </option>
+              )}
+
               <option onClick={() => setCurrentTab("changePassword")}>
                 Zmień hasło
+              </option>
+
+              <option onClick={() => setCurrentTab("changeLogin")}>
+                Zmień login
               </option>
             </select>
           </div>
@@ -102,22 +112,25 @@ const MyDataPage = () => {
                 Moje dane
               </button>
             </li>
-            <li className="w-full">
-              <button
-                id="about-tab"
-                data-tabs-target="#about"
-                type="button"
-                role="tab"
-                onClick={() => setCurrentTab("changeData")}
-                aria-controls="about"
-                aria-selected="false"
-                className={`${
-                  currentTab === "changeData" ? "text-blue-500" : ""
-                } inline-block w-full bg-gray-700  p-4 hover:bg-gray-600 focus:outline-none`}
-              >
-                Zmień dane
-              </button>
-            </li>
+            {userRole !== "admin" && (
+              <li className="w-full">
+                <button
+                  id="about-tab"
+                  data-tabs-target="#about"
+                  type="button"
+                  role="tab"
+                  onClick={() => setCurrentTab("changeData")}
+                  aria-controls="about"
+                  aria-selected="false"
+                  className={`${
+                    currentTab === "changeData" ? "text-blue-500" : ""
+                  } inline-block w-full bg-gray-700  p-4 hover:bg-gray-600 focus:outline-none`}
+                >
+                  Zmień dane
+                </button>
+              </li>
+            )}
+
             <li className="w-full">
               <button
                 id="faq-tab"
@@ -129,9 +142,25 @@ const MyDataPage = () => {
                 aria-selected="false"
                 className={`${
                   currentTab === "changePassword" ? "text-blue-500" : ""
-                } inline-block w-full rounded-tr-lg bg-gray-700  p-4 hover:bg-gray-600 focus:outline-none`}
+                } inline-block w-full  bg-gray-700  p-4 hover:bg-gray-600 focus:outline-none`}
               >
                 Zmień hasło
+              </button>
+            </li>
+            <li className="w-full">
+              <button
+                id="faq-tab"
+                data-tabs-target="#faq"
+                type="button"
+                role="tab"
+                aria-controls="faq"
+                onClick={() => setCurrentTab("changeLogin")}
+                aria-selected="false"
+                className={`${
+                  currentTab === "changeLogin" ? "text-blue-500" : ""
+                } inline-block w-full rounded-tr-lg bg-gray-700  p-4 hover:bg-gray-600 focus:outline-none`}
+              >
+                Zmień login
               </button>
             </li>
           </ul>
@@ -149,28 +178,50 @@ const MyDataPage = () => {
                   role="tabpanel"
                   aria-labelledby="data-tab"
                 >
-                  <dl className="mx-auto flex flex-wrap justify-around gap-8 p-4 text-white sm:grid-cols-3 sm:p-8 xl:grid-cols-6">
-                    <div className="flex flex-col items-center justify-center">
-                      <dt className="mb-2 text-3xl font-extrabold">Imie</dt>
-                      <dd className="text-gray-400">{reader.firstName}</dd>
-                    </div>
-                    <div className="flex flex-col items-center justify-center">
-                      <dt className="mb-2 text-3xl font-extrabold">Nazwisko</dt>
-                      <dd className="text-gray-400">{reader.lastName}</dd>
-                    </div>
+                  <dl className="mx-auto flex flex-wrap justify-between gap-8 p-4 text-white sm:grid-cols-3 sm:p-8 xl:grid-cols-6">
                     <div className="flex flex-col items-center justify-center">
                       <dt className="mb-2 text-3xl font-extrabold">
-                        {reader.idDocumentNumber}
+                        {reader.username}
                       </dt>
                       <dd className="text-gray-400">
-                        Numer dokumentu tożsamości
+                        Nazwa użytkownika (login)
                       </dd>
                     </div>
+                    {userRole !== "admin" && (
+                      <>
+                        <div className="flex flex-col items-center justify-center">
+                          <dt className="mb-2 text-3xl font-extrabold">
+                            {reader.firstName}
+                          </dt>
+                          <dd className="text-gray-400">Imie</dd>
+                        </div>
+                        <div className="flex flex-col items-center justify-center">
+                          <dt className="mb-2 text-3xl font-extrabold">
+                            {reader.lastName}
+                          </dt>
+                          <dd className="text-gray-400">Nazwisko</dd>
+                        </div>
+                        <div className="flex flex-col items-center justify-center">
+                          <dt className="mb-2 text-3xl font-extrabold">
+                            {reader.idDocumentNumber}
+                          </dt>
+                          <dd className="text-gray-400">
+                            Numer dokumentu tożsamości
+                          </dd>
+                        </div>
+                        <div className="flex flex-col items-center justify-center">
+                          <dt className="mb-2 text-3xl font-extrabold">
+                            {reader.address}
+                          </dt>
+                          <dd className="text-gray-400">Adres</dd>
+                        </div>
+                      </>
+                    )}
                     <div className="flex flex-col items-center justify-center">
                       <dt className="mb-2 text-3xl font-extrabold">
-                        {reader.address}
+                        {userRole === "admin" ? "Admin" : "Czytelnik"}
                       </dt>
-                      <dd className="text-gray-400">Adres</dd>
+                      <dd className="text-gray-400">Rola</dd>
                     </div>
                   </dl>
                 </div>
