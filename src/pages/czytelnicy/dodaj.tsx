@@ -14,6 +14,7 @@ import { useSession } from "next-auth/react";
 import Button from "~/components/button";
 import { type GetServerSideProps } from "next";
 import { getServerAuthSession } from "../api/auth/[...nextauth]";
+import Title from "~/components/title";
 
 export const AddReaderSchema = Yup.object().shape({
   username: Yup.string()
@@ -106,77 +107,77 @@ const AddUserPage = () => {
         <meta name="description" content="Podstrona do dodawania czytelnikow" />
       </Head>
       {error && <Toast message={error} status="error" />}
-      <Formik
-        initialValues={initialValues}
-        validationSchema={AddReaderSchema}
-        onSubmit={(values) => {
-          mutate(values);
-        }}
-      >
-        <Form
-          className={`relative mx-auto mt-11 w-3/4 max-w-xl rounded-2xl  p-10 
-          ${isLoading ? "bg-gray-800 hover:bg-gray-700" : "bg-gray-900"}`}
-          autoComplete="off"
+      <div className="mx-auto mt-11 w-3/4 max-w-xl">
+        <Title>Dodawanie czytelnika</Title>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={AddReaderSchema}
+          onSubmit={(values) => {
+            mutate(values);
+          }}
         >
-          {isLoading && <Spinner />}
+          <Form
+            className={`relative mx-auto mt-11 w-full max-w-xl rounded-2xl  p-10 
+          ${isLoading ? "bg-gray-800 hover:bg-gray-700" : "bg-gray-900"}`}
+            autoComplete="off"
+          >
+            {isLoading && <Spinner />}
 
-          <h3 className="mb-10 text-2xl font-semibold text-slate-200">
-            Dodawanie czytelnika
-          </h3>
-          <Input
-            input={{ name: "username", id: "username" }}
-            label="Nazwa użytkownika"
-          />
-          <Input
-            input={{ name: "password", id: "password", type: "password" }}
-            label="Hasło"
-          />
-          <Input
-            input={{
-              name: "retypedPassword",
-              id: "retypedPassword",
-              type: "password",
-            }}
-            label="Powtórz hasło"
-          />
-          <div className="grid md:grid-cols-2 md:gap-6">
             <Input
-              input={{
-                name: "firstName",
-                id: "firstName",
-              }}
-              label="Imie"
+              input={{ name: "username", id: "username" }}
+              label="Nazwa użytkownika"
+            />
+            <Input
+              input={{ name: "password", id: "password", type: "password" }}
+              label="Hasło"
             />
             <Input
               input={{
-                name: "lastName",
-                id: "lastName",
+                name: "retypedPassword",
+                id: "retypedPassword",
+                type: "password",
               }}
-              label="Nazwisko"
+              label="Powtórz hasło"
             />
-          </div>
-          <div className="grid md:grid-cols-2 md:gap-6">
-            <Input
-              input={{
-                name: "idDocumentNumber",
-                id: "idDocumentNumber",
-              }}
-              label="Numer dokumentu tożsamości"
-            />
-            <Input
-              input={{
-                name: "address",
-                id: "address",
-                role: "presentation",
-              }}
-              label="Adres"
-            />
-          </div>
-          <Button type="submit" disabled={isLoading}>
-            Dodaj
-          </Button>
-        </Form>
-      </Formik>
+            <div className="grid md:grid-cols-2 md:gap-6">
+              <Input
+                input={{
+                  name: "firstName",
+                  id: "firstName",
+                }}
+                label="Imie"
+              />
+              <Input
+                input={{
+                  name: "lastName",
+                  id: "lastName",
+                }}
+                label="Nazwisko"
+              />
+            </div>
+            <div className="grid md:grid-cols-2 md:gap-6">
+              <Input
+                input={{
+                  name: "idDocumentNumber",
+                  id: "idDocumentNumber",
+                }}
+                label="Numer dokumentu tożsamości"
+              />
+              <Input
+                input={{
+                  name: "address",
+                  id: "address",
+                  role: "presentation",
+                }}
+                label="Adres"
+              />
+            </div>
+            <Button type="submit" disabled={isLoading}>
+              Dodaj
+            </Button>
+          </Form>
+        </Formik>
+      </div>
     </>
   );
 };

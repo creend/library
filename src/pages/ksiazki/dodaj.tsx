@@ -12,6 +12,7 @@ import Spinner from "~/components/spinner";
 import { api } from "~/utils/api";
 import { getServerAuthSession } from "../api/auth/[...nextauth]";
 import { type GetServerSideProps } from "next";
+import Title from "~/components/title";
 
 const AddBookSchema = Yup.object().shape({
   author: Yup.string()
@@ -89,7 +90,8 @@ const AddBookPage = () => {
         <title>Książki | Dodawanie</title>
         <meta name="description" content="Podstrona do dodawania książek" />
       </Head>
-      {hasPermissions && (
+      <div className="mx-auto mt-11 w-3/4 max-w-xl">
+        <Title>Dodawanie książki</Title>
         <Formik
           initialValues={initialValues}
           validationSchema={AddBookSchema}
@@ -98,15 +100,12 @@ const AddBookPage = () => {
           }}
         >
           <Form
-            className={`relative mx-auto mt-11 w-3/4 max-w-xl rounded-2xl  p-10 
+            className={`relative mx-auto mt-11 w-full max-w-xl rounded-2xl  p-10 
           ${isLoading ? "bg-gray-800 hover:bg-gray-700" : "bg-gray-900"}`}
             autoComplete="off"
           >
             {isLoading && <Spinner />}
 
-            <h3 className="mb-10 text-2xl font-semibold text-slate-200">
-              Dodawanie książki
-            </h3>
             <Input input={{ name: "author", id: "author" }} label="Autor" />
             <Input input={{ name: "title", id: "title" }} label="Tytuł" />
             <Input
@@ -140,7 +139,7 @@ const AddBookPage = () => {
             </Button>
           </Form>
         </Formik>
-      )}
+      </div>
     </>
   );
 };

@@ -7,6 +7,7 @@ import { api } from "~/utils/api";
 import { getServerAuthSession } from "../api/auth/[...nextauth]";
 import { type GetServerSideProps } from "next";
 import Spinner from "~/components/spinner";
+import Title from "~/components/title";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -53,9 +54,7 @@ const MyDataPage = () => {
       </Head>
 
       <div className="relative mx-auto mt-11 w-3/4 max-w-5xl ">
-        <h1 className="my-11 text-5xl font-bold text-slate-200">
-          {headerText}
-        </h1>
+        <Title>{headerText}</Title>
         <div
           className={`relative w-full rounded-lg border border-gray-700 bg-gray-900 shadow ${
             isLoading ? "bg-gray-800 hover:bg-gray-700" : "bg-gray-900"

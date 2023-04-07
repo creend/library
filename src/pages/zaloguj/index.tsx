@@ -8,6 +8,7 @@ import * as Yup from "yup";
 import Button from "~/components/button";
 import Input from "~/components/input";
 import Spinner from "~/components/spinner";
+import Title from "~/components/title";
 import Toast from "~/components/toast";
 
 const LoginSchema = Yup.object().shape({
@@ -43,51 +44,51 @@ const LoginPage = () => {
         <meta name="description" content="Podstrona do logowania" />
       </Head>
       {error && <Toast message={error} status="error" />}
-
-      <Formik
-        initialValues={{ username: "", password: "" }}
-        validationSchema={LoginSchema}
-        onSubmit={async (values) => {
-          setIsLoading(true);
-          const res = await signIn("credentials", {
-            ...values,
-            redirect: false,
-          });
-          setIsLoading(false);
-          if (res?.ok) {
-            toast.success("Zalogowano!");
-            push("/");
-          } else {
-            setError("Błędne dane logowania");
-            setTimeout(() => {
-              setError("");
-            }, 2000);
-          }
-        }}
-      >
-        <Form
-          className={`relative mx-auto mt-11 w-3/4 max-w-xl rounded-2xl p-10 ${
-            isLoading ? "bg-gray-800 hover:bg-gray-700" : "bg-gray-900"
-          }}`}
-          autoComplete="off"
+      <div className="mx-auto mt-11 w-3/4 max-w-xl">
+        <Title>Logowanie</Title>
+        <Formik
+          initialValues={{ username: "", password: "" }}
+          validationSchema={LoginSchema}
+          onSubmit={async (values) => {
+            setIsLoading(true);
+            const res = await signIn("credentials", {
+              ...values,
+              redirect: false,
+            });
+            setIsLoading(false);
+            if (res?.ok) {
+              toast.success("Zalogowano!");
+              push("/");
+            } else {
+              setError("Błędne dane logowania");
+              setTimeout(() => {
+                setError("");
+              }, 2000);
+            }
+          }}
         >
-          {isLoading && <Spinner />}
-          <h3 className="mb-10 text-2xl font-semibold text-slate-200">
-            Logowanie
-          </h3>
-          <Input
-            input={{ name: "username", id: "username" }}
-            label="Nazwa użytkownika"
-            variant="rounded"
-          />
-          <Input
-            input={{ name: "password", id: "password", type: "password" }}
-            label="Hasło"
-            variant="rounded"
-          />
-          <Button type="submit">Zaloguj</Button>
-        </Form>
-      </Formik>
+          <Form
+            className={`relative mx-auto mt-11 w-full max-w-xl rounded-2xl p-10 ${
+              isLoading ? "bg-gray-800 hover:bg-gray-700" : "bg-gray-900"
+            }}`}
+            autoComplete="off"
+          >
+            {isLoading && <Spinner />}
+
+            <Input
+              input={{ name: "username", id: "username" }}
+              label="Nazwa użytkownika"
+              variant="rounded"
+            />
+            <Input
+              input={{ name: "password", id: "password", type: "password" }}
+              label="Hasło"
+              variant="rounded"
+            />
+            <Button type="submit">Zaloguj</Button>
+          </Form>
+        </Formik>
+      </div>
     </>
   );
 };

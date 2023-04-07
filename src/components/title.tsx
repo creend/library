@@ -2,7 +2,7 @@ import { type ReactNode } from "react";
 
 interface Props {
   children: ReactNode;
-  className: string;
+  className?: string;
 }
 
 const Title = ({ children, className: classNames }: Props) => {
