@@ -1,4 +1,4 @@
-import { type User } from "@prisma/client";
+import { type Prisma, type PrismaClient, type User } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { hash, verify } from "argon2";
 import { z } from "zod";
@@ -33,11 +33,6 @@ export const addReaderSchema = z.object({
     .max(50, "Numer dokumentu tożsamości może posiadać maksymalnie 50 znaków"),
   address: z.string().min(4, "Adres musi posiadać minimum 2 znaki"),
 });
-
-function filterUser(reader: User) {
-  const { passwordHash, ...user } = reader;
-  return { ...user };
-}
 
 export const readersRouter = createTRPCRouter({
   getReaders: publicProcedure.query(async ({ ctx }) => {
@@ -115,7 +110,7 @@ export const readersRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const { newPassword, oldPassword, retypedNewPassword, username } = input;
-      const user = await ctx.prisma.user.findUnique({ where: { username } });
+      const user = await findByUsername(username, ctx.prisma);
 
       if (ctx.session?.user.username !== user?.username) {
         throw new TRPCError({
@@ -124,20 +119,7 @@ export const readersRouter = createTRPCRouter({
         });
       }
 
-      if (!user) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Użytkownik o podanej nazwie nie istnieje",
-        });
-      }
-
-      const isValidPassword = await verify(user.passwordHash, oldPassword);
-      if (!isValidPassword) {
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: "Podano błędne hasło",
-        });
-      }
+      await validatePasswords(user.passwordHash, oldPassword);
 
       if (newPassword !== retypedNewPassword) {
         throw new TRPCError({
@@ -155,7 +137,78 @@ export const readersRouter = createTRPCRouter({
       return {
         status: 201,
         message: "Zmieniono hasło!",
-        user: updatedUser,
+        user: filterUser(updatedUser),
+      };
+    }),
+  changeUserData: privateProcedure
+    .input(
+      z.object({
+        username: z.string().min(2).max(50),
+        newUsername: z.string().min(2).max(50),
+        password: z.string().min(2).max(50),
+        firstName: z.string().min(2).max(50),
+        lastName: z.string().min(2).max(50),
+        idDocumentNumber: z.string().min(2).max(50),
+        address: z.string().min(4),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { password, username, newUsername, ...userData } = input;
+
+      const user = await findByUsername(username, ctx.prisma);
+
+      if (ctx.session?.user.username !== user?.username) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Nie możesz zmienić czyjegoś hasła",
+        });
+      }
+      await validatePasswords(user.passwordHash, password);
+
+      const updatedUser = await ctx.prisma.user.update({
+        where: { username },
+        data: { ...userData, username: newUsername },
+      });
+
+      return {
+        status: 201,
+        message: "Zmieniono dane!",
+        user: filterUser(updatedUser),
       };
     }),
 });
+
+function filterUser(reader: User) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { passwordHash, ...user } = reader;
+  return { ...user };
+}
+
+async function findByUsername(
+  username: string,
+  prisma: PrismaClient<
+    Prisma.PrismaClientOptions,
+    never,
+    Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
+  >
+) {
+  const user = await prisma.user.findUnique({ where: { username } });
+
+  if (!user) {
+    throw new TRPCError({
+      code: "NOT_FOUND",
+      message: "Użytkownik o podanej nazwie nie istnieje",
+    });
+  }
+  return user;
+}
+
+async function validatePasswords(passwordHash: string, password: string) {
+  const isValidPassword = await verify(passwordHash, password);
+  if (!isValidPassword) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "Podano błędne hasło",
+    });
+  }
+}

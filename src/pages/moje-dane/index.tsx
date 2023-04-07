@@ -238,6 +238,15 @@ const MyDataPage = () => {
                 >
                   <ChangePasswordForm />
                 </div>
+                <div
+                  role="tabpanel"
+                  aria-labelledby="change-login-tab"
+                  className={`rounded-lg bg-gray-900  ${
+                    currentTab === "changeLogin" ? "block" : "hidden"
+                  }`}
+                >
+                  zmiana loginu
+                </div>
               </div>
             </>
           )}
