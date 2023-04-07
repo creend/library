@@ -1,11 +1,12 @@
 import { type User } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
-import { hash } from "argon2";
+import { hash, verify } from "argon2";
 import { z } from "zod";
 
 import {
   adminProcedure,
   createTRPCRouter,
+  privateProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
 
@@ -101,6 +102,48 @@ export const readersRouter = createTRPCRouter({
         status: 201,
         message: "Account created successfully",
         user,
+      };
+    }),
+  changePassword: privateProcedure
+    .input(
+      z.object({
+        oldPassword: z.string().min(2).max(50),
+        newPassword: z.string().min(2).max(50),
+        retypedNewPassword: z.string().min(2).max(50),
+        username: z.string().min(2).max(50),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { newPassword, oldPassword, retypedNewPassword, username } = input;
+      const user = await ctx.prisma.user.findUnique({ where: { username } });
+      if (!user) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Użytkownik o podanej nazwie nie istnieje",
+        });
+      }
+      const isValidPassword = await verify(user.passwordHash, oldPassword);
+      if (!isValidPassword) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Podano błędne hasło",
+        });
+      }
+      if (newPassword !== retypedNewPassword) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Hasła się nie zgadzają",
+        });
+      }
+      const passwordHash = await hash(newPassword);
+      const updatedUser = await ctx.prisma.user.update({
+        where: { username },
+        data: { passwordHash },
+      });
+      return {
+        status: 201,
+        message: "Zmieniono hasło!",
+        user: updatedUser,
       };
     }),
 });
