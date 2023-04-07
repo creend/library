@@ -28,6 +28,13 @@ const MyDataPage = () => {
     "myData" | "changeData" | "changePassword"
   >("myData");
 
+  let headerText = "Moje dane";
+  if (currentTab === "changeData") {
+    headerText = "Zmiana danych";
+  } else if (currentTab === "changePassword") {
+    headerText = "Zmiana hasła";
+  }
+
   useEffect(() => {
     if (!hasPermissions) {
       push("/");
@@ -39,12 +46,16 @@ const MyDataPage = () => {
   return (
     <>
       <Head>
-        <title>Moje dane | {sessionData?.user.username}</title>
+        <title>
+          {headerText} | {sessionData?.user.username}
+        </title>
         <meta name="description" content="Podstrona do logowania" />
       </Head>
 
       <div className="relative mx-auto mt-11 w-3/4 max-w-5xl ">
-        <h1 className="my-11 text-5xl font-bold text-slate-200">Moje dane</h1>
+        <h1 className="my-11 text-5xl font-bold text-slate-200">
+          {headerText}
+        </h1>
         <div
           className={`relative w-full rounded-lg border border-gray-700 bg-gray-900 shadow ${
             isLoading ? "bg-gray-800 hover:bg-gray-700" : "bg-gray-900"

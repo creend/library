@@ -15,7 +15,7 @@ import Button from "~/components/button";
 import { type GetServerSideProps } from "next";
 import { getServerAuthSession } from "../api/auth/[...nextauth]";
 
-const RegisterSchema = Yup.object().shape({
+export const AddReaderSchema = Yup.object().shape({
   username: Yup.string()
     .min(2, "Nazwa użytkownika musi posiadać minimum 2 znaki")
     .max(50, "Nazwa użytkownika może posiadać maksymalnie 50 znaków")
@@ -108,7 +108,7 @@ const AddUserPage = () => {
       {error && <Toast message={error} status="error" />}
       <Formik
         initialValues={initialValues}
-        validationSchema={RegisterSchema}
+        validationSchema={AddReaderSchema}
         onSubmit={(values) => {
           mutate(values);
         }}
