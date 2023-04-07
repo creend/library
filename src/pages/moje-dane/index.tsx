@@ -19,9 +19,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
 const MyDataPage = () => {
   const { push } = useRouter();
+
   const { data: sessionData, status } = useSession();
-  console.log(status);
   const hasPermissions = status !== "unauthenticated";
+  
   const { data: reader, isLoading } = api.readers.getReaderByUsername.useQuery({
     username: sessionData?.user.username || "",
   });

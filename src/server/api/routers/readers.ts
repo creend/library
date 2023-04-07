@@ -116,12 +116,21 @@ export const readersRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { newPassword, oldPassword, retypedNewPassword, username } = input;
       const user = await ctx.prisma.user.findUnique({ where: { username } });
+
+      if (ctx.session?.user.username !== user?.username) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Nie możesz zmienić czyjegoś hasła",
+        });
+      }
+
       if (!user) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Użytkownik o podanej nazwie nie istnieje",
         });
       }
+
       const isValidPassword = await verify(user.passwordHash, oldPassword);
       if (!isValidPassword) {
         throw new TRPCError({
@@ -129,6 +138,7 @@ export const readersRouter = createTRPCRouter({
           message: "Podano błędne hasło",
         });
       }
+
       if (newPassword !== retypedNewPassword) {
         throw new TRPCError({
           code: "CONFLICT",
@@ -136,10 +146,12 @@ export const readersRouter = createTRPCRouter({
         });
       }
       const passwordHash = await hash(newPassword);
+
       const updatedUser = await ctx.prisma.user.update({
         where: { username },
         data: { passwordHash },
       });
+
       return {
         status: 201,
         message: "Zmieniono hasło!",

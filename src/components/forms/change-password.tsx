@@ -1,9 +1,13 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import * as Yup from "yup";
-import Title from "../title";
 import { Form, Formik } from "formik";
 import Spinner from "../spinner";
 import Input from "../input";
 import Button from "../button";
+import { api } from "~/utils/api";
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
 
 const ChangePasswordSchema = Yup.object().shape({
   oldPassword: Yup.string()
@@ -22,7 +26,28 @@ const ChangePasswordSchema = Yup.object().shape({
 });
 
 const ChangePasswordForm = () => {
-  const isLoading = false;
+  const { push } = useRouter();
+
+  const session = useSession();
+
+  const { mutate, isLoading } = api.readers.changePassword.useMutation({
+    onSuccess: () => {
+      toast.success("Zmieniono hasło! Nastąpi wylogowanie");
+      void signOut({ callbackUrl: "/zaloguj" });
+    },
+    onError: (e) => {
+      let errorMessage = "Błąd w zmianie hasła";
+      if (e?.message) {
+        errorMessage = e.message;
+      } else {
+        const errorMessages = e.data?.zodError?.fieldErrors.content;
+        if (errorMessages && errorMessages[0]) {
+          errorMessage = errorMessages[0];
+        }
+      }
+      toast.error(errorMessage);
+    },
+  });
   return (
     <Formik
       initialValues={{
@@ -32,7 +57,7 @@ const ChangePasswordForm = () => {
       }}
       validationSchema={ChangePasswordSchema}
       onSubmit={(values) => {
-        console.log(values);
+        mutate({ ...values, username: session.data?.user.username || "" });
       }}
     >
       <Form
