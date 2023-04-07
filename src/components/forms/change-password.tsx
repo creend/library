@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import * as Yup from "yup";
 import { Form, Formik } from "formik";
 import Spinner from "../spinner";
@@ -6,7 +5,6 @@ import Input from "../input";
 import Button from "../button";
 import { api } from "~/utils/api";
 import { toast } from "react-hot-toast";
-import { useRouter } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 
 const ChangePasswordSchema = Yup.object().shape({
@@ -26,8 +24,6 @@ const ChangePasswordSchema = Yup.object().shape({
 });
 
 const ChangePasswordForm = () => {
-  const { push } = useRouter();
-
   const session = useSession();
 
   const { mutate, isLoading } = api.readers.changePassword.useMutation({
