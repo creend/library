@@ -78,11 +78,11 @@ const AddUserPage = () => {
 
   const { mutate, isLoading } = api.readers.addReader.useMutation({
     onSuccess: () => {
-      toast.success("Zarejestrowano !");
-      push("/zaloguj");
+      toast.success("Dodano czytelnika !");
+      push("/czytelnicy");
     },
     onError: (e) => {
-      let errorMessage = "Błąd w rejestracji";
+      let errorMessage = "Błąd w dodaniu czytelnika";
       if (e?.message) {
         errorMessage = e.message;
       } else {

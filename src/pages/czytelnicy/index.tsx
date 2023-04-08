@@ -8,6 +8,7 @@ import Table from "~/components/table";
 import { api } from "~/utils/api";
 import { getServerAuthSession } from "../api/auth/[...nextauth]";
 import { type GetServerSideProps } from "next";
+import { toast } from "react-hot-toast";
 
 const Reader = ({
   address,
@@ -15,12 +16,14 @@ const Reader = ({
   lastName,
   firstName,
   username,
+  handleDelete,
 }: {
   username: string;
   firstName: string;
   lastName: string;
   idDocumentNumber: string;
   address: string;
+  handleDelete: () => void;
 }) => {
   return (
     <tr className="border-b border-gray-700 bg-gray-800 hover:bg-gray-600">
@@ -35,6 +38,14 @@ const Reader = ({
       </td>
       <td className="px-6 py-4">{idDocumentNumber}</td>
       <td className="px-6 py-4">{address}</td>
+      <td className="px-6 py-4">
+        <button
+          className="p-1 font-medium text-red-600 hover:underline dark:text-red-500"
+          onClick={handleDelete}
+        >
+          Usuń
+        </button>{" "}
+      </td>
     </tr>
   );
 };
@@ -61,6 +72,28 @@ const ReadersPage = () => {
     }
   }, [hasPermissions, push]);
 
+  const ctx = api.useContext();
+
+  const { mutate, isLoading: isRemoving } =
+    api.readers.removeReader.useMutation({
+      onSuccess: async () => {
+        await ctx.readers.getReaders.invalidate();
+        toast.success("Usunięto !");
+      },
+      onError: (e) => {
+        let errorMessage = "Błąd w usuwaniu";
+        if (e?.message) {
+          errorMessage = e.message;
+        } else {
+          const errorMessages = e.data?.zodError?.fieldErrors.content;
+          if (errorMessages && errorMessages[0]) {
+            errorMessage = errorMessages[0];
+          }
+        }
+        toast.error(errorMessage);
+      },
+    });
+
   if (!hasPermissions) return null;
 
   return (
@@ -74,17 +107,26 @@ const ReadersPage = () => {
       </h1>
       {hasPermissions && (
         <div className="relative mx-auto mt-11 w-3/4 max-w-5xl overflow-x-auto shadow-md sm:rounded-lg">
-          {isLoading && <Spinner />}
+          {(isLoading || isRemoving) && <Spinner />}
           <Table
             colNames={[
               "Nazwa użytkownika",
               "Imie i nazwisko",
               "Numer dokumentu tożsamości",
               "Adres",
+              "",
             ]}
           >
             {readers?.length &&
-              readers.map((reader) => <Reader key={reader.id} {...reader} />)}
+              readers.map((reader) => (
+                <Reader
+                  handleDelete={() => {
+                    mutate({ username: reader.username });
+                  }}
+                  key={reader.id}
+                  {...reader}
+                />
+              ))}
           </Table>
         </div>
       )}
