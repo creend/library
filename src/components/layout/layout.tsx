@@ -5,14 +5,19 @@ import { type ReactNode } from "react";
 import DashboardItem from "./dashboard-item";
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
 import { toast } from "react-hot-toast";
+import Spinner from "../spinner";
 
 const Layout = ({ children }: { children: ReactNode }) => {
   const session = useSession();
   const Dashboard =
     session.data?.user.role === "admin" ? AdminDashboard : UserDashboard;
   const isLoggedIn = session.status === "authenticated";
-  //@TODO WYŚWIETLAJ LAYOUT DOPIERO WTEDY JAK USER SIĘ ZALOGUJE :), W PRZECIWNYM WYPADKU LOADING SCREEN
-  if (session.status === "loading") return children;
+  if (session.status === "loading")
+    return (
+      <div className="h-screen">
+        <Spinner />
+      </div>
+    );
   return (
     <>
       <aside
