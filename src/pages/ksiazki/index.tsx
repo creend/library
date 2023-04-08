@@ -40,9 +40,8 @@ const Book = ({
   title,
   yearOfRelease,
   role,
-  handleDelete,
-  handleEdit,
-  handleReservation,
+  id,
+  ...handlers
 }: AdminBookProps | UserBookProps | GuestBookProps) => {
   return (
     <tr className="border-b border-gray-700 bg-gray-800 hover:bg-gray-600">
@@ -60,29 +59,31 @@ const Book = ({
         <td className="py-4 pr-6">
           {
             <div className="flex justify-start">
-              {role === "admin" ? (
+              {role === "admin" && "handleEdit" in handlers ? (
                 <>
                   <button
                     className="mx-2 p-1 font-medium  text-blue-500 hover:underline"
-                    onClick={handleEdit}
+                    onClick={handlers.handleEdit}
                   >
                     Edytuj
                   </button>
                   <button
                     className="mx-2 p-1 font-medium  text-red-500 hover:underline"
-                    onClick={handleDelete}
+                    onClick={handlers.handleDelete}
                   >
                     Usuń
                   </button>
                 </>
               ) : (
                 <>
-                  <button
-                    onClick={handleReservation}
-                    className="mx-2 p-1 font-medium  text-blue-500 hover:underline"
-                  >
-                    Zarezerwuj
-                  </button>
+                  {"handleReservation" in handlers && (
+                    <button
+                      onClick={handlers.handleReservation}
+                      className="mx-2 p-1 font-medium  text-blue-500 hover:underline"
+                    >
+                      Zarezerwuj
+                    </button>
+                  )}
                 </>
               )}
             </div>
