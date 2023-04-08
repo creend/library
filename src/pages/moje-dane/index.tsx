@@ -9,6 +9,7 @@ import { type GetServerSideProps } from "next";
 import Spinner from "~/components/spinner";
 import Title from "~/components/title";
 import ChangePasswordForm from "~/components/forms/change-password";
+import ChangeLoginForm from "~/components/forms/change-login";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -245,7 +246,7 @@ const MyDataPage = () => {
                     currentTab === "changeLogin" ? "block" : "hidden"
                   }`}
                 >
-                  zmiana loginu
+                  <ChangeLoginForm />
                 </div>
               </div>
             </>

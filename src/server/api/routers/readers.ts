@@ -144,12 +144,12 @@ export const readersRouter = createTRPCRouter({
     .input(
       z.object({
         username: z.string().min(2).max(50),
-        newUsername: z.string().min(2).max(50),
+        newUsername: z.string().min(2).max(50).optional(),
         password: z.string().min(2).max(50),
-        firstName: z.string().min(2).max(50),
-        lastName: z.string().min(2).max(50),
-        idDocumentNumber: z.string().min(2).max(50),
-        address: z.string().min(4),
+        firstName: z.string().min(2).max(50).optional(),
+        lastName: z.string().min(2).max(50).optional(),
+        idDocumentNumber: z.string().min(2).max(50).optional(),
+        address: z.string().min(4).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {

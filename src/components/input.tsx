@@ -13,9 +13,9 @@ const classNames = {
   },
   input: {
     default:
-      "peer block w-full appearance-none border-0 border-b-2 border-gray-600 bg-transparent px-0 py-2.5 text-sm text-white focus:border-blue-600 focus:outline-none focus:ring-0",
+      "peer block w-full appearance-none border-0 border-b-2 border-gray-600 bg-transparent px-0 py-2.5 text-sm text-white focus:border-blue-600 focus:outline-none focus:ring-0 disabled:text-gray-400",
     rounded:
-      "block w-full rounded-lg border  border-gray-600 bg-gray-700 p-2.5 text-sm  text-white placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500",
+      "block w-full rounded-lg border  border-gray-600 bg-gray-700 p-2.5 text-sm  text-white placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500 disabled:text-gray-400",
   },
   label: {
     default:
