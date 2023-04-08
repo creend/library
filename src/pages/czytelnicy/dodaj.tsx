@@ -6,8 +6,7 @@ import { useRouter } from "next/navigation";
 
 import * as Yup from "yup";
 import { toast } from "react-hot-toast";
-import { useEffect, useState } from "react";
-import Toast from "~/components/toast";
+import { useEffect } from "react";
 import Spinner from "~/components/spinner";
 import Head from "next/head";
 import { useSession } from "next-auth/react";
@@ -70,7 +69,6 @@ const AddUserPage = () => {
   const hasPermissions = role === "admin";
 
   const { push } = useRouter();
-  const [error, setError] = useState("");
 
   useEffect(() => {
     if (!hasPermissions) {
@@ -93,10 +91,7 @@ const AddUserPage = () => {
           errorMessage = errorMessages[0];
         }
       }
-      setError(errorMessage);
-      setTimeout(() => {
-        setError("");
-      }, 3000);
+      toast.error(errorMessage);
     },
   });
   if (!hasPermissions) return null;
@@ -106,7 +101,6 @@ const AddUserPage = () => {
         <title>Czytelnicy | Dodawanie</title>
         <meta name="description" content="Podstrona do dodawania czytelnikow" />
       </Head>
-      {error && <Toast message={error} status="error" />}
       <div className="mx-auto mt-11 w-3/4 max-w-xl">
         <Title>Dodawanie czytelnika</Title>
         <Formik

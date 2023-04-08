@@ -9,7 +9,6 @@ import Button from "~/components/button";
 import Input from "~/components/input";
 import Spinner from "~/components/spinner";
 import Title from "~/components/title";
-import Toast from "~/components/toast";
 
 const LoginSchema = Yup.object().shape({
   username: Yup.string()
@@ -23,8 +22,6 @@ const LoginSchema = Yup.object().shape({
 });
 
 const LoginPage = () => {
-  const [error, setError] = useState("");
-
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { push } = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -43,7 +40,6 @@ const LoginPage = () => {
         <title>Logowanie</title>
         <meta name="description" content="Podstrona do logowania" />
       </Head>
-      {error && <Toast message={error} status="error" />}
       <div className="mx-auto mt-11 w-3/4 max-w-xl">
         <Title>Logowanie</Title>
         <Formik
@@ -60,10 +56,7 @@ const LoginPage = () => {
               toast.success("Zalogowano!");
               push("/");
             } else {
-              setError("Błędne dane logowania");
-              setTimeout(() => {
-                setError("");
-              }, 2000);
+              toast.error("Błędne dane logowania!");
             }
           }}
         >
