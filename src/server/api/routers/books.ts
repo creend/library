@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import {
@@ -33,5 +34,25 @@ export const booksRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const book = await ctx.prisma.book.create({ data: input });
       return book;
+    }),
+  removeBook: adminProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      const { id } = input;
+      const book = await ctx.prisma.book.findUnique({
+        where: { id },
+      });
+      if (!book) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Nie znaleziono książki",
+        });
+      }
+      const removedBook = await ctx.prisma.book.delete({ where: { id } });
+      return {
+        status: 201,
+        message: "Book removed successfully",
+        book: removedBook,
+      };
     }),
 });
