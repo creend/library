@@ -7,6 +7,7 @@ import Head from "next/head";
 import Table from "~/components/table";
 import { useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
+import Spinner from "~/components/spinner";
 
 interface Book {
   id: number;
@@ -99,7 +100,7 @@ const BooksPage = () => {
 
   const ctx = api.useContext();
 
-  const { mutate, isLoading: isRemoving } = api.books.removeBook.useMutation({
+  const { mutate, isLoading } = api.books.removeBook.useMutation({
     onSuccess: async () => {
       await ctx.books.getBooks.invalidate();
       toast.success("Usunięto !");
@@ -129,6 +130,7 @@ const BooksPage = () => {
       </h1>
       {books?.length && (
         <div className="relative mx-auto mt-11 w-3/4 max-w-5xl overflow-x-auto shadow-md sm:rounded-lg">
+          {isLoading && <Spinner />}
           <Table
             colNames={[
               "Tytuł",
@@ -146,7 +148,7 @@ const BooksPage = () => {
                   {...book}
                   role="admin"
                   handleDelete={() => {
-                    console.log("delete");
+                    mutate({ id: book.id });
                   }}
                   handleEdit={() => {
                     console.log("edit");
