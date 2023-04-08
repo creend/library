@@ -6,6 +6,31 @@ import { api } from "~/utils/api";
 import Head from "next/head";
 import Table from "~/components/table";
 import { useSession } from "next-auth/react";
+import { toast } from "react-hot-toast";
+
+interface Book {
+  id: number;
+  title: string;
+  author: string;
+  publisher: string;
+  yearOfRelease: number;
+  availableCopies: number;
+}
+
+type AdminBookProps = {
+  role: "admin";
+  handleDelete: () => void;
+  handleEdit: () => void;
+} & Book;
+
+type UserBookProps = {
+  role: "user";
+  handleReservation: () => void;
+} & Book;
+
+type GuestBookProps = {
+  role: "guest";
+} & Book;
 
 const Book = ({
   author,
@@ -14,15 +39,10 @@ const Book = ({
   title,
   yearOfRelease,
   role,
-}: {
-  id: number;
-  title: string;
-  author: string;
-  publisher: string;
-  yearOfRelease: number;
-  availableCopies: number;
-  role?: string;
-}) => {
+  handleDelete,
+  handleEdit,
+  handleReservation,
+}: AdminBookProps | UserBookProps | GuestBookProps) => {
   return (
     <tr className="border-b border-gray-700 bg-gray-800 hover:bg-gray-600">
       <th
@@ -35,22 +55,31 @@ const Book = ({
       <td className="px-6 py-4">{publisher}</td>
       <td className="px-6 py-4">{yearOfRelease}</td>
       <td className="px-6 py-4">{availableCopies}</td>
-      {role && (
+      {role !== "guest" && (
         <td className="py-4 pr-6">
           {
             <div className="flex justify-start">
               {role === "admin" ? (
                 <>
-                  <button className="mx-2 p-1 font-medium  text-blue-500 hover:underline">
+                  <button
+                    className="mx-2 p-1 font-medium  text-blue-500 hover:underline"
+                    onClick={handleEdit}
+                  >
                     Edytuj
                   </button>
-                  <button className="mx-2 p-1 font-medium  text-red-500 hover:underline">
+                  <button
+                    className="mx-2 p-1 font-medium  text-red-500 hover:underline"
+                    onClick={handleDelete}
+                  >
                     Usuń
                   </button>
                 </>
               ) : (
                 <>
-                  <button className="mx-2 p-1 font-medium  text-blue-500 hover:underline">
+                  <button
+                    onClick={handleReservation}
+                    className="mx-2 p-1 font-medium  text-blue-500 hover:underline"
+                  >
                     Zarezerwuj
                   </button>
                 </>
@@ -67,7 +96,27 @@ const BooksPage = () => {
   const { data: books } = api.books.getBooks.useQuery();
   const session = useSession();
   const role = session.data?.user.role;
-  const canEdit = role === "admin";
+
+  const ctx = api.useContext();
+
+  const { mutate, isLoading: isRemoving } = api.books.removeBook.useMutation({
+    onSuccess: async () => {
+      await ctx.books.getBooks.invalidate();
+      toast.success("Usunięto !");
+    },
+    onError: (e) => {
+      let errorMessage = "Błąd w usuwaniu";
+      if (e?.message) {
+        errorMessage = e.message;
+      } else {
+        const errorMessages = e.data?.zodError?.fieldErrors.content;
+        if (errorMessages && errorMessages[0]) {
+          errorMessage = errorMessages[0];
+        }
+      }
+      toast.error(errorMessage);
+    },
+  });
 
   return (
     <>
@@ -90,9 +139,35 @@ const BooksPage = () => {
               ...(role ? ["Akcje"] : []),
             ]}
           >
-            {books.map((book) => (
-              <Book key={book.id} {...book} role={role} />
-            ))}
+            {role === "admin" &&
+              books.map((book) => (
+                <Book
+                  key={book.id}
+                  {...book}
+                  role="admin"
+                  handleDelete={() => {
+                    console.log("delete");
+                  }}
+                  handleEdit={() => {
+                    console.log("edit");
+                  }}
+                />
+              ))}
+            {role === "normal" &&
+              books.map((book) => (
+                <Book
+                  key={book.id}
+                  {...book}
+                  role="user"
+                  handleReservation={() => {
+                    console.log("reservation");
+                  }}
+                />
+              ))}
+            {!role &&
+              books.map((book) => (
+                <Book key={book.id} {...book} role="guest" />
+              ))}
           </Table>
         </div>
       )}
