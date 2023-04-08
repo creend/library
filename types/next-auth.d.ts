@@ -11,6 +11,7 @@ declare module "next-auth" {
       username: string;
       firstName: string;
       lastName: string;
+      idDocumentNumber: string;
       address: string;
       createdAt: Date;
       updatedAt: Date;

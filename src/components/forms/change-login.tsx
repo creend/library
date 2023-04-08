@@ -78,7 +78,7 @@ const ChangeLoginForm = () => {
             id: "password",
             type: "password",
           }}
-          label="Potwierdź hasłem"
+          label="Hasło"
           variant="rounded"
         />
       </FormWrapper>

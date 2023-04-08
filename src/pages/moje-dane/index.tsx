@@ -10,6 +10,7 @@ import Spinner from "~/components/spinner";
 import Title from "~/components/title";
 import ChangePasswordForm from "~/components/forms/change-password";
 import ChangeLoginForm from "~/components/forms/change-login";
+import ChangeDataForm from "~/components/forms/change-data";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -228,7 +229,7 @@ const MyDataPage = () => {
                     currentTab === "changeData" ? "block" : "hidden"
                   }`}
                 >
-                  <p>zmiana danych</p>
+                  <ChangeDataForm />
                 </div>
                 <div
                   role="tabpanel"

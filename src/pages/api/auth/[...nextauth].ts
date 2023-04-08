@@ -9,7 +9,7 @@ import { verify } from "argon2";
 import { prisma } from "~/server/db";
 import { z } from "zod";
 import NextAuth, { getServerSession } from "next-auth/next";
-import { GetServerSidePropsContext } from "next";
+import { type GetServerSidePropsContext } from "next";
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.AUTH_SECRET,
@@ -40,7 +40,7 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { passwordHash, idDocumentNumber, ...userData } = user;
+        const { passwordHash, ...userData } = user;
 
         return {
           ...userData,
