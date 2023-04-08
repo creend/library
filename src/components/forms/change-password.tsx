@@ -1,11 +1,10 @@
 import * as Yup from "yup";
-import { Form, Formik } from "formik";
-import Spinner from "../spinner";
+import { Formik } from "formik";
 import Input from "../input";
-import Button from "../button";
 import { api } from "~/utils/api";
 import { toast } from "react-hot-toast";
 import { signOut, useSession } from "next-auth/react";
+import FormWrapper from "./form";
 
 const ChangePasswordSchema = Yup.object().shape({
   oldPassword: Yup.string()
@@ -25,6 +24,7 @@ const ChangePasswordSchema = Yup.object().shape({
 
 const ChangePasswordForm = () => {
   const session = useSession();
+  const user = session.data?.user;
 
   const { mutate, isLoading } = api.readers.changePassword.useMutation({
     onSuccess: () => {
@@ -53,17 +53,15 @@ const ChangePasswordForm = () => {
       }}
       validationSchema={ChangePasswordSchema}
       onSubmit={(values) => {
-        mutate({ ...values, username: session.data?.user.username || "" });
+        if (user) {
+          mutate({
+            ...values,
+            username: user.username,
+          });
+        }
       }}
     >
-      <Form
-        className={`relative w-full   p-10 ${
-          isLoading ? "bg-gray-800 hover:bg-gray-700" : ""
-        }`}
-        autoComplete="off"
-      >
-        {isLoading && <Spinner />}
-
+      <FormWrapper buttonText="Zmień hasło" isLoading={isLoading}>
         <Input
           input={{ name: "oldPassword", id: "oldPassword", type: "password" }}
           label="Stare hasło"
@@ -83,8 +81,7 @@ const ChangePasswordForm = () => {
           label="Powtórz nowe hasło"
           variant="rounded"
         />
-        <Button type="submit">Zmień hasło</Button>
-      </Form>
+      </FormWrapper>
     </Formik>
   );
 };

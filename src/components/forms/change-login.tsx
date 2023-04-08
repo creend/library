@@ -1,11 +1,10 @@
 import * as Yup from "yup";
-import { Form, Formik } from "formik";
-import Spinner from "../spinner";
+import { Formik } from "formik";
 import Input from "../input";
-import Button from "../button";
 import { api } from "~/utils/api";
 import { toast } from "react-hot-toast";
 import { signOut, useSession } from "next-auth/react";
+import FormWrapper from "./form";
 
 const ChangeLoginSchema = Yup.object().shape({
   newLogin: Yup.string()
@@ -56,14 +55,7 @@ const ChangeLoginForm = () => {
         }
       }}
     >
-      <Form
-        className={`relative w-full   p-10 ${
-          isLoading ? "bg-gray-800 hover:bg-gray-700" : ""
-        }`}
-        autoComplete="off"
-      >
-        {isLoading && <Spinner />}
-
+      <FormWrapper buttonText="Zmień login" isLoading={isLoading}>
         <Input
           input={{
             name: "currentLogin",
@@ -89,8 +81,7 @@ const ChangeLoginForm = () => {
           label="Potwierdź hasłem"
           variant="rounded"
         />
-        <Button type="submit">Zmień login</Button>
-      </Form>
+      </FormWrapper>
     </Formik>
   );
 };
