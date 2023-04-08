@@ -11,6 +11,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
   const Dashboard =
     session.data?.user.role === "admin" ? AdminDashboard : UserDashboard;
   const isLoggedIn = session.status === "authenticated";
+  //@TODO WYŚWIETLAJ LAYOUT DOPIERO WTEDY JAK USER SIĘ ZALOGUJE :), W PRZECIWNYM WYPADKU LOADING SCREEN
   return (
     <>
       <aside
