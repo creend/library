@@ -5,6 +5,7 @@ import superjson from "superjson";
 import { api } from "~/utils/api";
 import Head from "next/head";
 import Table from "~/components/table";
+import { useSession } from "next-auth/react";
 
 const Book = ({
   author,
@@ -12,6 +13,7 @@ const Book = ({
   publisher,
   title,
   yearOfRelease,
+  role,
 }: {
   id: number;
   title: string;
@@ -19,6 +21,7 @@ const Book = ({
   publisher: string;
   yearOfRelease: number;
   availableCopies: number;
+  role?: string;
 }) => {
   return (
     <tr className="border-b border-gray-700 bg-gray-800 hover:bg-gray-600">
@@ -32,12 +35,39 @@ const Book = ({
       <td className="px-6 py-4">{publisher}</td>
       <td className="px-6 py-4">{yearOfRelease}</td>
       <td className="px-6 py-4">{availableCopies}</td>
+      {role && (
+        <td className="py-4 pr-6">
+          {
+            <div className="flex justify-start">
+              {role === "admin" ? (
+                <>
+                  <button className="mx-2 p-1 font-medium  text-blue-500 hover:underline">
+                    Edytuj
+                  </button>
+                  <button className="mx-2 p-1 font-medium  text-red-500 hover:underline">
+                    Usuń
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button className="mx-2 p-1 font-medium  text-blue-500 hover:underline">
+                    Zarezerwuj
+                  </button>
+                </>
+              )}
+            </div>
+          }
+        </td>
+      )}
     </tr>
   );
 };
 
 const BooksPage = () => {
   const { data: books } = api.books.getBooks.useQuery();
+  const session = useSession();
+  const role = session.data?.user.role;
+  const canEdit = role === "admin";
 
   return (
     <>
@@ -57,10 +87,11 @@ const BooksPage = () => {
               "Wydawnictwo",
               "Rok wydania",
               "Dostępne egzemplarze",
+              ...(role ? ["Akcje"] : []),
             ]}
           >
             {books.map((book) => (
-              <Book key={book.id} {...book} />
+              <Book key={book.id} {...book} role={role} />
             ))}
           </Table>
         </div>

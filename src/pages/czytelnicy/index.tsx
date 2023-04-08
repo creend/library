@@ -40,7 +40,7 @@ const Reader = ({
       <td className="px-6 py-4">{address}</td>
       <td className="px-6 py-4">
         <button
-          className="p-1 font-medium text-red-600 hover:underline dark:text-red-500"
+          className="p-1 font-medium  text-red-500 hover:underline"
           onClick={handleDelete}
         >
           Usuń
