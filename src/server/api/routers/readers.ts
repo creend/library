@@ -84,6 +84,18 @@ export const readersRouter = createTRPCRouter({
         user,
       };
     }),
+  removeReader: adminProcedure
+    .input(z.object({ username: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { username } = input;
+      await findByUsername(username, ctx.prisma);
+      const removedUser = await ctx.prisma.user.delete({ where: { username } });
+      return {
+        status: 201,
+        message: "Reader removed successfully",
+        user: filterUser(removedUser),
+      };
+    }),
   changePassword: privateProcedure
     .input(
       z.object({
