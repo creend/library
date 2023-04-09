@@ -129,6 +129,7 @@ const BooksPage = () => {
       <h1 className="mx-auto mt-11 w-3/4 max-w-5xl text-5xl font-bold text-slate-200">
         Lista książek
       </h1>
+
       {books?.length && (
         <div className="relative mx-auto mt-11 w-3/4 max-w-5xl overflow-x-auto shadow-md sm:rounded-lg">
           {isLoading && <Spinner />}

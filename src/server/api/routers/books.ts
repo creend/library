@@ -1,3 +1,4 @@
+import { type Prisma, type PrismaClient } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
@@ -39,15 +40,7 @@ export const booksRouter = createTRPCRouter({
     .input(z.object({ id: z.number() }))
     .mutation(async ({ ctx, input }) => {
       const { id } = input;
-      const book = await ctx.prisma.book.findUnique({
-        where: { id },
-      });
-      if (!book) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Nie znaleziono książki",
-        });
-      }
+      await findBookById(id, ctx.prisma);
       const removedBook = await ctx.prisma.book.delete({ where: { id } });
       return {
         status: 201,
@@ -55,4 +48,48 @@ export const booksRouter = createTRPCRouter({
         book: removedBook,
       };
     }),
+  editBook: adminProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        author: z.string().min(2).max(50).optional(),
+        title: z.string().min(2).max(50).optional(),
+        publisher: z.string().min(2).max(50).optional(),
+        yearOfRelease: z.number().min(1900).max(2023).optional(),
+        availableCopies: z.number().min(0).optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id, ...book } = input;
+      await findBookById(id, ctx.prisma);
+      const updatedBook = await ctx.prisma.book.update({
+        where: { id },
+        data: book,
+      });
+      return {
+        status: 201,
+        message: "Book updated successfully",
+        book: updatedBook,
+      };
+    }),
 });
+
+async function findBookById(
+  id: number,
+  prisma: PrismaClient<
+    Prisma.PrismaClientOptions,
+    never,
+    Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
+  >
+) {
+  const book = await prisma.book.findUnique({
+    where: { id },
+  });
+  if (!book) {
+    throw new TRPCError({
+      code: "NOT_FOUND",
+      message: "Nie znaleziono książki",
+    });
+  }
+  return book;
+}
