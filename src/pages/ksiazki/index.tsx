@@ -8,6 +8,8 @@ import Table from "~/components/table";
 import { useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
 import Spinner from "~/components/spinner";
+import EditBookForm from "~/components/forms/edit-book";
+import { useState } from "react";
 
 interface Book {
   id: number;
@@ -95,6 +97,8 @@ const Book = ({
 };
 
 const BooksPage = () => {
+  const [edittingBookId, setEdittingBookId] = useState<number | null>(null);
+
   const { data: books } = api.books.getBooks.useQuery();
   const session = useSession();
   const role = session.data?.user.role;
@@ -129,6 +133,12 @@ const BooksPage = () => {
       <h1 className="mx-auto mt-11 w-3/4 max-w-5xl text-5xl font-bold text-slate-200">
         Lista książek
       </h1>
+      {edittingBookId && (
+        <EditBookForm
+          id={edittingBookId}
+          handleFormClose={() => setEdittingBookId(null)}
+        />
+      )}
 
       {books?.length && (
         <div className="relative mx-auto mt-11 w-3/4 max-w-5xl overflow-x-auto shadow-md sm:rounded-lg">
@@ -153,7 +163,7 @@ const BooksPage = () => {
                     mutate({ id: book.id });
                   }}
                   handleEdit={() => {
-                    console.log("edit");
+                    setEdittingBookId(book.id);
                   }}
                 />
               ))}
