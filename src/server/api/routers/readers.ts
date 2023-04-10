@@ -88,7 +88,7 @@ export const readersRouter = createTRPCRouter({
     .input(z.object({ username: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { username } = input;
-      await findByUsername(username, ctx.prisma);
+      await findUserByUsername(username, ctx.prisma);
       const removedUser = await ctx.prisma.user.delete({ where: { username } });
       return {
         status: 201,
@@ -107,7 +107,7 @@ export const readersRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const { newPassword, oldPassword, retypedNewPassword, username } = input;
-      const user = await findByUsername(username, ctx.prisma);
+      const user = await findUserByUsername(username, ctx.prisma);
 
       if (ctx.session?.user.username !== user?.username) {
         throw new TRPCError({
@@ -152,7 +152,7 @@ export const readersRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { password, username, newUsername, ...userData } = input;
 
-      const user = await findByUsername(username, ctx.prisma);
+      const user = await findUserByUsername(username, ctx.prisma);
 
       if (ctx.session?.user.username !== user?.username) {
         throw new TRPCError({
@@ -181,7 +181,7 @@ function filterUser(reader: User) {
   return { ...user };
 }
 
-async function findByUsername(
+export async function findUserByUsername(
   username: string,
   prisma: PrismaClient<
     Prisma.PrismaClientOptions,

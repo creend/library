@@ -1,0 +1,36 @@
+import { type Prisma, type PrismaClient } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
+
+import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
+import { findBookById } from "./books";
+import { findUserByUsername } from "./readers";
+
+export const reservationsRouter = createTRPCRouter({
+  createReservation: privateProcedure
+    .input(z.object({ username: z.string(), bookId: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      const { bookId, username } = input;
+      const book = await findBookById(bookId, ctx.prisma);
+      const reader = await findUserByUsername(username, ctx.prisma);
+      if (book.availableCopies < 1) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Książka nie jest dostępna !",
+        });
+      }
+      await ctx.prisma.book.update({
+        where: { id: bookId },
+        data: { availableCopies: book.availableCopies - 1 },
+      });
+      const reservation = await ctx.prisma.reservation.create({
+        data: { bookId: book.id, userId: reader.id },
+        include: { book: true, user: true },
+      });
+      return {
+        status: 201,
+        message: "Reservation created successfully",
+        reservation,
+      };
+    }),
+});

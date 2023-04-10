@@ -74,7 +74,7 @@ export const booksRouter = createTRPCRouter({
     }),
 });
 
-async function findBookById(
+export async function findBookById(
   id: number,
   prisma: PrismaClient<
     Prisma.PrismaClientOptions,
