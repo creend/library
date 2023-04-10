@@ -18,7 +18,6 @@ export const booksRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       const book = await ctx.prisma.book.findUnique({
         where: { id: input.id },
-        include: { borrowedBy: true, reservedBy: true },
       });
       return book;
     }),
