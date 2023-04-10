@@ -9,19 +9,19 @@ datasource db {
 }
 
 model User {
-    id               Int      @id @default(autoincrement())
-    username         String   @unique
+    id               Int           @id @default(autoincrement())
+    username         String        @unique
     firstName        String
     lastName         String
     idDocumentNumber String
     address          String
     passwordHash     String
-    createdAt        DateTime @default(now())
-    updatedAt        DateTime @updatedAt
-    role             Role     @relation(fields: [roleId], references: [id])
+    createdAt        DateTime      @default(now())
+    updatedAt        DateTime      @updatedAt
+    role             Role          @relation(fields: [roleId], references: [id])
     roleId           Int
-    reservedBooks    Book[]   @relation("reserved")
-    borrowedBooks    Book[]   @relation("borrowed")
+    Reservations     Reservation[]
+    Borrowments      Borrowment[]
 
     @@index([roleId])
 }
@@ -33,12 +33,38 @@ model Role {
 }
 
 model Book {
-    id              Int    @id @default(autoincrement())
+    id              Int           @id @default(autoincrement())
     author          String
     title           String
     publisher       String
     yearOfRelease   Int
     availableCopies Int
-    reservedBy      User[] @relation("reserved")
-    borrowedBy      User[] @relation("borrowed")
+    Reservations    Reservation[]
+    Borrowments     Borrowment[]
+}
+
+model Reservation {
+    id        Int      @id @default(autoincrement())
+    book      Book     @relation(fields: [bookId], references: [id])
+    user      User     @relation(fields: [userId], references: [id])
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    bookId    Int
+    userId    Int
+
+    @@index([userId])
+    @@index([bookId])
+}
+
+model Borrowment {
+    id        Int      @id @default(autoincrement())
+    book      Book     @relation(fields: [bookId], references: [id])
+    user      User     @relation(fields: [userId], references: [id])
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    bookId    Int
+    userId    Int
+
+    @@index([userId])
+    @@index([bookId])
 }

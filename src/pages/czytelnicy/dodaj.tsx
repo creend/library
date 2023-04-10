@@ -42,7 +42,7 @@ export const AddReaderSchema = Yup.object().shape({
     .max(50, "Numer dokumentu tożsamości może posiadać maksymalnie 50 znaków")
     .required("Numer dokumentu tożsamości jest wymagany"),
   address: Yup.string()
-    .min(4, "Adres musi posiadać minimum 2 znaki")
+    .min(4, "Adres musi posiadać minimum 4 znaki")
     .required("Adres jest wymagany"),
 });
 
