@@ -2,13 +2,14 @@
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Spinner from "~/components/spinner";
 import Table from "~/components/table";
 import { api } from "~/utils/api";
 import { getServerAuthSession } from "../api/auth/[...nextauth]";
 import { type GetServerSideProps } from "next";
 import { toast } from "react-hot-toast";
+import ConfirmModal from "~/components/modal";
 
 const Reader = ({
   address,
@@ -59,6 +60,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
 const ReadersPage = () => {
   const { data: readers, isLoading } = api.readers.getReaders.useQuery();
+  const [removingReaderUsername, setRemovingReaderUsername] = useState<
+    null | string
+  >(null);
 
   const { data: sessionData } = useSession();
   const role = sessionData?.user.role;
@@ -74,14 +78,14 @@ const ReadersPage = () => {
 
   const ctx = api.useContext();
 
-  const { mutate, isLoading: isRemoving } =
+  const { mutateAsync, isLoading: isRemoving } =
     api.readers.removeReader.useMutation({
       onSuccess: async () => {
         await ctx.readers.getReaders.invalidate();
-        toast.success("Usunięto !");
+        toast.success("Usunięto czytelnika!");
       },
       onError: (e) => {
-        let errorMessage = "Błąd w usuwaniu";
+        let errorMessage = "Błąd w usuwaniu czytelnika";
         if (e?.message) {
           errorMessage = e.message;
         } else {
@@ -105,6 +109,17 @@ const ReadersPage = () => {
       <h1 className="mx-auto mt-11 w-3/4 max-w-5xl text-5xl font-bold text-slate-200">
         Lista czytelników
       </h1>
+      {removingReaderUsername && (
+        <ConfirmModal
+          handleClose={() => setRemovingReaderUsername(null)}
+          question="Czy napewno usunąć czytelnika"
+          isLoading={isRemoving}
+          handleConfirm={async () => {
+            await mutateAsync({ username: removingReaderUsername });
+            setRemovingReaderUsername(null);
+          }}
+        />
+      )}
       {hasPermissions && (
         <div className="relative mx-auto mt-11 w-3/4 max-w-5xl overflow-x-auto shadow-md sm:rounded-lg">
           {(isLoading || isRemoving) && <Spinner />}
@@ -121,7 +136,7 @@ const ReadersPage = () => {
               readers.map((reader) => (
                 <Reader
                   handleDelete={() => {
-                    mutate({ username: reader.username });
+                    setRemovingReaderUsername(reader.username);
                   }}
                   key={reader.id}
                   {...reader}

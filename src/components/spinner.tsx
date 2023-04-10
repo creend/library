@@ -2,7 +2,7 @@ const Spinner = () => {
   return (
     <div
       role="status"
-      className="absolute left-1/2 top-2/4 z-10 flex h-full w-full -translate-x-1/2 -translate-y-1/2 items-center justify-center"
+      className="z-60 absolute left-1/2 top-2/4 flex h-full w-full -translate-x-1/2 -translate-y-1/2 items-center justify-center"
     >
       <svg
         aria-hidden="true"
