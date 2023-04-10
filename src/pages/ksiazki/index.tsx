@@ -10,6 +10,7 @@ import { toast } from "react-hot-toast";
 import Spinner from "~/components/spinner";
 import EditBookForm from "~/components/forms/edit-book";
 import { useState } from "react";
+import ConfirmModal from "~/components/modal";
 
 interface Book {
   id: number;
@@ -98,6 +99,7 @@ const Book = ({
 
 const BooksPage = () => {
   const [edittingBookId, setEdittingBookId] = useState<number | null>(null);
+  const [removingBookId, setRemovingBookId] = useState<number | null>(null);
 
   const { data: books } = api.books.getBooks.useQuery();
   const session = useSession();
@@ -105,7 +107,7 @@ const BooksPage = () => {
 
   const ctx = api.useContext();
 
-  const { mutate, isLoading } = api.books.removeBook.useMutation({
+  const { mutateAsync, isLoading } = api.books.removeBook.useMutation({
     onSuccess: async () => {
       await ctx.books.getBooks.invalidate();
       toast.success("Usunięto !");
@@ -140,9 +142,20 @@ const BooksPage = () => {
         />
       )}
 
+      {removingBookId && (
+        <ConfirmModal
+          handleClose={() => setRemovingBookId(null)}
+          question="Czy napewno usunąć książke"
+          isLoading={isLoading}
+          handleConfirm={async () => {
+            await mutateAsync({ id: removingBookId });
+            setRemovingBookId(null);
+          }}
+        />
+      )}
+
       {books?.length && (
         <div className="relative mx-auto mt-11 w-3/4 max-w-5xl overflow-x-auto shadow-md sm:rounded-lg">
-          {isLoading && <Spinner />}
           <Table
             colNames={[
               "Tytuł",
@@ -160,7 +173,7 @@ const BooksPage = () => {
                   {...book}
                   role="admin"
                   handleDelete={() => {
-                    mutate({ id: book.id });
+                    setRemovingBookId(book.id);
                   }}
                   handleEdit={() => {
                     setEdittingBookId(book.id);
