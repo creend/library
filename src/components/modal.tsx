@@ -1,10 +1,11 @@
 import Spinner from "./spinner";
-
+import { AiOutlineQuestionCircle } from "react-icons/ai";
 interface Props {
   handleClose: () => void;
   handleConfirm: () => void | Promise<void>;
   question: string;
   isLoading?: boolean;
+  variant?: "removing" | "neutral";
 }
 
 const ConfirmModal = ({
@@ -12,6 +13,7 @@ const ConfirmModal = ({
   handleConfirm,
   question,
   isLoading,
+  variant = "removing",
 }: Props) => {
   return (
     <div
@@ -26,6 +28,7 @@ const ConfirmModal = ({
           }`}
         >
           {isLoading && <Spinner />}
+
           <button
             type="button"
             className="absolute right-2.5 top-3 ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-800 hover:text-white"
@@ -48,21 +51,7 @@ const ConfirmModal = ({
             <span className="sr-only">Close modal</span>
           </button>
           <div className="p-6 text-center">
-            <svg
-              aria-hidden="true"
-              className="mx-auto mb-4 h-14 w-14 text-gray-200"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              ></path>
-            </svg>
+            <AiOutlineQuestionCircle className="mx-auto mb-4 h-14 w-14 text-gray-200" />
             <h3 className="mb-5 text-lg font-normal text-gray-400">
               {question}
             </h3>
@@ -70,7 +59,11 @@ const ConfirmModal = ({
               data-modal-hide="popup-modal"
               type="button"
               onClick={() => void handleConfirm()}
-              className="mr-2 inline-flex items-center rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-800"
+              className={`${
+                variant === "removing"
+                  ? "bg-red-600 hover:bg-red-800 focus:ring-red-800"
+                  : "bg-blue-700 hover:bg-blue-800 focus:ring-blue-800"
+              } mr-2 inline-flex items-center rounded-lg  px-5 py-2.5 text-center text-sm font-medium text-white  focus:outline-none focus:ring-4 `}
             >
               Tak
             </button>

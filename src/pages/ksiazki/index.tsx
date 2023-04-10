@@ -100,6 +100,9 @@ const Book = ({
 const BooksPage = () => {
   const [edittingBookId, setEdittingBookId] = useState<number | null>(null);
   const [removingBookId, setRemovingBookId] = useState<number | null>(null);
+  const [reservatingBookId, setReservatingBookId] = useState<number | null>(
+    null
+  );
 
   const { data: books } = api.books.getBooks.useQuery();
   const session = useSession();
@@ -107,25 +110,44 @@ const BooksPage = () => {
 
   const ctx = api.useContext();
 
-  const { mutateAsync, isLoading } = api.books.removeBook.useMutation({
-    onSuccess: async () => {
-      await ctx.books.getBooks.invalidate();
-      toast.success("Usunięto !");
-    },
-    onError: (e) => {
-      let errorMessage = "Błąd w usuwaniu";
-      if (e?.message) {
-        errorMessage = e.message;
-      } else {
-        const errorMessages = e.data?.zodError?.fieldErrors.content;
-        if (errorMessages && errorMessages[0]) {
-          errorMessage = errorMessages[0];
+  const { mutateAsync, isLoading: isRemoving } =
+    api.books.removeBook.useMutation({
+      onSuccess: async () => {
+        await ctx.books.getBooks.invalidate();
+        toast.success("Usunięto !");
+      },
+      onError: (e) => {
+        let errorMessage = "Błąd w usuwaniu";
+        if (e?.message) {
+          errorMessage = e.message;
+        } else {
+          const errorMessages = e.data?.zodError?.fieldErrors.content;
+          if (errorMessages && errorMessages[0]) {
+            errorMessage = errorMessages[0];
+          }
         }
-      }
-      toast.error(errorMessage);
-    },
-  });
-
+        toast.error(errorMessage);
+      },
+    });
+  const { mutateAsync: reservate, isLoading: isReservating } =
+    api.reservations.createReservation.useMutation({
+      onSuccess: async () => {
+        await ctx.books.getBooks.invalidate();
+        toast.success("Utworzono rezerwacje !");
+      },
+      onError: (e) => {
+        let errorMessage = "Błąd w rezerwowaniu";
+        if (e?.message) {
+          errorMessage = e.message;
+        } else {
+          const errorMessages = e.data?.zodError?.fieldErrors.content;
+          if (errorMessages && errorMessages[0]) {
+            errorMessage = errorMessages[0];
+          }
+        }
+        toast.error(errorMessage);
+      },
+    });
   return (
     <>
       <Head>
@@ -146,10 +168,28 @@ const BooksPage = () => {
         <ConfirmModal
           handleClose={() => setRemovingBookId(null)}
           question="Czy napewno usunąć książke"
-          isLoading={isLoading}
+          isLoading={isRemoving}
           handleConfirm={async () => {
             await mutateAsync({ id: removingBookId });
             setRemovingBookId(null);
+          }}
+        />
+      )}
+
+      {reservatingBookId && (
+        <ConfirmModal
+          handleClose={() => setReservatingBookId(null)}
+          question="Czy napewno zarezerwować książke"
+          variant="neutral"
+          isLoading={isReservating}
+          handleConfirm={async () => {
+            if (session.data?.user) {
+              await reservate({
+                bookId: reservatingBookId,
+                username: session.data.user.username,
+              });
+              setReservatingBookId(null);
+            }
           }}
         />
       )}
@@ -187,7 +227,7 @@ const BooksPage = () => {
                   {...book}
                   role="user"
                   handleReservation={() => {
-                    console.log("reservation");
+                    setReservatingBookId(book.id);
                   }}
                 />
               ))}

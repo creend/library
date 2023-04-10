@@ -19,14 +19,15 @@ export const reservationsRouter = createTRPCRouter({
           message: "Książka nie jest dostępna !",
         });
       }
-      await ctx.prisma.book.update({
-        where: { id: bookId },
-        data: { availableCopies: book.availableCopies - 1 },
-      });
       const reservation = await ctx.prisma.reservation.create({
         data: { bookId: book.id, userId: reader.id },
         include: { book: true, user: true },
       });
+      await ctx.prisma.book.update({
+        where: { id: bookId },
+        data: { availableCopies: book.availableCopies - 1 },
+      });
+
       return {
         status: 201,
         message: "Reservation created successfully",
