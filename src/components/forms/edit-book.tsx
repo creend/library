@@ -11,6 +11,7 @@ import Spinner from "~/components/spinner";
 import { api } from "~/utils/api";
 import Title from "~/components/title";
 import { AddBookSchema as EditBookSchema } from "~/pages/ksiazki/dodaj";
+import { handleApiError } from "~/helpers/api-error-handler";
 
 const EditBookForm = ({
   id,
@@ -40,18 +41,7 @@ const EditBookForm = ({
         await ctx.books.getBooks.invalidate();
         toast.success("Edytowano książke !");
       },
-      onError: (e) => {
-        let errorMessage = "Błąd w edycji książki";
-        if (e?.message) {
-          errorMessage = e.message;
-        } else {
-          const errorMessages = e.data?.zodError?.fieldErrors.content;
-          if (errorMessages && errorMessages[0]) {
-            errorMessage = errorMessages[0];
-          }
-        }
-        toast.error(errorMessage);
-      },
+      onError: handleApiError("Błąd w edycji książki"),
     }
   );
   if (!hasPermissions) return null;

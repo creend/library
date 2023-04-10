@@ -5,6 +5,7 @@ import { api } from "~/utils/api";
 import { toast } from "react-hot-toast";
 import { signOut, useSession } from "next-auth/react";
 import FormWrapper from "./form";
+import { handleApiError } from "~/helpers/api-error-handler";
 
 const ChangePasswordSchema = Yup.object().shape({
   oldPassword: Yup.string()
@@ -31,18 +32,7 @@ const ChangePasswordForm = () => {
       toast.success("Zmieniono hasło! Nastąpi wylogowanie");
       void signOut({ callbackUrl: "/zaloguj" });
     },
-    onError: (e) => {
-      let errorMessage = "Błąd w zmianie hasła";
-      if (e?.message) {
-        errorMessage = e.message;
-      } else {
-        const errorMessages = e.data?.zodError?.fieldErrors.content;
-        if (errorMessages && errorMessages[0]) {
-          errorMessage = errorMessages[0];
-        }
-      }
-      toast.error(errorMessage);
-    },
+    onError: handleApiError("Bład w zmianie hasła"),
   });
   return (
     <Formik

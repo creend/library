@@ -13,6 +13,7 @@ import { api } from "~/utils/api";
 import { getServerAuthSession } from "../api/auth/[...nextauth]";
 import { type GetServerSideProps } from "next";
 import Title from "~/components/title";
+import { handleApiError } from "~/helpers/api-error-handler";
 
 export const AddBookSchema = Yup.object().shape({
   author: Yup.string()
@@ -69,18 +70,7 @@ const AddBookPage = () => {
       toast.success("Dodano książke !");
       push("/ksiazki");
     },
-    onError: (e) => {
-      let errorMessage = "Błąd w dodawaniu książki";
-      if (e?.message) {
-        errorMessage = e.message;
-      } else {
-        const errorMessages = e.data?.zodError?.fieldErrors.content;
-        if (errorMessages && errorMessages[0]) {
-          errorMessage = errorMessages[0];
-        }
-      }
-      toast.error(errorMessage);
-    },
+    onError: handleApiError("Błąd w dodawaniu książki"),
   });
   if (!hasPermissions) return null;
 

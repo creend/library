@@ -10,6 +10,7 @@ import { getServerAuthSession } from "../api/auth/[...nextauth]";
 import { type GetServerSideProps } from "next";
 import { toast } from "react-hot-toast";
 import ConfirmModal from "~/components/modal";
+import { handleApiError } from "~/helpers/api-error-handler";
 
 const Reader = ({
   address,
@@ -84,18 +85,7 @@ const ReadersPage = () => {
         await ctx.readers.getReaders.invalidate();
         toast.success("Usunięto czytelnika!");
       },
-      onError: (e) => {
-        let errorMessage = "Błąd w usuwaniu czytelnika";
-        if (e?.message) {
-          errorMessage = e.message;
-        } else {
-          const errorMessages = e.data?.zodError?.fieldErrors.content;
-          if (errorMessages && errorMessages[0]) {
-            errorMessage = errorMessages[0];
-          }
-        }
-        toast.error(errorMessage);
-      },
+      onError: handleApiError("Błąd w usuwaniu czytelnika"),
     });
 
   if (!hasPermissions) return null;

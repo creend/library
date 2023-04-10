@@ -14,6 +14,7 @@ import Button from "~/components/button";
 import { type GetServerSideProps } from "next";
 import { getServerAuthSession } from "../api/auth/[...nextauth]";
 import Title from "~/components/title";
+import { handleApiError } from "~/helpers/api-error-handler";
 
 export const AddReaderSchema = Yup.object().shape({
   username: Yup.string()
@@ -81,18 +82,7 @@ const AddUserPage = () => {
       toast.success("Dodano czytelnika !");
       push("/czytelnicy");
     },
-    onError: (e) => {
-      let errorMessage = "Błąd w dodaniu czytelnika";
-      if (e?.message) {
-        errorMessage = e.message;
-      } else {
-        const errorMessages = e.data?.zodError?.fieldErrors.content;
-        if (errorMessages && errorMessages[0]) {
-          errorMessage = errorMessages[0];
-        }
-      }
-      toast.error(errorMessage);
-    },
+    onError: handleApiError("Błąd w dodaniu czytelnika"),
   });
   if (!hasPermissions) return null;
   return (

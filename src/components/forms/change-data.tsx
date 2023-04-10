@@ -5,6 +5,7 @@ import { api } from "~/utils/api";
 import { toast } from "react-hot-toast";
 import { signOut, useSession } from "next-auth/react";
 import FormWrapper from "./form";
+import { handleApiError } from "~/helpers/api-error-handler";
 
 const ChangeDataSchema = Yup.object().shape({
   firstName: Yup.string()
@@ -37,18 +38,7 @@ const ChangeDataForm = () => {
       toast.success("Zmieniono dane! Nastąpi wylogowanie");
       void signOut({ callbackUrl: "/zaloguj" });
     },
-    onError: (e) => {
-      let errorMessage = "Błąd w zmianie danych";
-      if (e?.message) {
-        errorMessage = e.message;
-      } else {
-        const errorMessages = e.data?.zodError?.fieldErrors.content;
-        if (errorMessages && errorMessages[0]) {
-          errorMessage = errorMessages[0];
-        }
-      }
-      toast.error(errorMessage);
-    },
+    onError: handleApiError("Błąd w zmianie danych"),
   });
   return (
     <Formik

@@ -11,6 +11,7 @@ import Spinner from "~/components/spinner";
 import EditBookForm from "~/components/forms/edit-book";
 import { useState } from "react";
 import ConfirmModal from "~/components/modal";
+import { handleApiError } from "~/helpers/api-error-handler";
 
 interface Book {
   id: number;
@@ -114,20 +115,9 @@ const BooksPage = () => {
     api.books.removeBook.useMutation({
       onSuccess: async () => {
         await ctx.books.getBooks.invalidate();
-        toast.success("Usunięto !");
+        toast.success("Usunięto książke!");
       },
-      onError: (e) => {
-        let errorMessage = "Błąd w usuwaniu";
-        if (e?.message) {
-          errorMessage = e.message;
-        } else {
-          const errorMessages = e.data?.zodError?.fieldErrors.content;
-          if (errorMessages && errorMessages[0]) {
-            errorMessage = errorMessages[0];
-          }
-        }
-        toast.error(errorMessage);
-      },
+      onError: handleApiError("Błąd w usuwaniu książki"),
     });
   const { mutateAsync: reservate, isLoading: isReservating } =
     api.reservations.createReservation.useMutation({
@@ -135,18 +125,7 @@ const BooksPage = () => {
         await ctx.books.getBooks.invalidate();
         toast.success("Utworzono rezerwacje !");
       },
-      onError: (e) => {
-        let errorMessage = "Błąd w rezerwowaniu";
-        if (e?.message) {
-          errorMessage = e.message;
-        } else {
-          const errorMessages = e.data?.zodError?.fieldErrors.content;
-          if (errorMessages && errorMessages[0]) {
-            errorMessage = errorMessages[0];
-          }
-        }
-        toast.error(errorMessage);
-      },
+      onError: handleApiError("Błąd w tworzeniu rezerwacji"),
     });
   return (
     <>
