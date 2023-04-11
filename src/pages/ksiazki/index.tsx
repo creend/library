@@ -119,11 +119,12 @@ const BooksPage = () => {
       },
       onError: handleApiError("Błąd w usuwaniu książki"),
     });
-  const { mutateAsync: reservate, isLoading: isReservating } =
+  const { mutate: reservate, isLoading: isReservating } =
     api.reservations.createReservation.useMutation({
       onSuccess: async () => {
         await ctx.books.getBooks.invalidate();
         toast.success("Utworzono rezerwacje !");
+        setReservatingBookId(null);
       },
       onError: handleApiError("Błąd w tworzeniu rezerwacji"),
     });
@@ -163,11 +164,10 @@ const BooksPage = () => {
           isLoading={isReservating}
           handleConfirm={async () => {
             if (session.data?.user) {
-              await reservate({
+              reservate({
                 bookId: reservatingBookId,
                 username: session.data.user.username,
               });
-              setReservatingBookId(null);
             }
           }}
         />

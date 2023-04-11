@@ -12,7 +12,24 @@ export const reservationsRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { bookId, username } = input;
       const book = await findBookById(bookId, ctx.prisma);
-      const reader = await findUserByUsername(username, ctx.prisma);
+      const reader = await ctx.prisma.user.findUnique({
+        where: { username },
+        include: { Reservations: { where: { bookId } } },
+      });
+
+      if (!reader) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Czytelnik nie ustnieje",
+        });
+      }
+
+      if (reader?.Reservations.length) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Nie możesz zarezerwować 2 razy jednej książki",
+        });
+      }
 
       if (ctx.session?.user.username !== reader?.username) {
         throw new TRPCError({
@@ -33,7 +50,7 @@ export const reservationsRouter = createTRPCRouter({
       });
       await ctx.prisma.book.update({
         where: { id: bookId },
-        data: { availableCopies: book.availableCopies - 1 },
+        data: { availableCopies: { decrement: 1 } },
       });
 
       return {
@@ -75,6 +92,10 @@ export const reservationsRouter = createTRPCRouter({
       }
       const removedReservation = await ctx.prisma.reservation.delete({
         where: { id },
+      });
+      await ctx.prisma.book.update({
+        where: { id: reservation.bookId },
+        data: { availableCopies: { increment: 1 } },
       });
       return {
         status: 201,
