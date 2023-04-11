@@ -34,4 +34,15 @@ export const reservationsRouter = createTRPCRouter({
         reservation,
       };
     }),
+  getReservationByUsername: privateProcedure
+    .input(z.object({ username: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { username } = input;
+      const reader = await findUserByUsername(username, ctx.prisma);
+      const reservations = await ctx.prisma.reservation.findMany({
+        where: { userId: reader.id },
+        include: { book: true, user: true },
+      });
+      return reservations;
+    }),
 });
