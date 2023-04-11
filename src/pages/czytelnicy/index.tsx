@@ -79,13 +79,17 @@ const ReadersPage = () => {
 
   const ctx = api.useContext();
 
-  const { mutateAsync, isLoading: isRemoving } =
+  const { mutate, isLoading: isRemoving } =
     api.readers.removeReader.useMutation({
       onSuccess: async () => {
         await ctx.readers.getReaders.invalidate();
+        setRemovingReaderUsername(null);
         toast.success("Usunięto czytelnika!");
       },
-      onError: handleApiError("Błąd w usuwaniu czytelnika"),
+      onError: (e) => {
+        setRemovingReaderUsername(null);
+        handleApiError(e, "Błąd w usuwaniu czytelnika");
+      },
     });
 
   if (!hasPermissions) return null;
@@ -104,9 +108,8 @@ const ReadersPage = () => {
           handleClose={() => setRemovingReaderUsername(null)}
           question="Czy napewno usunąć czytelnika"
           isLoading={isRemoving}
-          handleConfirm={async () => {
-            await mutateAsync({ username: removingReaderUsername });
-            setRemovingReaderUsername(null);
+          handleConfirm={() => {
+            mutate({ username: removingReaderUsername });
           }}
         />
       )}

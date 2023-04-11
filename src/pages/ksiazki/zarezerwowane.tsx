@@ -71,15 +71,19 @@ const ReservatedBooksPage = () => {
     number | null
   >(null);
 
-  const { mutateAsync, isLoading: isCancelling } =
+  const { mutate, isLoading: isCancelling } =
     api.reservations.removeReservation.useMutation({
       onSuccess: async () => {
         await ctx.reservations.getReservationsByUsername.invalidate({
           username,
         });
+        setCancellingReservationId(null);
         toast.success("Wycofano rezerwacje!");
       },
-      onError: handleApiError("Błąd w wycofaniu rezerwacji"),
+      onError: (e) => {
+        setCancellingReservationId(null);
+        handleApiError(e, "Błąd w wycofaniu rezerwacji");
+      },
     });
 
   return (
@@ -99,9 +103,8 @@ const ReservatedBooksPage = () => {
           handleClose={() => setCancellingReservationId(null)}
           question="Czy napewno wycofać rezerwacje?"
           isLoading={isCancelling}
-          handleConfirm={async () => {
-            await mutateAsync({ id: cancellingReservationId });
-            setCancellingReservationId(null);
+          handleConfirm={() => {
+            mutate({ id: cancellingReservationId });
           }}
         />
       )}

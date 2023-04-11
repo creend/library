@@ -32,7 +32,7 @@ const ChangePasswordForm = () => {
       toast.success("Zmieniono hasło! Nastąpi wylogowanie");
       void signOut({ callbackUrl: "/zaloguj" });
     },
-    onError: handleApiError("Bład w zmianie hasła"),
+    onError: (e) => handleApiError(e, "Bład w zmianie hasła"),
   });
   return (
     <Formik

@@ -70,7 +70,7 @@ const AddBookPage = () => {
       toast.success("Dodano książke !");
       push("/ksiazki");
     },
-    onError: handleApiError("Błąd w dodawaniu książki"),
+    onError: (e) => handleApiError(e, "Błąd w dodawaniu książki"),
   });
   if (!hasPermissions) return null;
 

@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { toast } from "react-hot-toast";
 
-export const handleApiError = (defaultErrorMessage: string) => (e: any) => {
+export const handleApiError = (e: any, defaultErrorMessage: string) => {
   let errorMessage = defaultErrorMessage;
   if (e?.message) {
     errorMessage = e.message;

@@ -27,7 +27,7 @@ const ChangeLoginForm = () => {
       toast.success("Zmieniono login! Nastąpi wylogowanie");
       void signOut({ callbackUrl: "/zaloguj" });
     },
-    onError: handleApiError("Błąd w zmianie loginu"),
+    onError: (e) => handleApiError(e, "Błąd w zmianie loginu"),
   });
   return (
     <Formik

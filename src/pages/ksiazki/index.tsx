@@ -111,13 +111,17 @@ const BooksPage = () => {
 
   const ctx = api.useContext();
 
-  const { mutateAsync, isLoading: isRemoving } =
+  const { mutate: remove, isLoading: isRemoving } =
     api.books.removeBook.useMutation({
       onSuccess: async () => {
         await ctx.books.getBooks.invalidate();
+        setRemovingBookId(null);
         toast.success("Usunięto książke!");
       },
-      onError: handleApiError("Błąd w usuwaniu książki"),
+      onError: (e) => {
+        setRemovingBookId(null);
+        handleApiError(e, "Błąd w usuwaniu książki");
+      },
     });
   const { mutate: reservate, isLoading: isReservating } =
     api.reservations.createReservation.useMutation({
@@ -126,7 +130,10 @@ const BooksPage = () => {
         toast.success("Utworzono rezerwacje !");
         setReservatingBookId(null);
       },
-      onError: handleApiError("Błąd w tworzeniu rezerwacji"),
+      onError: (e) => {
+        setReservatingBookId(null);
+        handleApiError(e, "Błąd w tworzeniu rezerwacji");
+      },
     });
   return (
     <>
@@ -149,9 +156,8 @@ const BooksPage = () => {
           handleClose={() => setRemovingBookId(null)}
           question="Czy napewno usunąć książke"
           isLoading={isRemoving}
-          handleConfirm={async () => {
-            await mutateAsync({ id: removingBookId });
-            setRemovingBookId(null);
+          handleConfirm={() => {
+            remove({ id: removingBookId });
           }}
         />
       )}
@@ -162,7 +168,7 @@ const BooksPage = () => {
           question="Czy napewno zarezerwować książke"
           variant="neutral"
           isLoading={isReservating}
-          handleConfirm={async () => {
+          handleConfirm={() => {
             if (session.data?.user) {
               reservate({
                 bookId: reservatingBookId,

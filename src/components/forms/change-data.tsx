@@ -38,7 +38,7 @@ const ChangeDataForm = () => {
       toast.success("Zmieniono dane! Nastąpi wylogowanie");
       void signOut({ callbackUrl: "/zaloguj" });
     },
-    onError: handleApiError("Błąd w zmianie danych"),
+    onError: (e) => handleApiError(e, "Błąd w zmianie danych"),
   });
   return (
     <Formik

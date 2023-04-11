@@ -82,7 +82,7 @@ const AddUserPage = () => {
       toast.success("Dodano czytelnika !");
       push("/czytelnicy");
     },
-    onError: handleApiError("Błąd w dodaniu czytelnika"),
+    onError: (e) => handleApiError(e, "Błąd w dodaniu czytelnika"),
   });
   if (!hasPermissions) return null;
   return (
