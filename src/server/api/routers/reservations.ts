@@ -34,7 +34,7 @@ export const reservationsRouter = createTRPCRouter({
         reservation,
       };
     }),
-  getReservationByUsername: privateProcedure
+  getReservationsByUsername: privateProcedure
     .input(z.object({ username: z.string() }))
     .query(async ({ ctx, input }) => {
       const { username } = input;
@@ -42,6 +42,7 @@ export const reservationsRouter = createTRPCRouter({
       const reservations = await ctx.prisma.reservation.findMany({
         where: { userId: reader.id },
         include: { book: true, user: true },
+        orderBy: { createdAt: "asc" },
       });
       return reservations;
     }),
