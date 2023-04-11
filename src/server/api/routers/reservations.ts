@@ -2,7 +2,11 @@ import { type Prisma, type PrismaClient } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
+import {
+  adminProcedure,
+  createTRPCRouter,
+  privateProcedure,
+} from "~/server/api/trpc";
 import { findBookById } from "./books";
 import { findUserByUsername } from "./readers";
 
@@ -71,6 +75,13 @@ export const reservationsRouter = createTRPCRouter({
       });
       return reservations;
     }),
+  getAllReservations: adminProcedure.query(async ({ ctx }) => {
+    const reservations = await ctx.prisma.reservation.findMany({
+      include: { book: true, user: true },
+      orderBy: [{ bookId: "asc" }, { createdAt: "asc" }],
+    });
+    return reservations;
+  }),
   removeReservation: privateProcedure
     .input(z.object({ id: z.number() }))
     .mutation(async ({ ctx, input }) => {

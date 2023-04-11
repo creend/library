@@ -10,6 +10,7 @@ const AdminDashboard = () => {
         dropDownItems={[
           { href: "/ksiazki", text: "Lista książek" },
           { href: "/ksiazki/dodaj", text: "Dodaj książke" },
+          { href: "/ksiazki/rezerwacje", text: "Zobacz rezerwacje" },
         ]}
       >
         Książki
