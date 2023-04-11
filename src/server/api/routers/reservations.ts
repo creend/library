@@ -13,6 +13,14 @@ export const reservationsRouter = createTRPCRouter({
       const { bookId, username } = input;
       const book = await findBookById(bookId, ctx.prisma);
       const reader = await findUserByUsername(username, ctx.prisma);
+
+      if (ctx.session?.user.username !== reader?.username) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Nie możesz złożyć komuś rezerwacji",
+        });
+      }
+
       if (book.availableCopies < 1) {
         throw new TRPCError({
           code: "CONFLICT",
@@ -45,5 +53,33 @@ export const reservationsRouter = createTRPCRouter({
         orderBy: { createdAt: "asc" },
       });
       return reservations;
+    }),
+  removeReservation: privateProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      const { id } = input;
+      const reservation = await ctx.prisma.reservation.findUnique({
+        where: { id },
+      });
+      if (!reservation) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Nie istnieje taka rezerwacja",
+        });
+      }
+      if (ctx.session?.user.id !== reservation.userId) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Nie możesz usunąć czyjejś hasła",
+        });
+      }
+      const removedReservation = await ctx.prisma.reservation.delete({
+        where: { id },
+      });
+      return {
+        status: 201,
+        message: "Reservation removed successfully",
+        reservation: removedReservation,
+      };
     }),
 });
