@@ -12,6 +12,7 @@ import EditBookForm from "~/components/forms/edit-book";
 import { useState } from "react";
 import ConfirmModal from "~/components/modal";
 import { handleApiError } from "~/helpers/api-error-handler";
+import Link from "next/link";
 
 interface Book {
   id: number;
@@ -120,17 +121,25 @@ const ReservatedBooksPage = () => {
             "Akcje",
           ]}
         >
-          {reservations?.length &&
-            reservations.map((reservation) => (
-              <Book
-                key={reservation.id}
-                {...reservation.book}
-                handleReservationCancel={() =>
-                  setCancellingReservationId(reservation.id)
-                }
-              />
-            ))}
+          {reservations?.length
+            ? reservations.map((reservation) => (
+                <Book
+                  key={reservation.id}
+                  {...reservation.book}
+                  handleReservationCancel={() =>
+                    setCancellingReservationId(reservation.id)
+                  }
+                />
+              ))
+            : null}
         </Table>
+        {!isLoading && !reservations?.length && (
+          <Link href="/ksiazki" className="block w-full">
+            <p className="p-6 text-center text-blue-500">
+              Nie masz żadnych rezerwacji, przejdź do listy książek
+            </p>
+          </Link>
+        )}
       </div>
     </>
   );
