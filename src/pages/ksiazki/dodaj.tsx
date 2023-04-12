@@ -6,13 +6,13 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 import * as Yup from "yup";
-import Button from "~/components/button";
-import Input from "~/components/input";
-import Spinner from "~/components/spinner";
+import Button from "~/components/ui/button";
+import Input from "~/components/ui/input";
+import Spinner from "~/components/ui/spinner";
 import { api } from "~/utils/api";
 import { getServerAuthSession } from "../api/auth/[...nextauth]";
 import { type GetServerSideProps } from "next";
-import Title from "~/components/title";
+import Title from "~/components/ui/title";
 import { handleApiError } from "~/helpers/api-error-handler";
 
 export const AddBookSchema = Yup.object().shape({

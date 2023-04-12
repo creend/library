@@ -3,13 +3,13 @@ import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Spinner from "~/components/spinner";
-import Table from "~/components/table";
+import Spinner from "~/components/ui/spinner";
+import Table from "~/components/ui/table";
 import { api } from "~/utils/api";
 import { getServerAuthSession } from "../api/auth/[...nextauth]";
 import { type GetServerSideProps } from "next";
 import { toast } from "react-hot-toast";
-import ConfirmModal from "~/components/modal";
+import ConfirmModal from "~/components/ui/modal";
 import { handleApiError } from "~/helpers/api-error-handler";
 
 const Reader = ({

@@ -1,19 +1,19 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Formik, Form } from "formik";
-import Input from "~/components/input";
+import Input from "~/components/ui/input";
 import { api } from "~/utils/api";
 import { useRouter } from "next/navigation";
 
 import * as Yup from "yup";
 import { toast } from "react-hot-toast";
 import { useEffect } from "react";
-import Spinner from "~/components/spinner";
+import Spinner from "~/components/ui/spinner";
 import Head from "next/head";
 import { useSession } from "next-auth/react";
-import Button from "~/components/button";
+import Button from "~/components/ui/button";
 import { type GetServerSideProps } from "next";
 import { getServerAuthSession } from "../api/auth/[...nextauth]";
-import Title from "~/components/title";
+import Title from "~/components/ui/title";
 import { handleApiError } from "~/helpers/api-error-handler";
 
 export const AddReaderSchema = Yup.object().shape({

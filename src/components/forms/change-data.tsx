@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 import { Formik } from "formik";
-import Input from "../input";
+import Input from "../ui/input";
 import { api } from "~/utils/api";
 import { toast } from "react-hot-toast";
 import { signOut, useSession } from "next-auth/react";

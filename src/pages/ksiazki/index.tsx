@@ -4,13 +4,13 @@ import { appRouter } from "~/server/api/root";
 import superjson from "superjson";
 import { api } from "~/utils/api";
 import Head from "next/head";
-import Table from "~/components/table";
+import Table from "~/components/ui/table";
 import { useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
-import Spinner from "~/components/spinner";
+import Spinner from "~/components/ui/spinner";
 import EditBookForm from "~/components/forms/edit-book";
 import { useState } from "react";
-import ConfirmModal from "~/components/modal";
+import ConfirmModal from "~/components/ui/modal";
 import { handleApiError } from "~/helpers/api-error-handler";
 
 interface Book {

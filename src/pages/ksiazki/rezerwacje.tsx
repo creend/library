@@ -3,8 +3,8 @@ import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import Spinner from "~/components/spinner";
-import Table from "~/components/table";
+import Spinner from "~/components/ui/spinner";
+import Table from "~/components/ui/table";
 import { api } from "~/utils/api";
 
 interface Book {

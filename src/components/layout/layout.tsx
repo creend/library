@@ -6,7 +6,7 @@ import { type ReactNode } from "react";
 import DashboardItem from "./dashboard-item";
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
 import { toast } from "react-hot-toast";
-import Spinner from "../spinner";
+import Spinner from "../ui/spinner";
 
 const Layout = ({ children }: { children: ReactNode }) => {
   const session = useSession();

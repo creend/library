@@ -1,7 +1,7 @@
 import { Form } from "formik";
-import Spinner from "../spinner";
+import Spinner from "../ui/spinner";
 import { type ReactNode } from "react";
-import Button from "../button";
+import Button from "../ui/button";
 
 interface Props {
   isLoading: boolean;

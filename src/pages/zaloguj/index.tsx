@@ -8,10 +8,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import * as Yup from "yup";
-import Button from "~/components/button";
-import Input from "~/components/input";
-import Spinner from "~/components/spinner";
-import Title from "~/components/title";
+import Button from "~/components/ui/button";
+import Input from "~/components/ui/input";
+import Spinner from "~/components/ui/spinner";
+import Title from "~/components/ui/title";
 
 const LoginSchema = Yup.object().shape({
   username: Yup.string()

@@ -5,11 +5,11 @@ import Head from "next/head";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
-import Button from "~/components/button";
-import Input from "~/components/input";
-import Spinner from "~/components/spinner";
+import Button from "~/components/ui/button";
+import Input from "~/components/ui/input";
+import Spinner from "~/components/ui/spinner";
 import { api } from "~/utils/api";
-import Title from "~/components/title";
+import Title from "~/components/ui/title";
 import { AddBookSchema as EditBookSchema } from "~/pages/ksiazki/dodaj";
 import { handleApiError } from "~/helpers/api-error-handler";
 
