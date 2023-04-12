@@ -1,3 +1,4 @@
+import { User } from "@prisma/client";
 import { Form, Formik } from "formik";
 import { signIn, useSession } from "next-auth/react";
 import Head from "next/head";
@@ -53,8 +54,22 @@ const LoginPage = () => {
             });
             setIsLoading(false);
             if (res?.ok) {
-              toast.success("Zalogowano!");
-              push("/");
+              try {
+                const data = await fetch(`api/user/${values.username}`).then(
+                  (res) => res.json()
+                );
+                const user = data.data as Omit<User, "passwordHash">;
+                console.log(user);
+                if (user.needPasswordChange) {
+                  toast.success("To twoje pierwsze logowanie! Zmień hasło");
+                  push("/moje-dane");
+                } else {
+                  toast.success("Zalogowano!");
+                  push("/");
+                }
+              } catch (err) {
+                toast.error("Błędne dane logowania!");
+              }
             } else {
               toast.error("Błędne dane logowania!");
             }

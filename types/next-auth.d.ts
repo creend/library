@@ -12,6 +12,7 @@ declare module "next-auth" {
       firstName: string;
       lastName: string;
       idDocumentNumber: string;
+      needPasswordChange: boolean;
       address: string;
       createdAt: Date;
       updatedAt: Date;

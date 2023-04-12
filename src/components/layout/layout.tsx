@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { signOut, useSession } from "next-auth/react";
 import AdminDashboard from "./admin-dashboard";
 import UserDashboard from "./user-dashboard";
@@ -6,12 +7,15 @@ import DashboardItem from "./dashboard-item";
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import Spinner from "../spinner";
+import { useRouter } from "next/navigation";
 
 const Layout = ({ children }: { children: ReactNode }) => {
   const session = useSession();
+  const { push } = useRouter();
   const Dashboard =
     session.data?.user.role === "admin" ? AdminDashboard : UserDashboard;
   const isLoggedIn = session.status === "authenticated";
+
   if (session.status === "loading")
     return (
       <div className="h-screen">
