@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { User } from "@prisma/client";
 import { Form, Formik } from "formik";
 import { signIn, useSession } from "next-auth/react";
@@ -59,7 +61,7 @@ const LoginPage = () => {
                   (res) => res.json()
                 );
                 const user = data.data as Omit<User, "passwordHash">;
-                console.log(user);
+
                 if (user.needPasswordChange) {
                   toast.success("Zmień hasło po pierwszym zalogowaniu");
                   push("/moje-dane");
