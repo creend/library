@@ -7,11 +7,9 @@ import DashboardItem from "./dashboard-item";
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import Spinner from "../spinner";
-import { useRouter } from "next/navigation";
 
 const Layout = ({ children }: { children: ReactNode }) => {
   const session = useSession();
-  const { push } = useRouter();
   const Dashboard =
     session.data?.user.role === "admin" ? AdminDashboard : UserDashboard;
   const isLoggedIn = session.status === "authenticated";
