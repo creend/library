@@ -4,6 +4,7 @@ import Head from "next/head";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { api } from "~/utils/api";
+import { RiErrorWarningFill } from "react-icons/ri";
 import { getServerAuthSession } from "../api/auth/[...nextauth]";
 import { type GetServerSideProps } from "next";
 import Spinner from "~/components/spinner";
@@ -47,6 +48,7 @@ const MyDataPage = () => {
   const [currentTab, setCurrentTab] = useState<
     "myData" | "changeData" | "changePassword" | "changeLogin"
   >("myData");
+  const showChangePasswordWarning = sessionData?.user.needPasswordChange;
 
   let headerText = "Moje dane";
   if (currentTab === "changeData") {
@@ -157,10 +159,17 @@ const MyDataPage = () => {
                 onClick={() => setCurrentTab("changePassword")}
                 aria-selected="false"
                 className={`${
-                  currentTab === "changePassword" ? "text-blue-500" : ""
-                } inline-block w-full  bg-gray-700  p-4 hover:bg-gray-600 focus:outline-none`}
+                  showChangePasswordWarning
+                    ? "text-yellow-500"
+                    : currentTab === "changePassword"
+                    ? "text-blue-500"
+                    : ""
+                } flex w-full items-center justify-center  bg-gray-700  p-4 hover:bg-gray-600 focus:outline-none`}
               >
                 Zmień hasło
+                {showChangePasswordWarning && (
+                  <RiErrorWarningFill className="ml-4 h-5 w-5" />
+                )}
               </button>
             </li>
             <li className="w-full">
@@ -238,6 +247,11 @@ const MyDataPage = () => {
                     currentTab === "changePassword" ? "block" : "hidden"
                   }`}
                 >
+                  {showChangePasswordWarning && (
+                    <p className="mt-5 text-center text-yellow-500">
+                      Jeszcze nie zmieniłeś hasła po pierwszym zalogowaniu
+                    </p>
+                  )}
                   <ChangePasswordForm />
                 </div>
                 <div

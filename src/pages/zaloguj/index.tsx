@@ -61,7 +61,7 @@ const LoginPage = () => {
                 const user = data.data as Omit<User, "passwordHash">;
                 console.log(user);
                 if (user.needPasswordChange) {
-                  toast.success("To twoje pierwsze logowanie! Zmień hasło");
+                  toast.success("Zmień hasło po pierwszym zalogowaniu");
                   push("/moje-dane");
                 } else {
                   toast.success("Zalogowano!");
