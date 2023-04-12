@@ -20,6 +20,7 @@ model User {
     updatedAt        DateTime      @updatedAt
     role             Role          @relation(fields: [roleId], references: [id])
     roleId           Int
+    loggedMinOnceTime Boolean @default(false)
     Reservations     Reservation[]
     Borrowments      Borrowment[]
 
