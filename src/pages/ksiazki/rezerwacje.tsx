@@ -31,14 +31,14 @@ const Reservation = ({
   book,
   user,
   createdAt,
-  handleAccept,
+  handleConfirm,
   handleReject,
 }: {
   book: Book;
   user: Reader;
   createdAt: Date;
   handleReject: () => void;
-  handleAccept: () => void;
+  handleConfirm: () => void;
 }) => {
   const { title, author, publisher, yearOfRelease, availableCopies } = book;
   const { firstName, lastName } = user;
@@ -63,7 +63,10 @@ const Reservation = ({
       <td className="py-4 pr-6">
         {
           <div className="flex justify-start">
-            <button className="mx-2  p-1 text-start font-medium  text-green-500 hover:underline">
+            <button
+              onClick={handleConfirm}
+              className="mx-2  p-1 text-start font-medium  text-green-500 hover:underline"
+            >
               Zatwierdź
             </button>
             <button
@@ -104,6 +107,19 @@ const ReservationsPage = () => {
   const { data: reservations, isLoading } =
     api.reservations.getAllReservations.useQuery();
 
+  const { mutate: confirmReservation, isLoading: isConfirming } =
+    api.borrowments.createBorrowment.useMutation({
+      onSuccess: async () => {
+        await ctx.reservations.getAllReservations.invalidate();
+        setConfirmingReservationId(null);
+        toast.success("Zatwierdzono rezerwacje!");
+      },
+      onError: (e) => {
+        setConfirmingReservationId(null);
+        handleApiError(e, "Błąd w zatwierdzaniu rezerwacji");
+      },
+    });
+
   const { mutate: rejectReservation, isLoading: isRejecting } =
     api.reservations.removeReservation.useMutation({
       onSuccess: async () => {
@@ -139,6 +155,17 @@ const ReservationsPage = () => {
           }}
         />
       )}
+      {confirmingReservationId && (
+        <ConfirmModal
+          handleClose={() => setConfirmingReservationId(null)}
+          question="Czy napewno zaakceptować rezerwacje"
+          variant="neutral"
+          isLoading={isConfirming}
+          handleConfirm={() => {
+            confirmReservation({ reservationId: confirmingReservationId });
+          }}
+        />
+      )}
       <div className="relative mx-auto mt-11 w-3/4 max-w-5xl overflow-x-auto shadow-md sm:rounded-lg">
         {isLoading && <Spinner />}
         <Table
@@ -158,7 +185,9 @@ const ReservationsPage = () => {
               <Reservation
                 key={reservation.id}
                 {...reservation}
-                handleAccept={() => {}}
+                handleConfirm={() => {
+                  setConfirmingReservationId(reservation.id);
+                }}
                 handleReject={() => {
                   setRejectingReservationId(reservation.id);
                 }}
