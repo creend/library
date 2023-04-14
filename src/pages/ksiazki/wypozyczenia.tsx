@@ -31,10 +31,12 @@ const Borrowment = ({
   book,
   user,
   createdAt,
+  handleEndBorrowment,
 }: {
   book: Book;
   user: Reader;
   createdAt: Date;
+  handleEndBorrowment: () => void;
 }) => {
   const { title, author, publisher, yearOfRelease, availableCopies } = book;
   const { firstName, lastName } = user;
@@ -57,8 +59,11 @@ const Borrowment = ({
         {new Intl.DateTimeFormat("en-US").format(createdAt)}
       </td>
       <td className="py-4 pr-6">
-        <button className="mx-2  p-1 text-start font-medium  text-blue-500 hover:underline">
-          Zakończ rezerwacje
+        <button
+          onClick={handleEndBorrowment}
+          className="mx-2  p-1 text-start font-medium  text-blue-500 hover:underline"
+        >
+          Zakończ wypożyczenie
         </button>
       </td>
     </tr>
@@ -72,6 +77,10 @@ const BorrowmentsPage = () => {
 
   const { push } = useRouter();
 
+  const [endingBorrowmentId, setEndingBorrowmentId] = useState<null | number>(
+    null
+  );
+
   useEffect(() => {
     if (!hasPermissions) {
       push("/");
@@ -82,19 +91,41 @@ const BorrowmentsPage = () => {
   const { data: borrowments, isLoading } =
     api.borrowments.getAllBorrowments.useQuery();
 
+  const { mutate: endBorrowment, isLoading: isEnding } =
+    api.borrowments.endBorrowment.useMutation({
+      onSuccess: async () => {
+        await ctx.borrowments.getAllBorrowments.invalidate();
+        setEndingBorrowmentId(null);
+        toast.success("Zakończono wypożyczenie!");
+      },
+      onError: (e) => {
+        setEndingBorrowmentId(null);
+        handleApiError(e, "Błąd w zakończaniu wypożyczenia");
+      },
+    });
+
   return (
     <>
       <Head>
         <title>Wypożyczone książki</title>
         <meta
           name="description"
-          content="Podstrona z zarezerwowanymi książkami"
+          content="Podstrona z wypożyczonymi książkami"
         />
       </Head>
       <h1 className="mx-auto mt-11 w-3/4 max-w-5xl text-5xl font-bold text-slate-200">
         Wypożyczone książki
       </h1>
-
+      {endingBorrowmentId && (
+        <ConfirmModal
+          handleClose={() => setEndingBorrowmentId(null)}
+          question="Czy napewno zakończyć wypożyczenie"
+          isLoading={isEnding}
+          handleConfirm={() => {
+            endBorrowment({ id: endingBorrowmentId });
+          }}
+        />
+      )}
       <div className="relative mx-auto mt-11 w-3/4 max-w-5xl overflow-x-auto shadow-md sm:rounded-lg">
         {isLoading && <Spinner />}
         <Table
@@ -111,7 +142,11 @@ const BorrowmentsPage = () => {
         >
           {borrowments?.length &&
             borrowments.map((borrowment) => (
-              <Borrowment key={borrowment.id} {...borrowment} />
+              <Borrowment
+                key={borrowment.id}
+                {...borrowment}
+                handleEndBorrowment={() => setEndingBorrowmentId(borrowment.id)}
+              />
             ))}
         </Table>
       </div>

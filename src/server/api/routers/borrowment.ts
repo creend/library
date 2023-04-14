@@ -41,4 +41,26 @@ export const borrowmentsRouter = createTRPCRouter({
         borrowment,
       };
     }),
+  endBorrowment: adminProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      const { id } = input;
+      const borrowment = await ctx.prisma.borrowment.findUnique({
+        where: { id },
+        include: { book: true, user: true },
+      });
+      if (!borrowment) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+      await ctx.prisma.book.update({
+        where: { id: borrowment.bookId },
+        data: { availableCopies: { increment: 1 } },
+      });
+      await ctx.prisma.borrowment.delete({ where: { id } });
+      return {
+        status: 201,
+        message: "Borrowment removed successfully",
+        borrowment,
+      };
+    }),
 });
