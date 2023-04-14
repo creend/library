@@ -11,6 +11,7 @@ const AdminDashboard = () => {
           { href: "/ksiazki", text: "Lista książek" },
           { href: "/ksiazki/dodaj", text: "Dodaj książke" },
           { href: "/ksiazki/rezerwacje", text: "Zobacz rezerwacje" },
+          { href: "/ksiazki/wypozyczenia", text: "Zobacz wypożyczenia" },
         ]}
       >
         Książki

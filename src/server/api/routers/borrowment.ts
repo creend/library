@@ -30,6 +30,7 @@ export const borrowmentsRouter = createTRPCRouter({
       if (!reservation) {
         throw new TRPCError({ code: "NOT_FOUND" });
       }
+
       await ctx.prisma.reservation.delete({ where: { id: reservationId } });
       const borrowment = await ctx.prisma.borrowment.create({
         data: { bookId: reservation.bookId, userId: reservation.userId },
