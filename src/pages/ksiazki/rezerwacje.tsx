@@ -2,9 +2,12 @@
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
+import ConfirmModal from "~/components/ui/modal";
 import Spinner from "~/components/ui/spinner";
 import Table from "~/components/ui/table";
+import { handleApiError } from "~/helpers/api-error-handler";
 import { api } from "~/utils/api";
 
 interface Book {
@@ -28,10 +31,14 @@ const Reservation = ({
   book,
   user,
   createdAt,
+  handleAccept,
+  handleReject,
 }: {
   book: Book;
   user: Reader;
   createdAt: Date;
+  handleReject: () => void;
+  handleAccept: () => void;
 }) => {
   const { title, author, publisher, yearOfRelease, availableCopies } = book;
   const { firstName, lastName } = user;
@@ -59,7 +66,10 @@ const Reservation = ({
             <button className="mx-2  p-1 text-start font-medium  text-green-500 hover:underline">
               Zatwierdź
             </button>
-            <button className="mx-2  p-1 text-start font-medium  text-red-500 hover:underline">
+            <button
+              onClick={handleReject}
+              className="mx-2  p-1 text-start font-medium  text-red-500 hover:underline"
+            >
               Odrzuć
             </button>
           </div>
@@ -74,6 +84,14 @@ const ReservationsPage = () => {
   const role = sessionData?.user.role;
   const hasPermissions = role === "admin";
 
+  const [rejectingReservationId, setRejectingReservationId] = useState<
+    null | number
+  >(null);
+
+  const [confirmingReservationId, setConfirmingReservationId] = useState<
+    null | number
+  >(null);
+
   const { push } = useRouter();
 
   useEffect(() => {
@@ -86,10 +104,23 @@ const ReservationsPage = () => {
   const { data: reservations, isLoading } =
     api.reservations.getAllReservations.useQuery();
 
+  const { mutate: rejectReservation, isLoading: isRejecting } =
+    api.reservations.removeReservation.useMutation({
+      onSuccess: async () => {
+        await ctx.reservations.getAllReservations.invalidate();
+        setRejectingReservationId(null);
+        toast.success("Odrzucono rezerwacje!");
+      },
+      onError: (e) => {
+        setRejectingReservationId(null);
+        handleApiError(e, "Błąd w odrzucaniu rezerwacji");
+      },
+    });
+
   return (
     <>
       <Head>
-        <title>Oczekujące rezerwacje</title>
+        <title>Zarezerwowane rezerwacje</title>
         <meta
           name="description"
           content="Podstrona z zarezerwowanymi książkami"
@@ -98,6 +129,16 @@ const ReservationsPage = () => {
       <h1 className="mx-auto mt-11 w-3/4 max-w-5xl text-5xl font-bold text-slate-200">
         Zarezerwowane książki
       </h1>
+      {rejectingReservationId && (
+        <ConfirmModal
+          handleClose={() => setRejectingReservationId(null)}
+          question="Czy napewno odrzucić rezerwacje"
+          isLoading={isRejecting}
+          handleConfirm={() => {
+            rejectReservation({ id: rejectingReservationId });
+          }}
+        />
+      )}
       <div className="relative mx-auto mt-11 w-3/4 max-w-5xl overflow-x-auto shadow-md sm:rounded-lg">
         {isLoading && <Spinner />}
         <Table
@@ -114,7 +155,14 @@ const ReservationsPage = () => {
         >
           {reservations?.length &&
             reservations.map((reservation) => (
-              <Reservation key={reservation.id} {...reservation} />
+              <Reservation
+                key={reservation.id}
+                {...reservation}
+                handleAccept={() => {}}
+                handleReject={() => {
+                  setRejectingReservationId(reservation.id);
+                }}
+              />
             ))}
         </Table>
       </div>

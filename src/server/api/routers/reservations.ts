@@ -95,10 +95,13 @@ export const reservationsRouter = createTRPCRouter({
           message: "Nie istnieje taka rezerwacja",
         });
       }
-      if (ctx.session?.user.id !== reservation.userId) {
+      if (
+        ctx.session?.user.id !== reservation.userId &&
+        ctx.session?.user.role !== "admin"
+      ) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
-          message: "Nie możesz usunąć czyjejś hasła",
+          message: "Nie możesz usunąć czyjejś rezerwacji",
         });
       }
       const removedReservation = await ctx.prisma.reservation.delete({
