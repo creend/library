@@ -89,12 +89,22 @@ export const readersRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { username } = input;
       await findUserByUsername(username, ctx.prisma);
-      const removedUser = await ctx.prisma.user.delete({ where: { username } });
-      return {
-        status: 201,
-        message: "Reader removed successfully",
-        user: filterUser(removedUser),
-      };
+      try {
+        const removedUser = await ctx.prisma.user.delete({
+          where: { username },
+        });
+        return {
+          status: 201,
+          message: "Reader removed successfully",
+          user: filterUser(removedUser),
+        };
+      } catch (e) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message:
+            "Użytkownik posiada rezerwacje lub wypożyczenia. Przed usunięciem użytkownika, usuń jego wszysykie rezerwacje i wypożyczenia",
+        });
+      }
     }),
   changePassword: privateProcedure
     .input(
