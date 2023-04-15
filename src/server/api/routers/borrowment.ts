@@ -1,5 +1,10 @@
 import { z } from "zod";
-import { adminProcedure, createTRPCRouter, publicProcedure } from "../trpc";
+import {
+  adminProcedure,
+  createTRPCRouter,
+  privateProcedure,
+  publicProcedure,
+} from "../trpc";
 import { TRPCError } from "@trpc/server";
 
 export const borrowmentsRouter = createTRPCRouter({
@@ -9,7 +14,7 @@ export const borrowmentsRouter = createTRPCRouter({
     });
     return borrowments;
   }),
-  getBorrowmentsByUsername: adminProcedure
+  getBorrowmentsByUsername: privateProcedure
     .input(z.object({ username: z.string() }))
     .query(async ({ ctx, input }) => {
       const { username } = input;
