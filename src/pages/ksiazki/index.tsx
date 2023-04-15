@@ -11,80 +11,80 @@ import EditBookForm from "~/components/forms/edit-book";
 import { useState } from "react";
 import ConfirmModal from "~/components/ui/modal";
 import { handleApiError } from "~/helpers/api-error-handler";
-import { type Book } from "@prisma/client";
+import { type Book as BookType } from "@prisma/client";
+import Book from "~/components/book";
 
 type AdminBookProps = {
   role: "admin";
   handleDelete: () => void;
   handleEdit: () => void;
-} & Book;
+} & BookType;
 
 type UserBookProps = {
   role: "user";
   handleReservation: () => void;
-} & Book;
+} & BookType;
 
 type GuestBookProps = {
   role: "guest";
-} & Book;
+} & BookType;
 
-const Book = ({
+const BookWithActions = ({
   author,
   availableCopies,
   publisher,
   title,
   yearOfRelease,
+  id,
   role,
   ...handlers
 }: AdminBookProps | UserBookProps | GuestBookProps) => {
   return (
-    <tr className="border-b border-gray-700 bg-gray-800 hover:bg-gray-600">
-      <th
-        scope="row"
-        className="whitespace-nowrap px-6 py-4 font-medium text-white"
-      >
-        {title}
-      </th>
-      <td className="px-6 py-4">{author}</td>
-      <td className="px-6 py-4">{publisher}</td>
-      <td className="px-6 py-4">{yearOfRelease}</td>
-      <td className="px-6 py-4">{availableCopies}</td>
-      {role !== "guest" && (
-        <td className="py-4 pr-6">
-          {
-            <div className="flex justify-start">
-              {role === "admin" && "handleEdit" in handlers ? (
-                <>
-                  <button
-                    className="mx-2 p-1 font-medium  text-blue-500 hover:underline"
-                    onClick={handlers.handleEdit}
-                  >
-                    Edytuj
-                  </button>
-                  <button
-                    className="mx-2 p-1 font-medium  text-red-500 hover:underline"
-                    onClick={handlers.handleDelete}
-                  >
-                    Usuń
-                  </button>
-                </>
-              ) : (
-                <>
-                  {"handleReservation" in handlers && (
+    <Book
+      author={author}
+      availableCopies={availableCopies}
+      publisher={publisher}
+      id={id}
+      title={title}
+      yearOfRelease={yearOfRelease}
+      renderMoreCols={() =>
+        role !== "guest" && (
+          <td className="py-4 pr-6">
+            {
+              <div className="flex justify-start">
+                {role === "admin" && "handleEdit" in handlers ? (
+                  <>
                     <button
-                      onClick={handlers.handleReservation}
                       className="mx-2 p-1 font-medium  text-blue-500 hover:underline"
+                      onClick={handlers.handleEdit}
                     >
-                      Zarezerwuj
+                      Edytuj
                     </button>
-                  )}
-                </>
-              )}
-            </div>
-          }
-        </td>
-      )}
-    </tr>
+                    <button
+                      className="mx-2 p-1 font-medium  text-red-500 hover:underline"
+                      onClick={handlers.handleDelete}
+                    >
+                      Usuń
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    {"handleReservation" in handlers && (
+                      <button
+                        onClick={handlers.handleReservation}
+                        className="mx-2 p-1 font-medium  text-blue-500 hover:underline"
+                      >
+                        Zarezerwuj
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
+            }
+          </td>
+        )
+      }
+    ></Book>
   );
 };
 
@@ -183,9 +183,8 @@ const BooksPage = () => {
           >
             {role === "admin" &&
               books.map((book) => (
-                <Book
+                <BookWithActions
                   key={book.id}
-                  {...book}
                   role="admin"
                   handleDelete={() => {
                     setRemovingBookId(book.id);
@@ -193,11 +192,12 @@ const BooksPage = () => {
                   handleEdit={() => {
                     setEdittingBookId(book.id);
                   }}
+                  {...book}
                 />
               ))}
             {role === "normal" &&
               books.map((book) => (
-                <Book
+                <BookWithActions
                   key={book.id}
                   {...book}
                   role="user"
@@ -208,7 +208,7 @@ const BooksPage = () => {
               ))}
             {!role &&
               books.map((book) => (
-                <Book key={book.id} {...book} role="guest" />
+                <BookWithActions key={book.id} {...book} role="guest" />
               ))}
           </Table>
         </div>
