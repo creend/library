@@ -12,15 +12,7 @@ import EditBookForm from "~/components/forms/edit-book";
 import { useState } from "react";
 import ConfirmModal from "~/components/ui/modal";
 import { handleApiError } from "~/helpers/api-error-handler";
-
-interface Book {
-  id: number;
-  title: string;
-  author: string;
-  publisher: string;
-  yearOfRelease: number;
-  availableCopies: number;
-}
+import { type Book } from "@prisma/client";
 
 type AdminBookProps = {
   role: "admin";

@@ -11,6 +11,12 @@ import { type GetServerSideProps } from "next";
 import { toast } from "react-hot-toast";
 import ConfirmModal from "~/components/ui/modal";
 import { handleApiError } from "~/helpers/api-error-handler";
+import { type User } from "@prisma/client";
+
+export type Reader = Omit<
+  User,
+  "passwordHash" | "roleId" | "createdAt" | "updatedAt" | "passwordHash"
+>;
 
 const Reader = ({
   address,
@@ -19,12 +25,7 @@ const Reader = ({
   firstName,
   username,
   handleDelete,
-}: {
-  username: string;
-  firstName: string;
-  lastName: string;
-  idDocumentNumber: string;
-  address: string;
+}: Reader & {
   handleDelete: () => void;
 }) => {
   return (

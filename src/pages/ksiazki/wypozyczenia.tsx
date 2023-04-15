@@ -9,23 +9,8 @@ import Spinner from "~/components/ui/spinner";
 import Table from "~/components/ui/table";
 import { handleApiError } from "~/helpers/api-error-handler";
 import { api } from "~/utils/api";
-
-interface Book {
-  id: number;
-  title: string;
-  author: string;
-  publisher: string;
-  yearOfRelease: number;
-  availableCopies: number;
-}
-
-interface Reader {
-  username: string;
-  firstName: string;
-  lastName: string;
-  idDocumentNumber: string;
-  address: string;
-}
+import { type Book } from "@prisma/client";
+import { type Reader } from "../czytelnicy";
 
 const Borrowment = ({
   book,

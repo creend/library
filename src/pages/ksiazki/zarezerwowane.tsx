@@ -13,16 +13,7 @@ import { useState } from "react";
 import ConfirmModal from "~/components/ui/modal";
 import { handleApiError } from "~/helpers/api-error-handler";
 import Link from "next/link";
-
-interface Book {
-  id: number;
-  title: string;
-  author: string;
-  publisher: string;
-  yearOfRelease: number;
-  availableCopies: number;
-  handleReservationCancel: () => void;
-}
+import { type Book } from "@prisma/client";
 
 //@TODO WYELIMINOWAC POWTORZENIA TYCH TABELOWYCH KOMPONENTOW I INTERFACOW
 
