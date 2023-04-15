@@ -3,7 +3,6 @@ import {
   adminProcedure,
   createTRPCRouter,
   privateProcedure,
-  publicProcedure,
 } from "../trpc";
 import { TRPCError } from "@trpc/server";
 

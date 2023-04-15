@@ -7,7 +7,6 @@ import Head from "next/head";
 import Table from "~/components/ui/table";
 import { useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
-import Spinner from "~/components/ui/spinner";
 import EditBookForm from "~/components/forms/edit-book";
 import { useState } from "react";
 import ConfirmModal from "~/components/ui/modal";
@@ -36,7 +35,6 @@ const Book = ({
   title,
   yearOfRelease,
   role,
-  id,
   ...handlers
 }: AdminBookProps | UserBookProps | GuestBookProps) => {
   return (

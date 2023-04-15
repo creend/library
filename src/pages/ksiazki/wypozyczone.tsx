@@ -3,12 +3,9 @@ import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
-import ConfirmModal from "~/components/ui/modal";
+import { useEffect } from "react";
 import Spinner from "~/components/ui/spinner";
 import Table from "~/components/ui/table";
-import { handleApiError } from "~/helpers/api-error-handler";
 import { api } from "~/utils/api";
 import { type Book } from "@prisma/client";
 
@@ -46,7 +43,6 @@ const MyBorrowmentsPage = () => {
     }
   }, [hasPermissions, push]);
 
-  const ctx = api.useContext();
   const { data: borrowments, isLoading } =
     api.borrowments.getBorrowmentsByUsername.useQuery({
       username: username ?? "",

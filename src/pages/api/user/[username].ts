@@ -1,8 +1,6 @@
-import { User } from "@prisma/client";
-import { TRPCError } from "@trpc/server";
-import { getHTTPStatusCodeFromError } from "@trpc/server/http";
+/* eslint-disable import/no-anonymous-default-export */
+import { type User } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { appRouter } from "~/server/api/root";
 import { prisma } from "~/server/db";
 
 type ResponseData = {
@@ -25,6 +23,7 @@ export default async (
     if (!user) {
       return res.status(400).json({ error: { message: "User not found" } });
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordHash, ...userData } = user;
     res.status(200).json({ data: userData });
   } catch (cause) {

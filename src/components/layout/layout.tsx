@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { signOut, useSession } from "next-auth/react";
 import AdminDashboard from "./admin-dashboard";
 import UserDashboard from "./user-dashboard";

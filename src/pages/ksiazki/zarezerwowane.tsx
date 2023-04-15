@@ -1,14 +1,9 @@
-import { createProxySSGHelpers } from "@trpc/react-query/ssg";
-import { prisma } from "~/server/db";
-import { appRouter } from "~/server/api/root";
-import superjson from "superjson";
 import { api } from "~/utils/api";
 import Head from "next/head";
 import Table from "~/components/ui/table";
 import { useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
 import Spinner from "~/components/ui/spinner";
-import EditBookForm from "~/components/forms/edit-book";
 import { useState } from "react";
 import ConfirmModal from "~/components/ui/modal";
 import { handleApiError } from "~/helpers/api-error-handler";
@@ -25,7 +20,7 @@ const Book = ({
   yearOfRelease,
 
   handleReservationCancel,
-}: Book) => {
+}: Book & { handleReservationCancel: () => void }) => {
   return (
     <tr className="border-b border-gray-700 bg-gray-800 hover:bg-gray-600">
       <th

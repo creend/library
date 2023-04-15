@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { User } from "@prisma/client";
+import { type User } from "@prisma/client";
 import { Form, Formik } from "formik";
 import { signIn, useSession } from "next-auth/react";
 import Head from "next/head";
