@@ -40,12 +40,20 @@ export const booksRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { id } = input;
       await findBookById(id, ctx.prisma);
-      const removedBook = await ctx.prisma.book.delete({ where: { id } });
-      return {
-        status: 201,
-        message: "Book removed successfully",
-        book: removedBook,
-      };
+      try {
+        const removedBook = await ctx.prisma.book.delete({ where: { id } });
+        return {
+          status: 201,
+          message: "Book removed successfully",
+          book: removedBook,
+        };
+      } catch (err) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message:
+            "Książka jest zarezerwowana lub wypożyczona. Przed usunięciem książki, usuń jej wszystkie rezerwacje i wypożyczenia",
+        });
+      }
     }),
   editBook: adminProcedure
     .input(

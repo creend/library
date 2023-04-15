@@ -140,7 +140,7 @@ const BorrowmentsPage = () => {
             "Akcje",
           ]}
         >
-          {borrowments?.length &&
+          {!!borrowments?.length &&
             borrowments.map((borrowment) => (
               <Borrowment
                 key={borrowment.id}

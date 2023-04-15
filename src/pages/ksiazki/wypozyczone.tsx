@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { useSession } from "next-auth/react";
 import Head from "next/head";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
@@ -90,11 +91,18 @@ const MyBorrowmentsPage = () => {
             "Data wypożyczenia",
           ]}
         >
-          {borrowments?.length &&
+          {!!borrowments?.length &&
             borrowments.map((borrowment) => (
               <Borrowment key={borrowment.id} {...borrowment} />
             ))}
         </Table>
+        {!isLoading && !borrowments?.length && (
+          <Link href="/ksiazki" className="block w-full">
+            <p className="p-6 text-center text-blue-500">
+              Nie masz żadnych wypożyczeń, przejdź do listy książek
+            </p>
+          </Link>
+        )}
       </div>
     </>
   );

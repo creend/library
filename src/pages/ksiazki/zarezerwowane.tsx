@@ -24,6 +24,8 @@ interface Book {
   handleReservationCancel: () => void;
 }
 
+//@TODO WYELIMINOWAC POWTORZENIA TYCH TABELOWYCH KOMPONENTOW I INTERFACOW
+
 const Book = ({
   author,
   availableCopies,

@@ -42,19 +42,9 @@ export const reservationsRouter = createTRPCRouter({
         });
       }
 
-      if (book.availableCopies < 1) {
-        throw new TRPCError({
-          code: "CONFLICT",
-          message: "Książka nie jest dostępna !",
-        });
-      }
       const reservation = await ctx.prisma.reservation.create({
         data: { bookId: book.id, userId: reader.id },
         include: { book: true, user: true },
-      });
-      await ctx.prisma.book.update({
-        where: { id: bookId },
-        data: { availableCopies: { decrement: 1 } },
       });
 
       return {

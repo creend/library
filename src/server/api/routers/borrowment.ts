@@ -35,8 +35,22 @@ export const borrowmentsRouter = createTRPCRouter({
       if (!reservation) {
         throw new TRPCError({ code: "NOT_FOUND" });
       }
+      if (reservation.book.availableCopies < 1) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Książka nie jest dostępna",
+        });
+      }
 
       await ctx.prisma.reservation.delete({ where: { id: reservationId } });
+
+      await ctx.prisma.book.update({
+        where: { id: reservation.bookId },
+        data: {
+          availableCopies: { decrement: 1 },
+        },
+      });
+
       const borrowment = await ctx.prisma.borrowment.create({
         data: { bookId: reservation.bookId, userId: reservation.userId },
       });
