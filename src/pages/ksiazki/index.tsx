@@ -84,7 +84,7 @@ const BookWithActions = ({
           </td>
         )
       }
-    ></Book>
+    />
   );
 };
 

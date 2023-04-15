@@ -9,8 +9,9 @@ import Spinner from "~/components/ui/spinner";
 import Table from "~/components/ui/table";
 import { handleApiError } from "~/helpers/api-error-handler";
 import { api } from "~/utils/api";
-import { type Book } from "@prisma/client";
+import { type Book as BookType } from "@prisma/client";
 import { type Reader } from "../czytelnicy";
+import Book from "~/components/book";
 
 const Borrowment = ({
   book,
@@ -18,40 +19,40 @@ const Borrowment = ({
   createdAt,
   handleEndBorrowment,
 }: {
-  book: Book;
+  book: BookType;
   user: Reader;
   createdAt: Date;
   handleEndBorrowment: () => void;
 }) => {
-  const { title, author, publisher, yearOfRelease, availableCopies } = book;
+  const { title, author, publisher, yearOfRelease, availableCopies, id } = book;
   const { firstName, lastName } = user;
   return (
-    <tr className="border-b border-gray-700 bg-gray-800 hover:bg-gray-600">
-      <th
-        scope="row"
-        className="whitespace-nowrap px-6 py-4 font-medium text-white"
-      >
-        {title}
-      </th>
-      <td className="px-6 py-4">{author}</td>
-      <td className="px-6 py-4">{publisher}</td>
-      <td className="px-6 py-4">{yearOfRelease}</td>
-      <td className="px-6 py-4">{availableCopies}</td>
-      <td className="px-6 py-4">
-        {firstName} {lastName}
-      </td>
-      <td className="px-6 py-4">
-        {new Intl.DateTimeFormat("en-US").format(createdAt)}
-      </td>
-      <td className="py-4 pr-6">
-        <button
-          onClick={handleEndBorrowment}
-          className="mx-2  p-1 text-start font-medium  text-blue-500 hover:underline"
-        >
-          Zakończ wypożyczenie
-        </button>
-      </td>
-    </tr>
+    <Book
+      author={author}
+      availableCopies={availableCopies}
+      id={id}
+      publisher={publisher}
+      title={title}
+      yearOfRelease={yearOfRelease}
+      renderMoreCols={() => (
+        <>
+          <td className="px-6 py-4">
+            {firstName} {lastName}
+          </td>
+          <td className="px-6 py-4">
+            {new Intl.DateTimeFormat("en-US").format(createdAt)}
+          </td>
+          <td className="py-4 pr-6">
+            <button
+              onClick={handleEndBorrowment}
+              className="mx-2  p-1 text-start font-medium  text-blue-500 hover:underline"
+            >
+              Zakończ wypożyczenie
+            </button>
+          </td>
+        </>
+      )}
+    />
   );
 };
 

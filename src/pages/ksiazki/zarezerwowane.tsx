@@ -8,42 +8,39 @@ import { useState } from "react";
 import ConfirmModal from "~/components/ui/modal";
 import { handleApiError } from "~/helpers/api-error-handler";
 import Link from "next/link";
-import { type Book } from "@prisma/client";
+import { type Book as BookType } from "@prisma/client";
+import Book from "~/components/book";
 
-//@TODO WYELIMINOWAC POWTORZENIA TYCH TABELOWYCH KOMPONENTOW I INTERFACOW
-
-const Book = ({
+const Reservation = ({
   author,
   availableCopies,
   publisher,
   title,
   yearOfRelease,
-
+  id,
   handleReservationCancel,
-}: Book & { handleReservationCancel: () => void }) => {
+}: BookType & { handleReservationCancel: () => void }) => {
   return (
-    <tr className="border-b border-gray-700 bg-gray-800 hover:bg-gray-600">
-      <th
-        scope="row"
-        className="whitespace-nowrap px-6 py-4 font-medium text-white"
-      >
-        {title}
-      </th>
-      <td className="px-6 py-4">{author}</td>
-      <td className="px-6 py-4">{publisher}</td>
-      <td className="px-6 py-4">{yearOfRelease}</td>
-      <td className="px-6 py-4">{availableCopies}</td>
-      <td className="py-4 pr-6">
-        {
-          <button
-            className="mx-2  p-1 text-start font-medium  text-red-500 hover:underline"
-            onClick={handleReservationCancel}
-          >
-            Cofnij rezerwacje
-          </button>
-        }
-      </td>
-    </tr>
+    <Book
+      author={author}
+      availableCopies={availableCopies}
+      id={id}
+      publisher={publisher}
+      title={title}
+      yearOfRelease={yearOfRelease}
+      renderMoreCols={() => (
+        <td className="py-4 pr-6">
+          {
+            <button
+              className="mx-2  p-1 text-start font-medium  text-red-500 hover:underline"
+              onClick={handleReservationCancel}
+            >
+              Cofnij rezerwacje
+            </button>
+          }
+        </td>
+      )}
+    />
   );
 };
 
@@ -111,7 +108,7 @@ const ReservatedBooksPage = () => {
         >
           {reservations?.length
             ? reservations.map((reservation) => (
-                <Book
+                <Reservation
                   key={reservation.id}
                   {...reservation.book}
                   handleReservationCancel={() =>
