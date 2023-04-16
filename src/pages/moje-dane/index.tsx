@@ -90,22 +90,27 @@ const MyDataPage = () => {
             </label>
             <select
               id="tabs"
+              onChange={(e) => {
+                const tab = e.target.value;
+                if (
+                  tab === "myData" ||
+                  tab === "changeData" ||
+                  tab === "changePassword" ||
+                  tab === "changeLogin"
+                ) {
+                  setCurrentTab(tab);
+                }
+              }}
               className="block w-full rounded-t-lg border-0 border-b  border-gray-600 bg-gray-700   p-2.5 text-sm text-white placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500 focus:ring-blue-500"
             >
-              <option onClick={() => setCurrentTab("myData")}>Moje dane</option>
+              <option value="myData">Moje dane</option>
               {userRole !== "admin" && (
-                <option onClick={() => setCurrentTab("changeData")}>
-                  Zmień dane
-                </option>
+                <option value="changeData">Zmień dane</option>
               )}
 
-              <option onClick={() => setCurrentTab("changePassword")}>
-                Zmień hasło
-              </option>
+              <option value="changePassword">Zmień hasło</option>
 
-              <option onClick={() => setCurrentTab("changeLogin")}>
-                Zmień login
-              </option>
+              <option value="changeLogin">Zmień login</option>
             </select>
           </div>
           <ul
