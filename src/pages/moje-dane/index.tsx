@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { useSession } from "next-auth/react";
 import Head from "next/head";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { api } from "~/utils/api";
 import { RiErrorWarningFill } from "react-icons/ri";
 import { getServerAuthSession } from "../api/auth/[...nextauth]";
@@ -35,7 +34,6 @@ const UserProperty = ({ label, value }: { label: string; value: string }) => {
 };
 
 const MyDataPage = () => {
-
   const { data: sessionData } = useSession();
 
   const userRole = sessionData?.user.role;

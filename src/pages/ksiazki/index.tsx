@@ -217,6 +217,7 @@ const BooksPage = () => {
   );
 };
 
+
 export async function getStaticProps() {
   const ssg = createProxySSGHelpers({
     router: appRouter,

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import Head from "next/head";
-import {  useState } from "react";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
 import ConfirmModal from "~/components/ui/modal";
 import Spinner from "~/components/ui/spinner";
@@ -10,6 +10,8 @@ import { api } from "~/utils/api";
 import { type Book as BookType } from "@prisma/client";
 import { type Reader } from "../czytelnicy";
 import Book from "~/components/book";
+import { getServerAuthSession } from "../api/auth/[...nextauth]";
+import { type GetServerSideProps } from "next";
 
 const Borrowment = ({
   book,
@@ -52,6 +54,13 @@ const Borrowment = ({
       )}
     />
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = await getServerAuthSession(ctx);
+  return {
+    props: { session },
+  };
 };
 
 const BorrowmentsPage = () => {

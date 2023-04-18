@@ -12,6 +12,8 @@ import Button from "~/components/ui/button";
 import Input from "~/components/ui/input";
 import Spinner from "~/components/ui/spinner";
 import Title from "~/components/ui/title";
+import { getServerAuthSession } from "../api/auth/[...nextauth]";
+import { GetServerSideProps } from "next";
 
 const LoginSchema = Yup.object().shape({
   username: Yup.string()
@@ -23,6 +25,13 @@ const LoginSchema = Yup.object().shape({
     .max(50, "Hasło może posiadać maksymalnie 50 znaków")
     .required("Hasło jest wymagane"),
 });
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = await getServerAuthSession(ctx);
+  return {
+    props: { session },
+  };
+};
 
 const LoginPage = () => {
   // eslint-disable-next-line @typescript-eslint/unbound-method

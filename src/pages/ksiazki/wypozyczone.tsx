@@ -6,6 +6,8 @@ import Spinner from "~/components/ui/spinner";
 import Table from "~/components/ui/table";
 import { api } from "~/utils/api";
 import { type Book } from "@prisma/client";
+import { getServerAuthSession } from "../api/auth/[...nextauth]";
+import { type GetServerSideProps } from "next";
 
 const Borrowment = ({ book, createdAt }: { book: Book; createdAt: Date }) => {
   const { title, author, publisher, yearOfRelease } = book;
@@ -27,11 +29,16 @@ const Borrowment = ({ book, createdAt }: { book: Book; createdAt: Date }) => {
   );
 };
 
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = await getServerAuthSession(ctx);
+  return {
+    props: { session },
+  };
+};
+
 const MyBorrowmentsPage = () => {
   const { data: sessionData } = useSession();
   const username = sessionData?.user.username;
-
-
 
   const { data: borrowments, isLoading } =
     api.borrowments.getBorrowmentsByUsername.useQuery({

@@ -10,6 +10,8 @@ import { handleApiError } from "~/helpers/api-error-handler";
 import Link from "next/link";
 import { type Book as BookType } from "@prisma/client";
 import Book from "~/components/book";
+import { getServerAuthSession } from "../api/auth/[...nextauth]";
+import { type GetServerSideProps } from "next";
 
 const Reservation = ({
   author,
@@ -42,6 +44,13 @@ const Reservation = ({
       )}
     />
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = await getServerAuthSession(ctx);
+  return {
+    props: { session },
+  };
 };
 
 const ReservatedBooksPage = () => {
