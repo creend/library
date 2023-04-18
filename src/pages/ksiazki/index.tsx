@@ -13,6 +13,8 @@ import ConfirmModal from "~/components/ui/modal";
 import { handleApiError } from "~/helpers/api-error-handler";
 import { type Book as BookType } from "@prisma/client";
 import Book from "~/components/book";
+import { type GetStaticProps } from "next";
+import { getServerAuthSession } from "../api/auth/[...nextauth]";
 
 type AdminBookProps = {
   role: "admin";
@@ -217,8 +219,8 @@ const BooksPage = () => {
   );
 };
 
-
-export async function getStaticProps() {
+//TODO JAKOS SESJE PRZESYLAC
+export const getStaticProps: GetStaticProps = async () => {
   const ssg = createProxySSGHelpers({
     router: appRouter,
     ctx: { prisma, session: null },
@@ -230,6 +232,6 @@ export async function getStaticProps() {
       trpcState: ssg.dehydrate(),
     },
   };
-}
+};
 
 export default BooksPage;
