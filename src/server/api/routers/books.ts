@@ -7,7 +7,7 @@ import {
   createTRPCRouter,
   publicProcedure,
 } from "~/server/api/trpc";
-
+//TODO ZEBY NIE DALO SIE REZERWAWAC ZAREZERWOWANEJ LUB WYPOZYCZONEJ KSIAKZI
 export const booksRouter = createTRPCRouter({
   getBooks: publicProcedure.query(async ({ ctx }) => {
     const books = await ctx.prisma.book.findMany({});

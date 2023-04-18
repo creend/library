@@ -17,7 +17,10 @@ export const reservationsRouter = createTRPCRouter({
       const book = await findBookById(bookId, ctx.prisma);
       const reader = await ctx.prisma.user.findUnique({
         where: { username },
-        include: { Reservations: { where: { bookId } } },
+        include: {
+          Reservations: { where: { bookId } },
+          Borrowments: { where: { bookId } },
+        },
       });
 
       if (!reader) {
@@ -31,6 +34,13 @@ export const reservationsRouter = createTRPCRouter({
         throw new TRPCError({
           code: "CONFLICT",
           message: "Nie możesz zarezerwować 2 razy jednej książki",
+        });
+      }
+
+      if (reader?.Borrowments.length) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Nie możesz zarezerwować książki, którą już wypożyczyłeś",
         });
       }
 
