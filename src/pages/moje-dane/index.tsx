@@ -35,10 +35,8 @@ const UserProperty = ({ label, value }: { label: string; value: string }) => {
 };
 
 const MyDataPage = () => {
-  const { push } = useRouter();
 
-  const { data: sessionData, status } = useSession();
-  const hasPermissions = status !== "unauthenticated";
+  const { data: sessionData } = useSession();
 
   const userRole = sessionData?.user.role;
   const { data: reader, isLoading } = api.readers.getReaderByUsername.useQuery({
@@ -58,14 +56,6 @@ const MyDataPage = () => {
   } else if (currentTab === "changeLogin") {
     headerText = "Zmiana loginu";
   }
-
-  useEffect(() => {
-    if (!hasPermissions) {
-      push("/");
-    }
-  }, [hasPermissions, push]);
-
-  if (!hasPermissions) return null;
 
   return (
     <>

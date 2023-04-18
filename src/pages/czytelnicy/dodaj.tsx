@@ -6,10 +6,8 @@ import { useRouter } from "next/navigation";
 
 import * as Yup from "yup";
 import { toast } from "react-hot-toast";
-import { useEffect } from "react";
 import Spinner from "~/components/ui/spinner";
 import Head from "next/head";
-import { useSession } from "next-auth/react";
 import Button from "~/components/ui/button";
 import { type GetServerSideProps } from "next";
 import { getServerAuthSession } from "../api/auth/[...nextauth]";
@@ -65,17 +63,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 };
 
 const AddUserPage = () => {
-  const { data: sessionData } = useSession();
-  const role = sessionData?.user.role;
-  const hasPermissions = role === "admin";
-
   const { push } = useRouter();
-
-  useEffect(() => {
-    if (!hasPermissions) {
-      push("/");
-    }
-  }, [hasPermissions, push]);
 
   const { mutate, isLoading } = api.readers.addReader.useMutation({
     onSuccess: () => {
@@ -84,7 +72,7 @@ const AddUserPage = () => {
     },
     onError: (e) => handleApiError(e, "Błąd w dodaniu czytelnika"),
   });
-  if (!hasPermissions) return null;
+
   return (
     <>
       <Head>

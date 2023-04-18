@@ -2,8 +2,6 @@
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import Spinner from "~/components/ui/spinner";
 import Table from "~/components/ui/table";
 import { api } from "~/utils/api";
@@ -30,18 +28,10 @@ const Borrowment = ({ book, createdAt }: { book: Book; createdAt: Date }) => {
 };
 
 const MyBorrowmentsPage = () => {
-  const { data: sessionData, status } = useSession();
-  const role = sessionData?.user.role;
-  const hasPermissions = status === "authenticated" && role !== "admin";
+  const { data: sessionData } = useSession();
   const username = sessionData?.user.username;
 
-  const { push } = useRouter();
 
-  useEffect(() => {
-    if (!hasPermissions) {
-      push("/");
-    }
-  }, [hasPermissions, push]);
 
   const { data: borrowments, isLoading } =
     api.borrowments.getBorrowmentsByUsername.useQuery({

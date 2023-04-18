@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import { useSession } from "next-auth/react";
 import Head from "next/head";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Spinner from "~/components/ui/spinner";
 import Table from "~/components/ui/table";
 import { api } from "~/utils/api";
@@ -66,18 +64,6 @@ const ReadersPage = () => {
     null | string
   >(null);
 
-  const { data: sessionData } = useSession();
-  const role = sessionData?.user.role;
-  const hasPermissions = role === "admin";
-
-  const { push } = useRouter();
-
-  useEffect(() => {
-    if (!hasPermissions) {
-      push("/");
-    }
-  }, [hasPermissions, push]);
-
   const ctx = api.useContext();
 
   const { mutate, isLoading: isRemoving } =
@@ -92,8 +78,6 @@ const ReadersPage = () => {
         handleApiError(e, "Błąd w usuwaniu czytelnika");
       },
     });
-
-  if (!hasPermissions) return null;
 
   return (
     <>
@@ -114,7 +98,6 @@ const ReadersPage = () => {
           }}
         />
       )}
-      {hasPermissions && (
         <div className="relative mx-auto mt-11 w-3/4 max-w-5xl overflow-x-auto shadow-md sm:rounded-lg">
           {(isLoading || isRemoving) && <Spinner />}
           <Table
@@ -138,7 +121,7 @@ const ReadersPage = () => {
               ))}
           </Table>
         </div>
-      )}
+    
     </>
   );
 };

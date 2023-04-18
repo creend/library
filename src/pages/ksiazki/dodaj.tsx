@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Form, Formik } from "formik";
-import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 import * as Yup from "yup";
 import Button from "~/components/ui/button";
@@ -53,17 +51,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 };
 
 const AddBookPage = () => {
-  const { data: sessionData } = useSession();
-  const role = sessionData?.user.role;
-  const hasPermissions = role === "admin";
-
   const { push } = useRouter();
-
-  useEffect(() => {
-    if (!hasPermissions) {
-      push("/");
-    }
-  }, [hasPermissions, push]);
 
   const { mutate, isLoading } = api.books.addBook.useMutation({
     onSuccess: () => {
@@ -72,7 +60,6 @@ const AddBookPage = () => {
     },
     onError: (e) => handleApiError(e, "Błąd w dodawaniu książki"),
   });
-  if (!hasPermissions) return null;
 
   return (
     <>

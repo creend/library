@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import { useSession } from "next-auth/react";
 import Head from "next/head";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
 import ConfirmModal from "~/components/ui/modal";
 import Spinner from "~/components/ui/spinner";
@@ -69,10 +67,6 @@ const Reservation = ({
 };
 
 const ReservationsPage = () => {
-  const { data: sessionData } = useSession();
-  const role = sessionData?.user.role;
-  const hasPermissions = role === "admin";
-
   const [rejectingReservationId, setRejectingReservationId] = useState<
     null | number
   >(null);
@@ -80,14 +74,6 @@ const ReservationsPage = () => {
   const [confirmingReservationId, setConfirmingReservationId] = useState<
     null | number
   >(null);
-
-  const { push } = useRouter();
-
-  useEffect(() => {
-    if (!hasPermissions) {
-      push("/");
-    }
-  }, [hasPermissions, push]);
 
   const ctx = api.useContext();
   const { data: reservations, isLoading } =

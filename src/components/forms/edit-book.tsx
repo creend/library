@@ -19,18 +19,7 @@ const EditBookForm = ({
   id: number;
   handleFormClose: () => void;
 }) => {
-  const { data: sessionData } = useSession();
-  const role = sessionData?.user.role;
-  const hasPermissions = role === "admin";
-
-  const { push } = useRouter();
-
-  useEffect(() => {
-    if (!hasPermissions) {
-      push("/");
-    }
-  }, [hasPermissions, push]);
-
+  
   const { data: book, isLoading } = api.books.getBook.useQuery({ id });
 
   const ctx = api.useContext();
@@ -45,7 +34,6 @@ const EditBookForm = ({
       handleApiError(e, "Błąd w edycji książki");
     },
   });
-  if (!hasPermissions) return null;
 
   return (
     <>
