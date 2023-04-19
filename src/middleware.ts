@@ -22,6 +22,11 @@ export async function middleware(request: NextRequest, _next: NextFetchEvent) {
     pathname.startsWith(path)
   );
 
+  if (pathname === "/") {
+    const url = new URL(`/ksiazki`, request.url);
+    return NextResponse.redirect(url);
+  }
+
   if (matchesAdminPath) {
     const token = await getToken({ req: request });
     if (!token) {
