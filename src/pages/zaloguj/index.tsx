@@ -13,7 +13,7 @@ import Input from "~/components/ui/input";
 import Spinner from "~/components/ui/spinner";
 import Title from "~/components/ui/title";
 import { getServerAuthSession } from "../api/auth/[...nextauth]";
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 
 const LoginSchema = Yup.object().shape({
   username: Yup.string()

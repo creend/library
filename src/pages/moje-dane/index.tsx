@@ -59,7 +59,7 @@ const MyDataPage = () => {
     <>
       <Head>
         <title>
-          {headerText} | {sessionData?.user.username}
+          {headerText} | {sessionData?.user.username || ""}
         </title>
         <meta name="description" content="Podstrona do logowania" />
       </Head>

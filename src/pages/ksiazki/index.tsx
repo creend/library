@@ -131,7 +131,7 @@ const BooksPage = () => {
     <>
       <Head>
         <title>Książki</title>
-        <meta name="description" content="Podstrona do dodawania książek" />
+        <meta name="description" content="Strona z listą książek" />
       </Head>
       <h1 className="mx-auto mt-11 w-3/4 max-w-5xl text-5xl font-bold text-slate-200">
         Lista książek
