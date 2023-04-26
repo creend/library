@@ -98,30 +98,29 @@ const ReadersPage = () => {
           }}
         />
       )}
-        <div className="relative mx-auto mt-11 w-3/4 max-w-5xl overflow-x-auto shadow-md sm:rounded-lg">
-          {(isLoading || isRemoving) && <Spinner />}
-          <Table
-            colNames={[
-              "Nazwa użytkownika",
-              "Imie i nazwisko",
-              "Numer dokumentu tożsamości",
-              "Adres",
-              "",
-            ]}
-          >
-            {readers?.length &&
-              readers.map((reader) => (
-                <Reader
-                  handleDelete={() => {
-                    setRemovingReaderUsername(reader.username);
-                  }}
-                  key={reader.id}
-                  {...reader}
-                />
-              ))}
-          </Table>
-        </div>
-    
+      <div className="relative mx-auto mt-11 w-3/4 max-w-5xl overflow-x-auto shadow-md sm:rounded-lg">
+        {(isLoading || isRemoving) && <Spinner />}
+        <Table
+          colNames={[
+            "Nazwa użytkownika",
+            "Imie i nazwisko",
+            "Numer dokumentu tożsamości",
+            "Adres",
+            "",
+          ]}
+        >
+          {!!readers?.length &&
+            readers.map((reader) => (
+              <Reader
+                handleDelete={() => {
+                  setRemovingReaderUsername(reader.username);
+                }}
+                key={reader.id}
+                {...reader}
+              />
+            ))}
+        </Table>
+      </div>
     </>
   );
 };

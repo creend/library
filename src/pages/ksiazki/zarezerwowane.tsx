@@ -115,7 +115,7 @@ const ReservatedBooksPage = () => {
             "Akcje",
           ]}
         >
-          {reservations?.length
+          {!!reservations?.length
             ? reservations.map((reservation) => (
                 <Reservation
                   key={reservation.id}
