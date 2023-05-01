@@ -58,10 +58,10 @@ const LoginPage = () => {
             setIsLoading(false);
             if (res?.ok) {
               try {
-                const data = await fetch(`api/user/${values.username}`).then(
-                  (res) => res.json()
-                );
-                const user = data.data as Omit<User, "passwordHash">;
+                const { data: user }: { data: Omit<User, "passwordHash"> } =
+                  await fetch(`api/user/${values.username}`).then((res) =>
+                    res.json()
+                  );
 
                 if (user.needPasswordChange) {
                   toast.success("Zmień hasło po pierwszym zalogowaniu");

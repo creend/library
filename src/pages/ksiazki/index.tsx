@@ -219,21 +219,6 @@ const BooksPage = () => {
   );
 };
 
-//TODO JAKOS SESJE PRZESYLAC
-// export const getStaticProps: GetStaticProps = async () => {
-//   const ssg = createProxySSGHelpers({
-//     router: appRouter,
-//     ctx: { prisma, session: null },
-//     transformer: superjson,
-//   });
-//   await ssg.books.getBooks.prefetch();
-//   return {
-//     props: {
-//       trpcState: ssg.dehydrate(),
-//     },
-//   };
-// };
-
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
   const ssg = createProxySSGHelpers({
