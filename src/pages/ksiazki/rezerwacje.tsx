@@ -88,7 +88,7 @@ const ReservationsPage = () => {
   const { data: reservations, isLoading } =
     api.reservations.getAllReservations.useQuery();
 
-  const { mutate: confirmReservation, isLoading: isConfirming } =
+  const { mutate: createBorrowmentMutation, isLoading: isConfirming } =
     api.borrowments.createBorrowment.useMutation({
       onSuccess: async () => {
         await ctx.reservations.getAllReservations.invalidate();
@@ -101,7 +101,7 @@ const ReservationsPage = () => {
       },
     });
 
-  const { mutate: rejectReservation, isLoading: isRejecting } =
+  const { mutate: removeReservationMutation, isLoading: isRejecting } =
     api.reservations.removeReservation.useMutation({
       onSuccess: async () => {
         await ctx.reservations.getAllReservations.invalidate();
@@ -132,7 +132,7 @@ const ReservationsPage = () => {
           question="Czy napewno odrzucić rezerwacje"
           isLoading={isRejecting}
           handleConfirm={() => {
-            rejectReservation({ id: rejectingReservationId });
+            removeReservationMutation({ id: rejectingReservationId });
           }}
         />
       )}
@@ -143,7 +143,9 @@ const ReservationsPage = () => {
           variant="neutral"
           isLoading={isConfirming}
           handleConfirm={() => {
-            confirmReservation({ reservationId: confirmingReservationId });
+            createBorrowmentMutation({
+              reservationId: confirmingReservationId,
+            });
           }}
         />
       )}

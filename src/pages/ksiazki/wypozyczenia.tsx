@@ -72,7 +72,7 @@ const BorrowmentsPage = () => {
   const { data: borrowments, isLoading } =
     api.borrowments.getAllBorrowments.useQuery();
 
-  const { mutate: endBorrowment, isLoading: isEnding } =
+  const { mutate: endBorrowmentMutation, isLoading: isEnding } =
     api.borrowments.endBorrowment.useMutation({
       onSuccess: async () => {
         await ctx.borrowments.getAllBorrowments.invalidate();
@@ -103,7 +103,7 @@ const BorrowmentsPage = () => {
           question="Czy napewno zakończyć wypożyczenie"
           isLoading={isEnding}
           handleConfirm={() => {
-            endBorrowment({ id: endingBorrowmentId });
+            endBorrowmentMutation({ id: endingBorrowmentId });
           }}
         />
       )}

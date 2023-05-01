@@ -66,7 +66,7 @@ const ReservatedBooksPage = () => {
     number | null
   >(null);
 
-  const { mutate, isLoading: isCancelling } =
+  const { mutate: removeReservationMutation, isLoading: isCancelling } =
     api.reservations.removeReservation.useMutation({
       onSuccess: async () => {
         await ctx.reservations.getReservationsByUsername.invalidate({
@@ -99,7 +99,7 @@ const ReservatedBooksPage = () => {
           question="Czy napewno wycofać rezerwacje?"
           isLoading={isCancelling}
           handleConfirm={() => {
-            mutate({ id: cancellingReservationId });
+            removeReservationMutation({ id: cancellingReservationId });
           }}
         />
       )}

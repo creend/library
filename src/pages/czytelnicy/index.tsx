@@ -67,7 +67,7 @@ const ReadersPage = () => {
 
   const ctx = api.useContext();
 
-  const { mutate, isLoading: isRemoving } =
+  const { mutate: removeReaderMutation, isLoading: isRemoving } =
     api.readers.removeReader.useMutation({
       onSuccess: async () => {
         await ctx.readers.getReaders.invalidate();
@@ -97,7 +97,7 @@ const ReadersPage = () => {
           question="Czy napewno usunąć czytelnika"
           isLoading={isRemoving}
           handleConfirm={() => {
-            mutate({ username: removingReaderUsername });
+            removeReaderMutation({ username: removingReaderUsername });
           }}
         />
       )}

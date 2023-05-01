@@ -22,13 +22,14 @@ const ChangeLoginForm = () => {
   const session = useSession();
   const user = session.data?.user;
 
-  const { mutate, isLoading } = api.readers.changeUserData.useMutation({
-    onSuccess: () => {
-      toast.success("Zmieniono login! Nastąpi wylogowanie");
-      void signOut({ callbackUrl: "/zaloguj" });
-    },
-    onError: (e) => handleApiError(e, "Błąd w zmianie loginu"),
-  });
+  const { mutate: changeUserDataMutation, isLoading } =
+    api.readers.changeUserData.useMutation({
+      onSuccess: () => {
+        toast.success("Zmieniono login! Nastąpi wylogowanie");
+        void signOut({ callbackUrl: "/zaloguj" });
+      },
+      onError: (e) => handleApiError(e, "Błąd w zmianie loginu"),
+    });
   return (
     <Formik
       initialValues={{
@@ -41,7 +42,11 @@ const ChangeLoginForm = () => {
         if (user) {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { createdAt, updatedAt, role, roleId, id, ...userData } = user;
-          mutate({ ...userData, password, newUsername: newLogin });
+          changeUserDataMutation({
+            ...userData,
+            password,
+            newUsername: newLogin,
+          });
         }
       }}
     >

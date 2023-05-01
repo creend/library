@@ -65,13 +65,14 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 const AddUserPage = () => {
   const { push } = useRouter();
 
-  const { mutate, isLoading } = api.readers.addReader.useMutation({
-    onSuccess: () => {
-      toast.success("Dodano czytelnika !");
-      push("/czytelnicy");
-    },
-    onError: (e) => handleApiError(e, "Błąd w dodaniu czytelnika"),
-  });
+  const { mutate: addReaderMutation, isLoading } =
+    api.readers.addReader.useMutation({
+      onSuccess: () => {
+        toast.success("Dodano czytelnika !");
+        push("/czytelnicy");
+      },
+      onError: (e) => handleApiError(e, "Błąd w dodaniu czytelnika"),
+    });
 
   return (
     <>
@@ -85,7 +86,7 @@ const AddUserPage = () => {
           initialValues={initialValues}
           validationSchema={AddReaderSchema}
           onSubmit={(values) => {
-            mutate(values);
+            addReaderMutation(values);
           }}
         >
           <Form

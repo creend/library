@@ -24,17 +24,18 @@ const EditBookForm = ({
   });
 
   const ctx = api.useContext();
-  const { mutate, isLoading: isEditting } = api.books.editBook.useMutation({
-    onSuccess: async () => {
-      await ctx.books.getBooks.invalidate();
-      handleFormClose();
-      toast.success("Edytowano książke !");
-    },
-    onError: (e) => {
-      handleFormClose();
-      handleApiError(e, "Błąd w edycji książki");
-    },
-  });
+  const { mutate: editBookMutation, isLoading: isEditting } =
+    api.books.editBook.useMutation({
+      onSuccess: async () => {
+        await ctx.books.getBooks.invalidate();
+        handleFormClose();
+        toast.success("Edytowano książke !");
+      },
+      onError: (e) => {
+        handleFormClose();
+        handleApiError(e, "Błąd w edycji książki");
+      },
+    });
 
   const isLoading = isFetching || isEditting;
 
@@ -56,7 +57,7 @@ const EditBookForm = ({
           enableReinitialize
           validationSchema={EditBookSchema}
           onSubmit={(values) => {
-            mutate({ ...values, id });
+            editBookMutation({ ...values, id });
           }}
         >
           <Form

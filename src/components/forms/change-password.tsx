@@ -27,13 +27,14 @@ const ChangePasswordForm = () => {
   const session = useSession();
   const user = session.data?.user;
 
-  const { mutate, isLoading } = api.readers.changePassword.useMutation({
-    onSuccess: () => {
-      toast.success("Zmieniono hasło! Nastąpi wylogowanie");
-      void signOut({ callbackUrl: "/zaloguj" });
-    },
-    onError: (e) => handleApiError(e, "Bład w zmianie hasła"),
-  });
+  const { mutate: changePasswordMutation, isLoading } =
+    api.readers.changePassword.useMutation({
+      onSuccess: () => {
+        toast.success("Zmieniono hasło! Nastąpi wylogowanie");
+        void signOut({ callbackUrl: "/zaloguj" });
+      },
+      onError: (e) => handleApiError(e, "Bład w zmianie hasła"),
+    });
   return (
     <Formik
       initialValues={{
@@ -44,7 +45,7 @@ const ChangePasswordForm = () => {
       validationSchema={ChangePasswordSchema}
       onSubmit={(values) => {
         if (user) {
-          mutate({
+          changePasswordMutation({
             ...values,
             username: user.username,
           });

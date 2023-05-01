@@ -33,13 +33,14 @@ const ChangeDataForm = () => {
   const session = useSession();
   const user = session.data?.user;
 
-  const { mutate, isLoading } = api.readers.changeUserData.useMutation({
-    onSuccess: () => {
-      toast.success("Zmieniono dane! Nastąpi wylogowanie");
-      void signOut({ callbackUrl: "/zaloguj" });
-    },
-    onError: (e) => handleApiError(e, "Błąd w zmianie danych"),
-  });
+  const { mutate: changeUserDataMutation, isLoading } =
+    api.readers.changeUserData.useMutation({
+      onSuccess: () => {
+        toast.success("Zmieniono dane! Nastąpi wylogowanie");
+        void signOut({ callbackUrl: "/zaloguj" });
+      },
+      onError: (e) => handleApiError(e, "Błąd w zmianie danych"),
+    });
   return (
     <Formik
       initialValues={{
@@ -52,7 +53,7 @@ const ChangeDataForm = () => {
       validationSchema={ChangeDataSchema}
       onSubmit={(values) => {
         if (user) {
-          mutate({ ...values, username: user.username });
+          changeUserDataMutation({ ...values, username: user.username });
         }
       }}
     >

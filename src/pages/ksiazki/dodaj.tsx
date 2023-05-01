@@ -53,7 +53,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 const AddBookPage = () => {
   const { push } = useRouter();
 
-  const { mutate, isLoading } = api.books.addBook.useMutation({
+  const { mutate: addBookMutation, isLoading } = api.books.addBook.useMutation({
     onSuccess: () => {
       toast.success("Dodano książke !");
       push("/ksiazki");
@@ -73,7 +73,7 @@ const AddBookPage = () => {
           initialValues={initialValues}
           validationSchema={AddBookSchema}
           onSubmit={(values) => {
-            mutate(values);
+            addBookMutation(values);
           }}
         >
           <Form
