@@ -13,12 +13,17 @@ export async function middleware(request: NextRequest, _next: NextFetchEvent) {
   ];
   const onlyUserPaths = ["/ksiazki/zarezerwowane", "/ksiazki/wypozyczone"];
   const protectedPaths = ["/moje-dane"];
+  const onlyUnloggedPaths = ["/zaloguj"];
 
   const matchesAdminPath = adminPaths.some((path) => pathname.startsWith(path));
   const matchesUserPath = onlyUserPaths.some((path) =>
     pathname.startsWith(path)
   );
   const matchesProtectedPath = protectedPaths.some((path) =>
+    pathname.startsWith(path)
+  );
+
+  const matchesUnloggedPath = onlyUnloggedPaths.some((path) =>
     pathname.startsWith(path)
   );
 
@@ -58,5 +63,14 @@ export async function middleware(request: NextRequest, _next: NextFetchEvent) {
       return NextResponse.redirect(url);
     }
   }
+
+  if (matchesUnloggedPath) {
+    const token = await getToken({ req: request });
+    if (token) {
+      const url = new URL(`/`, request.url);
+      return NextResponse.redirect(url);
+    }
+  }
+
   return NextResponse.next();
 }

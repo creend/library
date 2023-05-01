@@ -37,14 +37,6 @@ const LoginPage = () => {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { push } = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const { status } = useSession();
-  const isLoggedIn = status === "authenticated";
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      push("/");
-    }
-  }, [push, isLoggedIn]);
 
   return (
     <>
