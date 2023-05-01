@@ -59,7 +59,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 };
 
 const ReadersPage = () => {
-  const { data: readers, isLoading } = api.readers.getReaders.useQuery();
+  const { data: readers, isLoading: isFetching } =
+    api.readers.getReaders.useQuery();
   const [removingReaderUsername, setRemovingReaderUsername] = useState<
     null | string
   >(null);
@@ -78,6 +79,8 @@ const ReadersPage = () => {
         handleApiError(e, "Błąd w usuwaniu czytelnika");
       },
     });
+
+  const isLoading = isFetching || isRemoving;
 
   return (
     <>
@@ -99,7 +102,7 @@ const ReadersPage = () => {
         />
       )}
       <div className="relative mx-auto mt-11 w-3/4 max-w-5xl overflow-x-auto shadow-md sm:rounded-lg">
-        {(isLoading || isRemoving) && <Spinner />}
+        {isLoading && <Spinner />}
         <Table
           colNames={[
             "Nazwa użytkownika",

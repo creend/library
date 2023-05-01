@@ -19,8 +19,9 @@ const EditBookForm = ({
   id: number;
   handleFormClose: () => void;
 }) => {
-  
-  const { data: book, isLoading } = api.books.getBook.useQuery({ id });
+  const { data: book, isLoading: isFetching } = api.books.getBook.useQuery({
+    id,
+  });
 
   const ctx = api.useContext();
   const { mutate, isLoading: isEditting } = api.books.editBook.useMutation({
@@ -34,6 +35,8 @@ const EditBookForm = ({
       handleApiError(e, "Błąd w edycji książki");
     },
   });
+
+  const isLoading = isFetching || isEditting;
 
   return (
     <>
@@ -61,7 +64,7 @@ const EditBookForm = ({
           ${isLoading ? "bg-gray-800 hover:bg-gray-700" : "bg-gray-900"}`}
             autoComplete="off"
           >
-            {(isLoading || isEditting) && <Spinner />}
+            {isLoading && <Spinner />}
             <button
               type="button"
               className="absolute right-2.5 top-3 ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-white"
