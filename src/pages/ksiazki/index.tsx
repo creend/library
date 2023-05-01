@@ -1,8 +1,6 @@
+import { api } from "~/utils/api";
 import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { prisma } from "~/server/db";
-import { appRouter } from "~/server/api/root";
-import superjson from "superjson";
-import { api } from "~/utils/api";
 import Head from "next/head";
 import Table from "~/components/ui/table";
 import { useSession } from "next-auth/react";
@@ -13,8 +11,10 @@ import ConfirmModal from "~/components/ui/modal";
 import { handleApiError } from "~/helpers/api-error-handler";
 import { type Book as BookType } from "@prisma/client";
 import Book from "~/components/book";
-import { type GetStaticProps } from "next";
+import { type GetServerSideProps } from "next";
 import { getServerAuthSession } from "../api/auth/[...nextauth]";
+import { appRouter } from "~/server/api/root";
+import SuperJSON from "superjson";
 
 type AdminBookProps = {
   role: "admin";
@@ -220,15 +220,31 @@ const BooksPage = () => {
 };
 
 //TODO JAKOS SESJE PRZESYLAC
-export const getStaticProps: GetStaticProps = async () => {
+// export const getStaticProps: GetStaticProps = async () => {
+//   const ssg = createProxySSGHelpers({
+//     router: appRouter,
+//     ctx: { prisma, session: null },
+//     transformer: superjson,
+//   });
+//   await ssg.books.getBooks.prefetch();
+//   return {
+//     props: {
+//       trpcState: ssg.dehydrate(),
+//     },
+//   };
+// };
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = await getServerAuthSession(ctx);
   const ssg = createProxySSGHelpers({
     router: appRouter,
     ctx: { prisma, session: null },
-    transformer: superjson,
+    transformer: SuperJSON,
   });
   await ssg.books.getBooks.prefetch();
   return {
     props: {
+      session,
       trpcState: ssg.dehydrate(),
     },
   };
