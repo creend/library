@@ -4,6 +4,14 @@ https://library-creend.vercel.app/
 
 📚 Welcome to the Library Application repository! This application is built with NEXT.js and TypeScript and uses Prisma and MySQL for database management. It also leverages TRPC for communication between the server and client. The Library Application provides features for managing library resources, including user accounts, book borrowing, and administrative functions.
 
+
+## Admin credientals:
+
+l: admin
+
+p: admin
+
+
 ## Features
 
 ✨ User Management:
